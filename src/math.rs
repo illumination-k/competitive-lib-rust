@@ -1,6 +1,5 @@
 use cargo_snippet::snippet;
 
-
 pub fn gcd(a: usize, b: usize) -> usize {
     if b == 0 {
         a

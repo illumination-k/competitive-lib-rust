@@ -59,11 +59,32 @@ pub fn prime_factorize(mut n: usize) -> Vec<(usize, usize)> {
 }
 
 
+#[snippet("sieve_of_eratosthenes")]
+pub fn sieve_of_eratosthenes(n: usize) -> Vec<usize> {
+    let mut primes = vec![];
+    let mut list_dequeue: std::collections::VecDeque<usize> = (2..=n).collect();
+    
+    if n < 2 { return primes }
+    if n == 2 { return vec![2] }
+
+    while list_dequeue.front().unwrap().pow(2) <= n {
+        let first = list_dequeue.pop_front().unwrap();
+        primes.push(first);
+
+        list_dequeue = list_dequeue.into_iter().filter(|&x| x % first != 0).collect();
+    }
+    let mut list_vec = list_dequeue.into_iter().collect::<Vec<usize>>();
+    primes.append(&mut list_vec);
+    primes
+}
+
+
 #[cfg(test)]
 mod test {
     use super::is_prime;
     use super::enum_divisors;
     use super::prime_factorize;
+    use super::sieve_of_eratosthenes;
 
     #[test]
     fn test_is_prime_2() {
@@ -94,5 +115,23 @@ mod test {
     fn test_prime_factorize_2020() {
         let vec = prime_factorize(2020);
         assert_eq!(vec, vec![(2, 2), (5, 1), (101, 1)]);
+    }
+
+    #[test]
+    fn test_eratosthenes_1() {
+        let vec = sieve_of_eratosthenes(1);
+        assert_eq!(vec, vec![]);
+    }
+
+    #[test]
+    fn test_eratosthenes_2() {
+        let vec = sieve_of_eratosthenes(2);
+        assert_eq!(vec, vec![2]);
+    }
+
+    #[test]
+    fn test_eratosthenes_20() {
+        let vec = sieve_of_eratosthenes(20);
+        assert_eq!(vec, vec![2, 3, 5, 7, 11, 13, 17, 19]);
     }
 }
