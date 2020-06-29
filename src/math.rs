@@ -1,24 +1,25 @@
+use num_traits::{ PrimInt, zero };
 use cargo_snippet::snippet;
 
-pub fn gcd(a: usize, b: usize) -> usize {
-    if b == 0 {
+pub fn gcd<T: PrimInt>(a: T, b: T) -> T {
+    if b == zero()  {
         a
     } else {
         gcd(b, a % b)
     }
 }
 
-pub fn lcm(a: usize, b: usize) -> usize {
+pub fn lcm<T: PrimInt>(a: T, b: T) -> T {
     a / gcd(a, b) * b
 }
 
 
-pub fn gcd_list(vec: Vec<usize>) -> usize {
+pub fn gcd_list<T: PrimInt>(vec: Vec<T>) -> T {
     assert!(vec.len() > 1);
     vec.iter().fold(vec[0], |acc, x| gcd(*x, acc))
 }
 
-pub fn lcm_list(vec: Vec<usize>) -> usize {
+pub fn lcm_list<T: PrimInt>(vec: Vec<T>) -> T {
     assert!(vec.len() > 1);
     vec.iter().fold(vec[0], |acc, x| lcm(*x, acc))
 }

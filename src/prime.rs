@@ -1,33 +1,34 @@
 use cargo_snippet::snippet;
+use num_traits::{ PrimInt, NumAssign, zero, one };
 
 #[snippet("is_prime")]
-pub fn is_prime(n: usize) -> bool {
+pub fn is_prime<T: PrimInt+NumAssign>(n: T) -> bool {
     let mut flag: bool = true;
 
-    if n == 1 { flag = false }
-    let mut i: usize = 2;
+    if n == one() { flag = false }
+    let mut i: T = one::<T>().signed_shl(1);
     while i * i <= n {
-        if n % i == 0 {
+        if n % i == zero() {
             flag = false;
             break;
         }
-        i += 1;
+        i += one();
     }
     flag
 }
 
 #[snippet("enum_divisors")]
-pub fn enum_divisors(n: usize) -> Vec<usize> {
-    let mut res: Vec<usize> = Vec::new();
+pub fn enum_divisors<T: PrimInt+NumAssign>(n: T) -> Vec<T> {
+    let mut res: Vec<T> = Vec::new();
 
-    let mut i: usize = 1;
+    let mut i: T = one();
 
     while i * i <= n {
-        if n % i == 0 {
+        if n % i == zero() {
             res.push(i);
             if n / i != i { res.push(n / i) }
         }
-        i += 1;
+        i += one();
     }
     res.sort();
     res
@@ -35,25 +36,25 @@ pub fn enum_divisors(n: usize) -> Vec<usize> {
 
 
 #[snippet("prime_factorize")]
-pub fn prime_factorize(mut n: usize) -> Vec<(usize, usize)> {
-    let mut res: Vec<(usize, usize)> = Vec::new();
+pub fn prime_factorize<T: PrimInt+NumAssign>(mut n: T) -> Vec<(T, T)> {
+    let mut res: Vec<(T, T)> = Vec::new();
 
-    let mut i: usize = 2;
+    let mut i: T = one::<T>().signed_shl(1);
 
     while i * i <= n {
-        if n % i == 0 {
-            let mut ex: usize = 0;
+        if n % i == zero() {
+            let mut ex = zero::<T>();
 
-            while n % i == 0 {
-                ex += 1;
+            while n % i == zero() {
+                ex += one();
                 n = n / i;
             }
             res.push((i, ex));
         }
-        i += 1;
+        i += one();
     }
 
-    if n != 1 {res.push((n, 1))}
+    if n != one() {res.push((n, one()))}
 
     res
 }

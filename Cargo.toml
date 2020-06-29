@@ -8,4 +8,4 @@ edition = "2018"
 
 [dependencies]
 cargo-snippet = "0.4"
-num_trait = "0.2"
+num-traits = "0.2"
