@@ -1,8 +1,9 @@
 use std::collections::VecDeque;
+use num_traits::*;
 
 #[derive(Debug, Clone)]
-pub struct Graph2D<T, I> {
-    graph2d: Vec<Vec<T>>,
+pub struct MatGraph<T, I> {
+    matgraph: Vec<Vec<T>>,
     dequeue: VecDeque<(i64, i64)>,
     dist: Vec<Vec<I>>,
     x: Vec<i64>,

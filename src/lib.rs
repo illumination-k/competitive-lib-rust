@@ -6,4 +6,4 @@ pub mod prime;
 pub mod graph;
 pub mod calc_comb;
 pub mod math;
-pub mod mod_int_generics;
+pub mod binary_search;
