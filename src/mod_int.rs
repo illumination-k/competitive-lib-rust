@@ -1,5 +1,6 @@
-#![allow(non_snake_case)]
-  
+use cargo_snippet::snippet;
+
+#[snippet("mod_int")]
 pub mod mod_int {
     use std::ops::{
         Add, AddAssign, BitAnd, Div, DivAssign, Mul, MulAssign, RemAssign, ShrAssign, Sub,

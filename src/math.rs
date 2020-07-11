@@ -30,6 +30,7 @@ pub fn lcm_list<T: PrimInt>(vec: Vec<T>) -> T {
     vec.iter().fold(vec[0], |acc, x| lcm(*x, acc))
 }
 
+#[snippet("quadratic_formula")]
 pub fn quadratic_formula<T: NumCast>(a: T, b: T, c: T) -> Option<(f64, f64)> {
     let a = a.to_f64().unwrap();
     let b = b.to_f64().unwrap();
