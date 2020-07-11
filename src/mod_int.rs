@@ -7,6 +7,7 @@ pub mod mod_int {
         SubAssign,
     };
 
+    #[derive(Debug)]
     pub struct ModInt<T> {
         v: T,
         m: T,
@@ -262,6 +263,7 @@ pub mod mod_int {
             + BitAnd<Output = T>
             + PartialEq
             + PartialOrd
+            + SubAssign
             + ShrAssign
             + RemAssign
             + MulAssign,

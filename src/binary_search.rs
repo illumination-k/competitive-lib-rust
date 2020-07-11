@@ -18,7 +18,7 @@ pub fn binary_search<T, F>(vec: &Vec<T>, key: T, is_ok: F) -> usize
             ng = mid
         }
     }
-    return ok as usize
+    ok as usize
 }
 
 

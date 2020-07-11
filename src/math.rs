@@ -57,12 +57,29 @@ pub fn quadratic_formula<T: NumCast>(a: T, b: T, c: T) -> Option<(f64, f64)> {
 
 #[cfg(test)]
 mod test {
-    use super::gcd;
+    use super::{gcd, lcm, gcd_list, lcm_list};
     use super::quadratic_formula;
     #[test]
     fn gcd_1() {
         assert_eq!(gcd(10, 2), 2);
+        assert_eq!(gcd(12, 42), 6);
     }
+
+    #[test]
+    fn gcd_list_1() {
+        assert_eq!(gcd_list(vec![12, 42, 72]), 6);
+    }
+
+    #[test]
+    fn lcm_1() {
+        assert_eq!(lcm(12, 42), 84);
+    }
+
+    #[test]
+    fn lcm_list_1() {
+        assert_eq!(lcm_list(vec![12, 42, 72]), 504);
+    }
+
 
     #[test]
     fn test_quadratic_formula_1() {
