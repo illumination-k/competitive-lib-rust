@@ -1,5 +1,5 @@
 use cargo_snippet::snippet;
-use num_traits::{ PrimInt, NumAssign, zero, one };
+use num_traits::{ PrimInt, NumAssign, zero, one, NumCast};
 
 #[snippet("is_prime")]
 pub fn is_prime<T: PrimInt+NumAssign>(n: T) -> bool {
@@ -61,7 +61,11 @@ pub fn prime_factorize<T: PrimInt+NumAssign>(mut n: T) -> Vec<(T, T)> {
 
 
 #[snippet("sieve_of_eratosthenes")]
-pub fn sieve_of_eratosthenes(n: usize) -> Vec<usize> {
+pub fn sieve_of_eratosthenes<T: NumCast>(n: T) -> Vec<usize> {
+    let n = match n.to_usize() {
+        Some(x) => x,
+        None => panic!("n should be u8, u16, u32, u64, u128, usize or positive number!")
+    };
     let mut primes = vec![];
     let mut list_dequeue: std::collections::VecDeque<usize> = (2..=n).collect();
     

@@ -1,5 +1,6 @@
-use cargo_snippet;
+use cargo_snippet::snippet;
 
+#[snippet("binary_search")]
 pub fn binary_search<T, F>(vec: &Vec<T>, key: T, is_ok: F) -> usize
     where 
         F: Fn(usize, T, &Vec<T>) -> bool,

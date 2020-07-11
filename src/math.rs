@@ -1,6 +1,7 @@
 use num_traits::{ PrimInt, zero, NumCast };
 use cargo_snippet::snippet;
 
+#[snippet("gcd")]
 pub fn gcd<T: PrimInt>(a: T, b: T) -> T {
     if b == zero()  {
         a
@@ -9,16 +10,21 @@ pub fn gcd<T: PrimInt>(a: T, b: T) -> T {
     }
 }
 
+#[snippet("lcm")]
+#[snippet(include="gcd")]
 pub fn lcm<T: PrimInt>(a: T, b: T) -> T {
     a / gcd(a, b) * b
 }
 
-
+#[snippet("gcd_list")]
+#[snippet(include="gcd")]
 pub fn gcd_list<T: PrimInt>(vec: Vec<T>) -> T {
     assert!(vec.len() > 1);
     vec.iter().fold(vec[0], |acc, x| gcd(*x, acc))
 }
 
+#[snippet("lcm_list")]
+#[snippet(include="lcm")]
 pub fn lcm_list<T: PrimInt>(vec: Vec<T>) -> T {
     assert!(vec.len() > 1);
     vec.iter().fold(vec[0], |acc, x| lcm(*x, acc))

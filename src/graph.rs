@@ -1,5 +1,4 @@
 use std::collections::VecDeque;
-use num_traits::*;
 
 #[derive(Debug, Clone)]
 pub struct MatGraph<T, I> {

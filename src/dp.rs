@@ -1,3 +1,5 @@
+#[allow(unused_macros)]
+
 pub mod dp {
     use cargo_snippet::snippet;
     #[snippet("chmin!")]

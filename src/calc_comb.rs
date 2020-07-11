@@ -2,40 +2,40 @@ use cargo_snippet::snippet;
 
 #[snippet("struct_comb")]
 #[derive(Debug, Clone)]
-struct Combination {
+pub struct Combination {
     fact_inv: Vec<usize>,
     inv: Vec<usize>,
     com: Option<Vec<usize>>,
-    MOD: usize,
+    m: usize,
 }
 
 #[snippet("calc_comb")]
 #[snippet(include="struct_comb")]
 impl Combination {
-    fn new(n: usize, MOD: usize) -> Combination {
-        let mut fact_inv = vec![0; n+1];
-        let mut inv = vec![0; n+1];
+    pub fn new(upper: usize, m: usize) -> Self {
+        let mut fact_inv = vec![0; upper+1];
+        let mut inv = vec![0; upper+1];
         fact_inv[0] = 1;
         fact_inv[1] = 1;
         inv[1] = 1;
         
-        for i in 2..=n {
-            inv[i] = MOD - inv[MOD % i] * (MOD / i) % MOD;
-            fact_inv[i] = fact_inv[i - 1] * inv[i] % MOD;
+        for i in 2..=upper {
+            inv[i] = m - inv[m % i] * (m / i) % m;
+            fact_inv[i] = fact_inv[i - 1] * inv[i] % m;
         }
-        Combination {
+        Self {
             fact_inv: fact_inv,
             inv: inv,
             com: None,
-            MOD: MOD,
+            m: m,
         }
     }
 
-    fn fix_n(&mut self, n: usize) {
+    pub fn fix_n(&mut self, n: usize) {
         let mut com = vec![0; n+1];
         com[0] = 1;
         for i in 1..=n {
-            com[i] = com[i - 1] * ((n - i + 1) * self.inv[i] % self.MOD) % self.MOD;
+            com[i] = com[i - 1] * ((n - i + 1) * self.inv[i] % self.m) % self.m;
         }
         self.com = Some(com)
     }
@@ -47,20 +47,20 @@ impl Combination {
 
         while n - k < i {
             ans *= i;
-            ans %= self.MOD;
+            ans %= self.m;
             i -= 1;
         }
-        ans * self.fact_inv[k] % self.MOD
+        ans * self.fact_inv[k] % self.m
     }
 
-    fn nck(&self, n: usize, k: usize) -> usize {
+    pub fn nck(&self, n: usize, k: usize) -> usize {
         match self.com.clone() {
             None => self._calc_nck(n, k),
             Some(x) => x[k],
         }
     }
 
-    fn nhk(&self, n: usize, k: usize) -> usize {
+    pub fn nhk(&self, n: usize, k: usize) -> usize {
         if self.fact_inv.len() < n+k-1 {
             panic!("length must be n+k-1 or larger!")
         }
@@ -76,7 +76,7 @@ mod test {
     const MOD: usize = 1e9 as usize + 7;
 
     #[test]
-    fn n6Ck() {
+    fn n6ck() {
         let comb = Combination::new(6, MOD);
         assert_eq!(comb.nck(0, 0), 1);
         assert_eq!(comb.nck(6, 2), 15);
