@@ -1,6 +1,8 @@
-use num_traits::{PrimInt};
+// reference to https://www.forcia.com/blog/001409.html
 
-#[derive(Debug)]
+use num_traits::{PrimInt, zero};
+
+#[derive(Debug, Clone)]
 pub struct AdjGraph<T: PrimInt> {
     adj_mat: Vec<Vec<Option<T>>>,
     next: Vec<Vec<usize>>,
@@ -22,9 +24,6 @@ impl<T: PrimInt> AdjGraph<T> {
             size: n,
         } 
     }
-}
-
-impl<T: PrimInt> AdjGraph<T> {
     pub fn warshal_floyd(&mut self) {
         for k in 0..self.size {
             for i in 0..self.size {
@@ -56,7 +55,6 @@ impl<T: PrimInt> AdjGraph<T> {
     }
 }
 
-
 #[cfg(test)]
 mod test {
     use super::AdjGraph;
@@ -78,5 +76,135 @@ mod test {
         assert_eq!(graph.shortest_path(3, 0), Some((7, vec![3, 0])));
         assert_eq!(graph.shortest_path(0, 4), Some((5, vec![0, 1, 3, 4])));
         assert_eq!(graph.shortest_path(4, 0), None);
+    }
+}
+
+#[derive(Debug, Clone, Copy, Eq, PartialEq)]
+pub struct Edge<T: PrimInt> {
+    node: T,
+    cost: T,
+}
+
+// for BinaryHeap
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
+struct State<T: PrimInt> {
+    cost: T,
+    position: usize,
+    pre_node: usize,
+}
+
+impl<T: PrimInt> Ord for State<T> {
+    fn cmp(&self, other: &State<T>) -> std::cmp::Ordering {
+        other
+            .cost
+            .cmp(&self.cost)
+            .then_with(|| self.position.cmp(&other.position))
+    }
+}
+
+impl<T: PrimInt> PartialOrd for State<T> {
+    fn partial_cmp(&self, other: &State<T>) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct ListGraph<T: PrimInt> {
+    list_graph: Vec<Vec<Edge<T>>>,
+    dist: Vec<usize>,
+    pre_nodes: Vec<usize>,
+    heap: std::collections::BinaryHeap<State<T>>,
+    size: usize,
+}
+
+impl<T: PrimInt> ListGraph<T> {
+    pub fn new(list_graph: Vec<Vec<Edge<T>>>) -> Self {
+        let size = list_graph.len();
+        let dist = (0..size).map(|_| std::usize::MAX).collect();
+        let pre_nodes = (0..size).map(|i| i).collect();
+        let heap: std::collections::BinaryHeap<State<T>> = std::collections::BinaryHeap::new();
+        Self { list_graph, dist, pre_nodes, heap, size } }
+        
+    pub fn refresh(&mut self) {
+        self.dist = (0..self.size).map(|_| std::usize::MAX).collect();
+        self.pre_nodes = (0..self.size).map(|i| i).collect();
+        self.heap = std::collections::BinaryHeap::new();
+    }
+}
+
+
+impl<T: PrimInt> ListGraph<T> {
+    pub fn dijkstra(&mut self, start: usize, goal: usize) -> Option<(T, Vec<usize>)> {
+        self.dist[start] = 0;
+        self.heap.push(
+            State {
+                cost: zero(),
+                position: start,
+                pre_node: 0,
+            }
+        );
+
+        while let Some(State {
+            cost, position, pre_node,
+        }) = self.heap.pop() {
+            if cost.to_usize().unwrap() > self.dist[position] { continue; }
+            self.pre_nodes[position] = pre_node;
+
+            if position == goal {
+                let mut v = goal;
+                let mut path = vec![goal];
+                while v != start {
+                    path.push(self.pre_nodes[v]);
+                    v = self.pre_nodes[v];
+                }
+                path.reverse();
+                return Some((cost, path));
+            }
+
+            for edge in self.list_graph[position].iter() {
+                let next = State {
+                    cost: cost + edge.cost,
+                    position: edge.node.to_usize().unwrap(),
+                    pre_node: position,
+                };
+
+                if next.cost.to_usize().unwrap() < self.dist[next.position] {
+                    self.heap.push(next);
+                    self.dist[next.position] = next.cost.to_usize().unwrap();
+                }
+            }
+        }
+        None
+    }
+}
+
+
+#[cfg(test)]
+mod test_list_graph {
+    use super::{Edge, ListGraph};
+    #[test]
+    fn test_dijktstra_1() {
+        let list_graph = vec![
+            vec![Edge { node: 2, cost: 10 }, Edge { node: 1, cost: 1 }],
+            vec![Edge { node: 3, cost: 2 }],
+            vec![
+                Edge { node: 1, cost: 1 },
+                Edge { node: 3, cost: 3 },
+                Edge { node: 4, cost: 1 },
+            ],
+            vec![Edge { node: 0, cost: 7 }, Edge { node: 4, cost: 2 }],
+            vec![],
+        ];
+
+        let mut graph = ListGraph::new(list_graph);
+        assert_eq!(graph.dijkstra(0, 1), Some((1, vec![0, 1])));
+        graph.refresh();
+        assert_eq!(graph.dijkstra(0, 3), Some((3, vec![0, 1, 3])));
+        graph.refresh();
+        assert_eq!(graph.dijkstra(3, 0), Some((7, vec![3, 0])));
+        graph.refresh();
+        assert_eq!(graph.dijkstra(0, 4), Some((5, vec![0, 1, 3, 4])));
+        graph.refresh();
+        assert_eq!(graph.dijkstra(4, 0), None);
     }
 }
