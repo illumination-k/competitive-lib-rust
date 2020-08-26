@@ -64,7 +64,7 @@ pub fn prime_factorize<T: PrimInt+NumAssign>(mut n: T) -> Vec<(T, T)> {
 pub fn sieve_of_eratosthenes<T: NumCast>(n: T) -> Vec<usize> {
     let n = match n.to_usize() {
         Some(x) => x,
-        None => panic!("n should be u8, u16, u32, u64, u128, usize or positive number!")
+        None => panic!()
     };
     let mut primes = vec![];
     let mut list_dequeue: std::collections::VecDeque<usize> = (2..=n).collect();

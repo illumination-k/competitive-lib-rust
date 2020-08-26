@@ -7,3 +7,4 @@ pub mod graph;
 pub mod calc_comb;
 pub mod math;
 pub mod binary_search;
+pub mod union_find;
