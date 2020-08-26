@@ -125,7 +125,7 @@ impl<T: PrimInt> ListGraph<T> {
         let heap: std::collections::BinaryHeap<State<T>> = std::collections::BinaryHeap::new();
         Self { list_graph, dist, pre_nodes, heap, size } }
         
-    pub fn refresh(&mut self) {
+    fn refresh(&mut self) {
         self.dist = (0..self.size).map(|_| std::usize::MAX).collect();
         self.pre_nodes = (0..self.size).map(|i| i).collect();
         self.heap = std::collections::BinaryHeap::new();
@@ -134,7 +134,7 @@ impl<T: PrimInt> ListGraph<T> {
 
 
 impl<T: PrimInt> ListGraph<T> {
-    pub fn dijkstra(&mut self, start: usize, goal: usize) -> Option<(T, Vec<usize>)> {
+    fn _dijkstra(&mut self, start: usize, goal: usize) -> Option<(T, Vec<usize>)> {
         self.dist[start] = 0;
         self.heap.push(
             State {
@@ -176,6 +176,12 @@ impl<T: PrimInt> ListGraph<T> {
         }
         None
     }
+
+    pub fn dijkstra(&mut self, start: usize, goal: usize) -> Option<(T, Vec<usize>)> {
+        let ret = self._dijkstra(start, goal);
+        self.refresh();
+        ret
+    }
 }
 
 
@@ -198,13 +204,9 @@ mod test_list_graph {
 
         let mut graph = ListGraph::new(list_graph);
         assert_eq!(graph.dijkstra(0, 1), Some((1, vec![0, 1])));
-        graph.refresh();
         assert_eq!(graph.dijkstra(0, 3), Some((3, vec![0, 1, 3])));
-        graph.refresh();
         assert_eq!(graph.dijkstra(3, 0), Some((7, vec![3, 0])));
-        graph.refresh();
         assert_eq!(graph.dijkstra(0, 4), Some((5, vec![0, 1, 3, 4])));
-        graph.refresh();
         assert_eq!(graph.dijkstra(4, 0), None);
     }
 }
