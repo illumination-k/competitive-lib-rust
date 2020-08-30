@@ -41,11 +41,7 @@ pub fn quadratic_formula<T: NumCast>(a: T, b: T, c: T) -> Option<(f64, f64)> {
     if descriminant > 0.0 {
         let ans_1 = (-b + descriminant.sqrt()) / (2.0 * a);
         let ans_2 = (-b - descriminant.sqrt()) / (2.0 * a);
-        if ans_1 > ans_2 {
-            return Some((ans_1, ans_2))
-        } else {
-            return Some((ans_2, ans_1))
-        }
+        return Some((ans_1, ans_2))
     } else if descriminant == 0.0 {
         let ans = -b / (2.0 * a);
         return Some((ans, ans));

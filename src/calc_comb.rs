@@ -61,9 +61,7 @@ impl Combination {
     }
 
     pub fn nhk(&self, n: usize, k: usize) -> usize {
-        if self.fact_inv.len() < n+k-1 {
-            panic!("length must be n+k-1 or larger!")
-        }
+        assert!(self.fact_inv.len() >= n+k-1);
         self.nck(n+k-1, k)
     }
 }

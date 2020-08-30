@@ -14,7 +14,7 @@ impl<T: PrimInt> AdjGraph<T> {
         let n = adj_mat.len();
         let mut next: Vec<Vec<usize>> = vec![];
 
-        for _i in 0..n {
+        for _ in 0..n {
             next.push((0..n).map(|j| j).collect())
         }
 
@@ -210,3 +210,5 @@ mod test_list_graph {
         assert_eq!(graph.dijkstra(4, 0), None);
     }
 }
+
+

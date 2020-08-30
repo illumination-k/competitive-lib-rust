@@ -1,0 +1,76 @@
+{
+    "dbg": {
+		"prefix": "dbg",
+		"body": [
+			"dbg!($1);$0"
+		],
+		"description": "dbg"
+	},
+
+	"flagprint": {
+		"prefix": "flagprint",
+		"body": [
+			"if ${1:flag} {",
+			"    println!(\"${2:Yes}\");",
+			"} else {",
+			"    println!(\"${3:No}\");",
+			"}\n$0"
+		],
+		"description": "if flag print..."
+	},
+
+	"c2num": {
+		"prefix": "c2num",
+		"body": [
+			"${1:c} as ${2:usize} - 48"
+		],
+		"description": "char to num"
+	},
+	
+	"HashMap": {
+		"prefix": "map",
+		"body": [
+			"let mut ${1:map}: HashMap<${2:usize}, ${3:usize}> = HashMap::new();\n$0"
+		],
+		"description": "std::collections::Hashmap"
+	},
+
+	"BTreeMap": {
+		"prefix": "bmap",
+		"body": [
+			"let mut ${1:bmap}: BTreeMap<${2:usize}, ${3:usize}> = BTreeMap::new();\n$0"
+		],
+		"description": "std::collections::BTreeMap"
+	},
+	
+	"HashSet": {
+		"prefix": "set",
+		"body": [
+			"let mut ${1:set}: HashSet<${2:_}> = HashSet::new();\n$0"
+		],
+		"description": "std::collections::HashSet"
+	},
+
+	"parse_line": {
+		"prefix": "parse_line",
+		"body": [
+			"parse_line().unwrap();\n"
+		],
+		"description": "whiteread::parseline"
+	},
+
+	"alphabet": {
+		"prefix": "alphabet",
+		"body": [
+			"let alphabet: ${1:Vec<char>} = (97..97+26).map(|x| std::char::from_u32(x).unwrap()).collect();"
+		],
+		"description": "make alphabet list"
+	},
+	"ceil": {
+		"prefix": "ceil",
+		"body": [
+			"(${1:a} + ${2:b} - 1) / ${2:b}"
+		],
+		"description": "ceil"
+	}
+}
