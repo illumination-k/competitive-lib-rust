@@ -6,13 +6,13 @@ pub struct Combination {
     fact_inv: Vec<usize>,
     inv: Vec<usize>,
     com: Option<Vec<usize>>,
-    m: usize,
+    modulo: usize,
 }
 
 #[snippet("calc_comb")]
 #[snippet(include="struct_comb")]
 impl Combination {
-    pub fn new(upper: usize, m: usize) -> Self {
+    pub fn new(upper: usize, modulo: usize) -> Self {
         let mut fact_inv = vec![0; upper+1];
         let mut inv = vec![0; upper+1];
         fact_inv[0] = 1;
@@ -20,14 +20,14 @@ impl Combination {
         inv[1] = 1;
         
         for i in 2..=upper {
-            inv[i] = m - inv[m % i] * (m / i) % m;
-            fact_inv[i] = fact_inv[i - 1] * inv[i] % m;
+            inv[i] = modulo - inv[modulo % i] * (modulo / i) % modulo;
+            fact_inv[i] = fact_inv[i - 1] * inv[i] % modulo;
         }
         Self {
             fact_inv: fact_inv,
             inv: inv,
             com: None,
-            m: m,
+            modulo: modulo,
         }
     }
 
@@ -35,7 +35,7 @@ impl Combination {
         let mut com = vec![0; n+1];
         com[0] = 1;
         for i in 1..=n {
-            com[i] = com[i - 1] * ((n - i + 1) * self.inv[i] % self.m) % self.m;
+            com[i] = com[i - 1] * ((n - i + 1) * self.inv[i] % self.modulo) % self.modulo;
         }
         self.com = Some(com)
     }
@@ -47,10 +47,10 @@ impl Combination {
 
         while n - k < i {
             ans *= i;
-            ans %= self.m;
+            ans %= self.modulo;
             i -= 1;
         }
-        ans * self.fact_inv[k] % self.m
+        ans * self.fact_inv[k] % self.modulo
     }
 
     pub fn nck(&self, n: usize, k: usize) -> usize {

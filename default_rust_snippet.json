@@ -72,5 +72,12 @@
 			"(${1:a} + ${2:b} - 1) / ${2:b}"
 		],
 		"description": "ceil"
+	},
+	"cumsum": {
+		"prefix": "cumsum",
+		"body": [
+			"std::iter::once(&0).chain(&${1:x}).cumsum().collect::<Vec<${2:usize}>>();\n"
+		],
+		"description": "cumsum"
 	}
 }

@@ -1,7 +1,7 @@
 // from petgraph to customize UnionFind. rank -> size
 
 use num_traits::PrimInt;
-
+use std::collections::*;
 #[derive(Debug, Clone)]
 pub struct UnionFind<K> {
     // For element at index *i*, store the index of its parent; the representative itself
@@ -29,7 +29,7 @@ unsafe fn get_unchecked_mut<K>(xs: &mut [K], index: usize) -> &mut K {
 
 impl<K> UnionFind<K>
 where
-    K: PrimInt,
+    K: PrimInt + std::hash::Hash,
 {
     /// Create a new `UnionFind` of `n` disjoint sets.
     pub fn new(n: usize) -> Self {
@@ -139,8 +139,31 @@ where
 
         self.size[xrepu]
     }
-}
 
+    pub fn member(&self, x: K) -> HashSet<K> {
+        // O(n)
+        let xrep = self.find(x);
+        let mut set: HashSet<K> = HashSet::new();
+
+        for i in 0..self.parent.len() {
+            let i_k = K::from(i).unwrap();
+            if self.find(i_k) == xrep {
+                set.insert(i_k);
+            }
+        }
+
+        set
+    }
+
+    pub fn member_map(&self) -> HashMap<K, HashSet<K>> {
+        // O(n^2)
+        let mut map: HashMap<K, HashSet<K>> = HashMap::new();
+        for i in 0..self.parent.len() {
+            map.entry(K::from(i).unwrap()).or_insert(self.member(K::from(i).unwrap()));
+        }
+        map
+    }
+}
 
 #[cfg(test)]
 mod test {
