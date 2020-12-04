@@ -3,6 +3,7 @@ extern crate cargo_snippet;
 
 pub mod dp;
 pub mod mod_int;
+pub mod monoid;
 pub mod prime;
 pub mod graph;
 pub mod graph2d;

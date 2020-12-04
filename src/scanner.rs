@@ -1,6 +1,8 @@
 // from https://github.com/kenkoooo/competitive-programming-rs/blob/master/src/utils/scanner.rs
 pub struct IO<R, W: std::io::Write>(R, std::io::BufWriter<W>);
 
+// let (r, w) = (std::io::stdin(), std::io::stdout());
+// let mut sc = IO::new(r.lock(), w.lock())
 impl<R: std::io::Read, W: std::io::Write> IO<R, W> {
     pub fn new(r: R, w: W) -> IO<R, W> {
         IO(r, std::io::BufWriter::new(w))
