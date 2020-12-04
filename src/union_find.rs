@@ -72,8 +72,8 @@ where
     unsafe fn find_mut_recursive(&mut self, mut x: K) -> K {
         let mut parent = *get_unchecked(&self.parent, x.to_usize().unwrap());
         while parent != x {
-            let grandparent = *get_unchecked(&self.parent, parent.to_usize().unwrap());
-            *get_unchecked_mut(&mut self.parent, x.to_usize().unwrap()) = grandparent;
+            let grandparent = *get_unchecked(&self.parent, parent.to_usize().expect("Cannot convert to usize. maybe negative number!"));
+            *get_unchecked_mut(&mut self.parent, x.to_usize().expect("Cannot convert to usize. maybe negative number!")) = grandparent;
             x = parent;
             parent = grandparent;
         }
@@ -102,8 +102,8 @@ where
             return false;
         }
 
-        let xrepu = xrep.to_usize().unwrap();
-        let yrepu = yrep.to_usize().unwrap();
+        let xrepu = xrep.to_usize().expect("Cannot convert to usize. maybe negative number!");
+        let yrepu = yrep.to_usize().expect("Cannot convert to usize. maybe negative number!");
         let xsize = self.size[xrepu];
         let ysize = self.size[yrepu];
 
@@ -135,7 +135,7 @@ where
 
     pub fn size(&self, x: K) -> usize {
         let xrep = self.find(x);
-        let xrepu = xrep.to_usize().unwrap();
+        let xrepu = xrep.to_usize().expect("Cannot convert to usize. maybe negative number!");
 
         self.size[xrepu]
     }

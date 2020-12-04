@@ -75,7 +75,7 @@ pub fn sieve_of_eratosthenes<T: NumCast>(n: T) -> Vec<usize> {
     if n < 2 { return primes }
     if n == 2 { return vec![2] }
 
-    while list_dequeue.front().unwrap().pow(2) <= n {
+    while list_dequeue.front().unwrap().pow(2u32) <= n {
         let first = list_dequeue.pop_front().unwrap();
         primes.push(first);
 
