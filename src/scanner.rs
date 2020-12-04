@@ -1,5 +1,4 @@
 // from https://github.com/kenkoooo/competitive-programming-rs/blob/master/src/utils/scanner.rs
-use std::collections::*;
 pub struct IO<R, W: std::io::Write>(R, std::io::BufWriter<W>);
 
 impl<R: std::io::Read, W: std::io::Write> IO<R, W> {
@@ -33,7 +32,7 @@ impl<R: std::io::Read, W: std::io::Write> IO<R, W> {
         (0..h).map(|_| self.vec(w)).collect()
     }
 
-    pub fn set<T: std::str::FromStr + Eq + std::hash::Hash>(&mut self, n: usize) -> HashSet<T> {
+    pub fn set<T: std::str::FromStr + Eq + std::hash::Hash>(&mut self, n: usize) -> std::collections::HashSet<T> {
         (0..n).map(|_| self.read()).collect()
     }
 
