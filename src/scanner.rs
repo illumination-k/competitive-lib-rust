@@ -9,7 +9,12 @@ impl<R: std::io::Read, W: std::io::Write> IO<R, W> {
     }
     pub fn write<S: ToString>(&mut self, s: S) {
         use std::io::Write;
-        self.1.write_all(s.to_string().as_bytes()).unwrap();
+        let w = format!("{}\n", s.to_string());
+        self.1.write_all(w.to_string().as_bytes()).unwrap();
+    }
+    pub fn write_vec<S: ToString>(&mut self, v: Vec<S>) {
+        let s = v.iter().map(|x| x.to_string()).collect::<Vec<String>>().join("\n");
+        self.write(&s);
     }
     pub fn read<T: std::str::FromStr>(&mut self) -> T {
         use std::io::Read;

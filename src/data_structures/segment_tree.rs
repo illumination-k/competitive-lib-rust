@@ -1,6 +1,7 @@
 // https://github.com/tanakh/competitive-rs/blob/master/src/segment_tree.rs
 
-use crate::monoid::Monoid;
+use crate::data_structures::monoid::Monoid;
+
 use std::{
     ops::Bound,
     ops::RangeBounds,
@@ -138,7 +139,7 @@ impl<T: Clone + Monoid> SegmentTree<T> {
 
 #[test]
 fn test() {
-    use crate::monoid::Sum;
+    use crate::data_structures::monoid::Sum;
 
     {
         let st = SegmentTree::<Sum<i64>>::new(5);
