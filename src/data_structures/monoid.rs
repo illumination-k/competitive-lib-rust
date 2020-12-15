@@ -84,3 +84,22 @@ impl<T> From<T> for Min<T> {
         Min(v)
     }
 }
+
+#[derive(Debug, Clone, Copy)]
+pub struct XOR<T>(pub T);
+
+impl<T: Copy + Zero + BitXor<Output = T>> Monoid for XOR<T> {
+    fn mempty() -> Self {
+        Self(T::zero())
+    }
+
+    fn mappend(l: &Self, r: &Self) -> Self {
+        Self(l.0 ^ r.0)
+    }
+}
+
+impl<T> From<T> for XOR<T> {
+    fn from(v: T) -> Self {
+        XOR(v)
+    }
+}
