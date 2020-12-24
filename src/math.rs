@@ -1,4 +1,4 @@
-use num_traits::{ PrimInt, zero, NumCast };
+use num_traits::{ PrimInt, zero, one, NumCast };
 use cargo_snippet::snippet;
 
 #[snippet("gcd")]
@@ -48,6 +48,57 @@ pub fn quadratic_formula<T: NumCast>(a: T, b: T, c: T) -> Option<(f64, f64)> {
     } else {
         return None;
     }
+}
+
+
+fn safe_mod(mut x: i64, modulo: i64) -> i64 {
+    x %= modulo;
+    if x < 0 { x += modulo; }
+    x
+}
+
+pub fn ext_gcd<T: NumCast + PrimInt>(a: T, b: T) -> (T, T) {
+    let a = a.to_i64().expect("a can not convert to i64");
+    let b = b.to_i64().expect("b cannot convert to i64");
+    let a = safe_mod(a, b);
+    if a == 0 { return (T::from(b).unwrap(), T::from(0).unwrap()) }
+
+    // Contracts:
+    // [1] s - m0 * a = 0 (mod b)
+    // [2] t - m1 * a = 0 (mod b)
+    // [3] s * |m1| + t * |m0| <= b
+    let mut s = b;
+    let mut t = a;
+    let mut m0 = 0;
+    let mut m1 = 1;
+
+    while t != 0 {
+        let u = s / t;
+        s -= t * u;
+        m0 -= m1 * u; // |m1 * u| <= |m1| * s <= b
+
+        // [3]:
+        // (s - t * u) * |m1| + t * |m0 - m1 * u|
+        // <= s * |m1| - t * u * |m1| + t * (|m0| + |m1| * u)
+        // = s * |m1| + t * |m0| <= b
+
+        std::mem::swap(&mut s, &mut t);
+        std::mem::swap(&mut m0, &mut m1);
+    }
+    // by [3]: |m0| <= b/g
+    // by g != b: |m0| < b/g
+    if m0 < 0 {
+        m0 += b / s;
+    }
+    (T::from(s).unwrap(), T::from(m0).unwrap())    
+}
+
+
+pub fn inv_mod<T: NumCast + PrimInt>(x: T, m: T) -> T {
+    assert!(one::<T>() <= m);
+    let z = ext_gcd(x, m);
+    assert!(z.0 == one::<T>());
+    z.1
 }
 
 

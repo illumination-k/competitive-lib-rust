@@ -65,10 +65,7 @@ pub fn prime_factorize<T: PrimInt+NumAssign>(mut n: T) -> Vec<(T, T)> {
 
 #[snippet("sieve_of_eratosthenes")]
 pub fn sieve_of_eratosthenes<T: NumCast>(n: T) -> Vec<usize> {
-    let n = match n.to_usize() {
-        Some(x) => x,
-        None => panic!()
-    };
+    let n = n.to_usize().expect("cannot convert n to usize");
     let mut primes = vec![];
     let mut list_dequeue: std::collections::VecDeque<usize> = (2..=n).collect();
     
@@ -113,16 +110,18 @@ fn _make_sieve<T: PrimInt>(mut maxu: usize) -> Vec<T> {
 
 #[snippet("osa_k_impl")]
 impl<T: PrimInt + std::hash::Hash + NumAssign > OsaK<T> {
+    /// O(maxloglog(max))
+    /// construct osa-k from max size
     pub fn new(max: T) -> Self {
-        // O(maxloglog(max))
         let maxu = max.to_usize().unwrap();
         let sieve = _make_sieve(maxu);
 
         Self { sieve }
     }
 
+    /// O(max(vec)loglog(max(vec)))
+    /// construct osa-k from Vector
     pub fn from(vec: Vec<T>) -> Self {
-        // O(max(vec)loglog(max(vec)))
         let max = vec.iter().max().unwrap();
         let maxu = max.to_usize().unwrap();
         let sieve = _make_sieve(maxu);
@@ -130,14 +129,15 @@ impl<T: PrimInt + std::hash::Hash + NumAssign > OsaK<T> {
         Self { sieve }
     }
 
+    /// O(1)
+    /// test x is prime or not
     pub fn is_prime(&self, x: T) -> bool {
-        // O(1)
         if x == one() || x == zero() { return false }
         self.sieve[x.to_usize().unwrap()] == x
     } 
 
+    /// O(log(n))
     pub fn prime_factorize(&self, mut n: T) -> std::collections::HashMap<T, T> {
-        // O(log(n))
         let mut res: std::collections::HashMap<T, T> = std::collections::HashMap::new();
         while n > one() {
             *res.entry(self.sieve[n.to_usize().unwrap()]).or_insert(zero()) += one();

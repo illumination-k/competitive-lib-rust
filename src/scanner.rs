@@ -9,6 +9,10 @@ impl<R: std::io::Read, W: std::io::Write> IO<R, W> {
     }
     pub fn write<S: ToString>(&mut self, s: S) {
         use std::io::Write;
+        self.1.write_all(s.to_string().as_bytes()).unwrap();
+    }
+    pub fn writeln<S: ToString>(&mut self, s: S) {
+        use std::io::Write;
         let w = format!("{}\n", s.to_string());
         self.1.write_all(w.to_string().as_bytes()).unwrap();
     }
