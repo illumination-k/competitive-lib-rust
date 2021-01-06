@@ -107,7 +107,8 @@ pub fn bfs2d<T: Eq + Copy>(graph: &Graph2D<T>, start: (usize, usize), obs: Optio
     dist
 }
 
-pub fn dfs2d<T: Eq + Copy>(graph: &Graph2D<T>, start: (usize, usize), obs: Option<T>) -> Vec<Vec<bool>> {
+
+pub fn dfs2d<T: Eq + Copy>(graph: &Graph2D<T>, seen: &mut Vec<Vec<bool>>, start: (usize, usize), obs: Option<T>) {
     fn dfs<T: Eq + Copy>(
         graph: &Graph2D<T>, 
         start: (usize, usize), 
@@ -123,7 +124,7 @@ pub fn dfs2d<T: Eq + Copy>(graph: &Graph2D<T>, start: (usize, usize), obs: Optio
                 match graph.is_go(next_x, next_y, obs) {
                     Some(next) => {
                         if !seen[next.1][next.0] {
-                            dfs(graph, start, obs, directions, seen)
+                            dfs(graph, next, obs, directions, seen)
                         }
                     },
                     None => { continue; }
@@ -131,11 +132,51 @@ pub fn dfs2d<T: Eq + Copy>(graph: &Graph2D<T>, start: (usize, usize), obs: Optio
             }
     }
     
-    let mut seen = vec![vec![false; graph.width()]; graph.height()];
+    // let mut seen = vec![vec![false; graph.width()]; graph.height()];
     let directions = vec![(0, 1), (1, 0), (0, -1), (-1, 0)];
 
-    dfs(graph, start, &obs, &directions, &mut seen);
-
-    seen
+    dfs(graph, start, &obs, &directions, seen);
 }
 
+
+#[cfg(test)]
+mod test_bfs2d {
+    // atcoder abc007-c
+    use super::{Graph2D, bfs2d};
+
+    fn solve(graph: Vec<Vec<char>>, s: (usize, usize), g: (usize, usize)) -> isize {
+        let graph2d = Graph2D::new(graph);
+        let dist = bfs2d(&graph2d, s, Some('#'));
+        dist[g]
+    } 
+
+    #[test]
+    fn test_bfs2d_1() {
+        let graph: Vec<Vec<char>> = [
+            "########",
+            "#......#",
+            "#.######",
+            "#..#...#",
+            "#..##..#",
+            "##.....#",
+            "########",
+        ].iter().map(|x| x.chars().collect()).collect();
+
+        let ans = solve(graph, (1, 1), (4, 3));
+        assert_eq!(ans, 11);
+    }
+
+    #[test]
+    fn test_bfs2d_2() {
+        let graph: Vec<Vec<char>> = [
+            "########",
+            "#.#....#",
+            "#.###..#",
+            "#......#",
+            "########"
+        ].iter().map(|x| x.chars().collect()).collect();
+
+        let ans = solve(graph, (1, 1), (3, 1));
+        assert_eq!(ans, 10)
+    }
+}

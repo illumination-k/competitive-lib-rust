@@ -1,5 +1,4 @@
 /// graph: Tree
-/// map: DfsTree index to Tree index
 /// pos: Termination timing of dfs
 #[derive(Debug, Clone)]
 pub struct DfsTree {
@@ -23,6 +22,10 @@ impl DfsTree {
     }
 
     /// root: root of dfs_tree (tree_index)
+    /// example
+    /// ```
+    /// use competitive::data_structures::dfs_tree::DfsTree;
+    /// ```
     pub fn build(&mut self, root: usize) {
         let mut seen = vec![false; self.graph.len()];
         self.dfs(root, &self.graph.clone(), &mut seen);
@@ -49,7 +52,7 @@ impl DfsTree {
     }
 
     /// subtree range
-    /// [v, pos[v])
+    /// return [v, pos[v])
     pub fn subtree_range(&self, dfs_index: usize) -> (usize, usize) {
         (dfs_index, self.pos[dfs_index])
     }
@@ -64,5 +67,46 @@ impl DfsTree {
 
     pub fn pos(&self, dfs_index: usize) -> usize {
         self.pos[dfs_index]
+    }
+}
+
+
+#[cfg(test)]
+mod test {
+    use super::DfsTree;
+    use crate::scanner::IO;
+    #[test]
+    fn test_build() {
+        let input = br"
+        7
+        2 1
+        2 3
+        4 2
+        4 5
+        6 1
+        3 7";
+        let mut sc = IO::new(&input[..], Vec::new());
+
+        let n: usize = sc.read();
+        let mut graph: Vec<Vec<usize>> = vec![vec![]; n];
+        for _ in 0..n-1 {
+            let a: usize = sc.read();
+            let b: usize = sc.read();
+            graph[a-1].push(b-1);
+            graph[b-1].push(a-1);
+        }
+
+        let mut dfs_tree = DfsTree::new(graph);
+        dfs_tree.build(0);
+
+        assert_eq!(
+            dfs_tree.tree_index_to_dfs_index,
+            vec![0, 1, 2, 4, 5, 6, 3]
+        );
+
+        assert_eq!(
+            dfs_tree.pos,
+            vec![7, 6, 4, 4, 6, 6, 7]
+        )
     }
 }

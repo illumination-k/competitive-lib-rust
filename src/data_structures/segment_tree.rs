@@ -91,8 +91,9 @@ impl<T: Clone + Monoid> SegmentTree<T> {
     /// # Examples
     ///
     /// ```
-    /// # use competitive::monoid::Sum;
-    /// # use competitive::segment_tree::SegmentTree;
+    /// use competitive::data_structures::monoid::Sum;
+    /// use competitive::data_structures::segment_tree::SegmentTree;
+    ///
     /// let mut st = SegmentTree::<Sum<i64>>::new(5);
     /// st.set(2, 3);
     /// assert_eq!(st.query(0..=2).0, 3);
