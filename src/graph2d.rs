@@ -1,6 +1,6 @@
+#[allow(unused_imports)]
 use cargo_snippet::snippet;
 use std::collections::*;
-use num_traits::*;
 use std::ops::*;
 
 #[derive(Debug, Clone)]
@@ -28,7 +28,7 @@ where K: Eq + Copy
             return None
         }
         match obs {
-            Some(obs) => { if &self[(x, y)] == obs { None } else { Some((x as usize, y as usize))}},
+            Some(obs) => { if &self[(x as usize, y as usize)] == obs { None } else { Some((x as usize, y as usize))}},
             None => Some((x as usize, y as usize)),
         }
     }
@@ -42,40 +42,23 @@ where K: Eq + Copy
     }
 }
 
-impl<T, K> Index<(T, T)> for Graph2D<K>
-where T: PrimInt
+impl<K> Index<(usize, usize)> for Graph2D<K>
 {
     type Output = K;
 
-    fn index<'a>(&'a self, index: (T, T)) -> &'a K {
-        let x: usize = index.0.to_usize().expect("cannot convert usize. maybe negative number in x");
-        let y: usize = index.1.to_usize().expect("cannot convert usize. maybe negative number in y");
+    fn index<'a>(&'a self, index: (usize, usize)) -> &'a K {
+        let (x, y): (usize, usize) = index;
 
         &self.graph[y][x]
     }
 }
 
-impl<T, K> IndexMut<(T, T)> for Graph2D<K>
-where T: PrimInt
+impl<K> IndexMut<(usize, usize)> for Graph2D<K>
 {
-    fn index_mut<'a>(&'a mut self, index: (T, T)) -> &'a mut K {
-        let x: usize = index.0.to_usize().expect("cannot convert usize. maybe negative number in x");
-        let y: usize = index.1.to_usize().expect("cannot convert usize. maybe negative number in y");
+    fn index_mut<'a>(&'a mut self, index: (usize, usize)) -> &'a mut K {
+        let (x, y): (usize, usize) = index;
 
         &mut self.graph[y][x]
-    }
-}
-
-#[cfg(test)]
-mod test {
-    use super::Graph2D;
-
-    #[test]
-    fn test_index() {
-        let mut graph = Graph2D::new(vec![vec![0; 10]; 10]);
-        assert_eq!(graph[(1, 1)], 0);
-        graph[(1, 1)] = 1;
-        assert_eq!(graph[(1, 1)], 1);
     }
 }
 
@@ -138,6 +121,18 @@ pub fn dfs2d<T: Eq + Copy>(graph: &Graph2D<T>, seen: &mut Vec<Vec<bool>>, start:
     dfs(graph, start, &obs, &directions, seen);
 }
 
+#[cfg(test)]
+mod test_graph2d {
+    use super::Graph2D;
+
+    #[test]
+    fn test_index() {
+        let mut graph = Graph2D::new(vec![vec![0; 10]; 10]);
+        assert_eq!(graph[(1, 1)], 0);
+        graph[(1, 1)] = 1;
+        assert_eq!(graph[(1, 1)], 1);
+    }
+}
 
 #[cfg(test)]
 mod test_bfs2d {
@@ -178,5 +173,78 @@ mod test_bfs2d {
 
         let ans = solve(graph, (1, 1), (3, 1));
         assert_eq!(ans, 10)
+    }
+}
+
+#[cfg(test)]
+mod test_dfs2d {
+    use super::{Graph2D, dfs2d};
+
+    fn solve(graph: Vec<Vec<char>>, start: (usize, usize), goal: (usize, usize)) -> bool {
+        let graph2d = Graph2D::new(graph);
+        let mut seen = vec![vec![false; graph2d.width()]; graph2d.height()];
+
+        dfs2d(&graph2d, &mut seen, start, Some('#'));
+        seen[goal.1][goal.0]
+    }
+
+    #[test]
+    fn test_dfs2d_1() {
+        let graph: Vec<Vec<char>> = [
+            "s####",
+            "....#",
+            "#####",
+            "#...g"
+        ].iter().map(|x| x.chars().collect()).collect();
+
+        let start = (0, 0);
+        let goal = (4, 3);
+
+        let ans = solve(graph, start, goal);
+        assert_eq!(ans, false)
+    }
+
+    #[test]
+    fn test_dfs2d_2() {
+        let graph: Vec<Vec<char>> = [
+            "s.........",
+            "#########.",
+            "#.......#.",
+            "#..####.#.",
+            "##....#.#.",
+            "#####.#.#.",
+            "g.#.#.#.#.",
+            "#.#.#.#.#.",
+            "###.#.#.#.",
+            "#.....#...",
+        ].iter().map(|x| x.chars().collect()).collect();
+
+        let start = (0, 0);
+        let goal = (0, 6);
+
+        let ans = solve(graph, start, goal);
+        assert_eq!(ans, false);
+    }
+
+    #[test]
+    fn test_dfs2d_3() {
+        let graph: Vec<Vec<char>> = [
+            "s.........",
+            "#########.",
+            "#.......#.",
+            "#..####.#.",
+            "##....#.#.",
+            "#####.#.#.",
+            "g.#.#.#.#.",
+            "#.#.#.#.#.",
+            "#.#.#.#.#.",
+            "#.....#...",
+        ].iter().map(|x| x.chars().collect()).collect();
+
+        let start = (0, 0);
+        let goal = (0, 6);
+
+        let ans = solve(graph, start, goal);
+        assert_eq!(ans, true);
     }
 }

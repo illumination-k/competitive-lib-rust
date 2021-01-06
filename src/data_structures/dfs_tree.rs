@@ -35,16 +35,15 @@ impl DfsTree {
     /// graph: graph
     /// seen: whether already go or not
     fn dfs(&mut self, v: usize, graph: &Vec<Vec<usize>>, seen: &mut Vec<bool>) {
-        if seen[v] { return; }
-
         seen[v] = true;
         let dfs_ord = self.cnt;
         self.tree_index_to_dfs_index[v] = dfs_ord;
         self.dfs_index_to_tree_index[dfs_ord] = v;
         self.cnt += 1;
         
-        for i in 0..graph[v].len() {
-            self.dfs(graph[v][i], graph, seen);
+        for &next in graph[v].iter() {
+            if seen[next] { continue; }
+            self.dfs(next, graph, seen);
         }
 
         // 底まで見た
