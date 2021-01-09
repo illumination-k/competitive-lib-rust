@@ -19,12 +19,12 @@ where K: Eq + Copy
         Self { graph, width, height }
     }
 
-    pub fn is_in(&self, x: isize, y: isize) -> bool {
+    pub fn is_not_in(&self, x: isize, y: isize) -> bool {
         x < 0 || y < 0 || x >= self.width || y >= self.height
     }
 
     pub fn is_go(&self, x: isize, y: isize, obs: &Option<K>) -> Option<(usize, usize)> {
-        if self.is_in(x, y) {
+        if self.is_not_in(x, y) {
             return None
         }
         match obs {
