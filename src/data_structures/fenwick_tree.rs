@@ -1,5 +1,11 @@
-// most source from https://github.com/rust-bio/rust-bio/blob/master/src/data_structures/bit_tree.rs
-use crate::data_structures::monoid::Monoid;
+use std::cmp::max;
+use std::marker::PhantomData;
+use std::ops::Add;
+
+/// Fenwick tree prefix operator
+pub trait PrefixOp<T> {
+    fn operation(t1: T, t2: T) -> T;
+}
 
 /// In a max bit tree or Fenwick Tree, get(i) will return the largest element e that has been added
 /// to the bit tree with set(j, e), where j <= i. Initially all positions have
@@ -7,32 +13,32 @@ use crate::data_structures::monoid::Monoid;
 /// a smaller element at the same index.
 /// Time Complexity: O(n) to build a new tree or O(log n) for get() and set() operations,
 /// where `n = tree.len()`.
-#[derive(Debug, Clone)]
-pub struct FenwickTree<T> {
+pub struct FenwickTree<T: Default + Ord, Op: PrefixOp<T>> {
     tree: Vec<T>,
-    len: usize,
+    phantom: PhantomData<Op>,
 }
 
-impl<T: Default + Clone + Monoid> FenwickTree<T> {
-    pub fn new(len: usize) -> Self {
-        Self {
+impl<T: Ord + Default + Copy, Op: PrefixOp<T>> FenwickTree<T, Op> {
+    /// Create a new bit tree with len elements
+    pub fn new(len: usize) -> FenwickTree<T, Op> {
+        // Pad length by one. The first element is unused.
+        // Done this way to make the tree structure work correctly.
+        FenwickTree {
             tree: vec![T::default(); len + 1],
-            len: len + 1,
+            phantom: PhantomData,
         }
     }
-    pub fn len(&self) -> usize {
-        self.len
-    }
+
     /// Returns the largest element e that has been added
     /// to the bit tree with set(j, e), where j <= i.
     pub fn get(&self, idx: usize) -> T {
         let mut idx = idx + 1;
         let mut sum = T::default();
-
         while idx > 0 {
-            sum = T::mappend(&sum, &self.tree[idx]);
+            sum = Op::operation(sum, self.tree[idx]);
             idx -= (idx as isize & -(idx as isize)) as usize;
         }
+
         sum
     }
 
@@ -43,38 +49,60 @@ impl<T: Default + Clone + Monoid> FenwickTree<T> {
     /// will have no effect.
     pub fn set(&mut self, idx: usize, val: T) {
         let mut idx = idx + 1;
-        while idx < self.len() {
-            self.tree[idx] = T::mappend(&self.tree[idx], &val);
+        while idx < self.tree.len() {
+            self.tree[idx] = Op::operation(self.tree[idx], val);
             idx += (idx as isize & -(idx as isize)) as usize;
         }
     }
 }
 
+pub struct MaxOp;
+impl<T: Copy + Ord> PrefixOp<T> for MaxOp {
+    fn operation(t1: T, t2: T) -> T {
+        max(t1, t2)
+    }
+}
+
+/// Fenwick tree specialized for prefix-max
+pub type MaxBitTree<T> = FenwickTree<T, MaxOp>;
+
+pub struct SumOp;
+impl<T: Copy + Add> PrefixOp<T> for SumOp
+where
+    T: Add<Output = T>,
+{
+    fn operation(t1: T, t2: T) -> T {
+        t1 + t2
+    }
+}
+
+/// Fenwick tree specialized for prefix-sum
+pub type SumBitTree<T> = FenwickTree<T, SumOp>;
+
 #[cfg(test)]
 mod test_bit_tree {
-    use super::*;
-    use crate::data_structures::monoid::Max;
+    use super::MaxBitTree;
 
     #[test]
     pub fn test_bit_tree() {
-        let mut bit = FenwickTree::<Max<(i64, i64)>>::new(10);
+        let mut bit = MaxBitTree::new(10);
 
-        bit.set(0, Max::from((1, 0)));
-        bit.set(1, Max::from((1, 1)));
-        bit.set(2, Max::from((2, 2)));
-        bit.set(3, Max::from((3, 3)));
-        bit.set(4, Max::from((2, 4)));
-        bit.set(5, Max::from((2, 5)));
-        bit.set(6, Max::from((4, 6)));
-        bit.set(7, Max::from((5, 7)));
+        bit.set(0, (1, 0));
+        bit.set(1, (1, 1));
+        bit.set(2, (2, 2));
+        bit.set(3, (3, 3));
+        bit.set(4, (2, 4));
+        bit.set(5, (2, 5));
+        bit.set(6, (4, 6));
+        bit.set(7, (5, 7));
 
-        assert_eq!(bit.get(0), Max::from((1, 0)));
-        assert_eq!(bit.get(1), Max::from((1, 1))); 
-        assert_eq!(bit.get(2), Max::from((2, 2))); 
-        assert_eq!(bit.get(3), Max::from((3, 3))); 
-        assert_eq!(bit.get(4), Max::from((3, 3))); 
-        assert_eq!(bit.get(5), Max::from((3, 3))); 
-        assert_eq!(bit.get(6), Max::from((4, 6))); 
-        assert_eq!(bit.get(7), Max::from((5, 7))); 
+        assert_eq!(bit.get(0), (1, 0));
+        assert_eq!(bit.get(1), (1, 1));
+        assert_eq!(bit.get(2), (2, 2));
+        assert_eq!(bit.get(3), (3, 3));
+        assert_eq!(bit.get(4), (3, 3));
+        assert_eq!(bit.get(5), (3, 3));
+        assert_eq!(bit.get(6), (4, 6));
+        assert_eq!(bit.get(7), (5, 7));
     }
 }
