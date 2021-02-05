@@ -65,22 +65,31 @@ pub fn prime_factorize<T: PrimInt+NumAssign>(mut n: T) -> Vec<(T, T)> {
 
 #[snippet("sieve_of_eratosthenes")]
 pub fn sieve_of_eratosthenes<T: NumCast>(n: T) -> Vec<usize> {
-    let n = n.to_usize().expect("cannot convert n to usize");
-    let mut primes = vec![];
-    let mut list_dequeue: std::collections::VecDeque<usize> = (2..=n).collect();
-    
-    if n < 2 { return primes }
-    if n == 2 { return vec![2] }
-
-    while list_dequeue.front().unwrap().pow(2u32) <= n {
-        let first = list_dequeue.pop_front().unwrap();
-        primes.push(first);
-
-        list_dequeue = list_dequeue.into_iter().filter(|&x| x % first != 0).collect();
+    let n = n.to_usize().expect("cannot convert n to usize") + 1;
+    if n < 2 {
+        return vec![]
     }
-    let mut list_vec = list_dequeue.into_iter().collect::<Vec<usize>>();
-    primes.append(&mut list_vec);
-    primes
+
+    let mut is_primes = vec![true; n];
+
+    is_primes[0] = false;
+    is_primes[1] = false;
+
+    for i in 2..n {
+        if is_primes[i] {
+            let mut j = i + i;
+            while j < n {
+                is_primes[j] = false;
+                j += i
+            }
+        }
+    }
+
+    is_primes.iter()
+        .enumerate()
+        .filter(|(_i, flag)| **flag)
+        .map(|(i, _flag)| i)
+        .collect()
 }
 
 #[snippet("osa_k")]
