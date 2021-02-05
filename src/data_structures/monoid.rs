@@ -9,7 +9,7 @@ pub trait Monoid: Sized {
     /// op
     fn mappend(l: &Self, r: &Self) -> Self;
 }
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Default)]
 pub struct Sum<T>(pub T);
 
 impl<T: Copy + Zero + Add<Output = T>> Monoid for Sum<T> {
@@ -28,7 +28,7 @@ impl<T> From<T> for Sum<T> {
     }
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Default)]
 pub struct Product<T>(pub T);
 
 impl<T: Copy + One + Mul<Output = T>> Monoid for Product<T> {
@@ -47,7 +47,7 @@ impl<T> From<T> for Product<T> {
     }
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
 pub struct Max<T>(pub T);
 
 impl<T: Copy + Ord + Bounded> Monoid for Max<T> {
@@ -66,7 +66,7 @@ impl<T> From<T> for Max<T> {
     }
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, Default)]
 pub struct Min<T>(pub T);
 
 impl<T: Copy + Ord + Bounded> Monoid for Min<T> {
@@ -85,7 +85,7 @@ impl<T> From<T> for Min<T> {
     }
 }
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, Default)]
 pub struct XOR<T>(pub T);
 
 impl<T: Copy + Zero + BitXor<Output = T>> Monoid for XOR<T> {
@@ -103,3 +103,5 @@ impl<T> From<T> for XOR<T> {
         XOR(v)
     }
 }
+
+
