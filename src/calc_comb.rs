@@ -54,7 +54,7 @@ impl Combination {
     }
 
     pub fn nck(&self, n: usize, k: usize) -> usize {
-        match self.com.clone() {
+        match &self.com {
             None => self._calc_nck(n, k),
             Some(x) => x[k],
         }
@@ -64,6 +64,32 @@ impl Combination {
         assert!(self.fact_inv.len() >= n+k-1);
         self.nck(n+k-1, k)
     }
+}
+
+/// simple calculation of combinations without modulo
+/// ```
+/// use competitive::calc_comb::combination;
+/// let res = combination(16);
+/// // get 16C11
+/// assert_eq!(res[16][11], 4368);
+/// // get 5C2
+/// assert_eq!(res[5][2], 10);
+/// ```
+pub fn combination(n: usize) -> Vec<Vec<usize>> {
+    let mut v = vec![vec![0; n+1]; n+1];
+
+    for i in 0..n+1 {
+        v[i][0] = 1;
+        v[i][i] = 1;
+    }
+
+    for j in 1..n+1 {
+        for k in 1..j {
+            v[j][k] = v[j-1][k-1] + v[j-1][k]
+        }
+    }
+
+    v
 }
 
 
