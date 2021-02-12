@@ -1,0 +1,9 @@
+[tasks.push]
+script = """
+#!/bin/bash
+set -eu
+cargo readme > README.md
+git add README.md
+git commit -m "update README by cargo-readme"
+git push origin main
+"""

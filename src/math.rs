@@ -101,7 +101,6 @@ pub fn inv_mod<T: NumCast + PrimInt>(x: T, m: T) -> T {
     z.1
 }
 
-
 #[cfg(test)]
 mod test {
     use super::{gcd, lcm, gcd_list, lcm_list};

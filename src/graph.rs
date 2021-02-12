@@ -170,9 +170,9 @@ pub mod listgraph {
             }
         }
 
-        /// create unweighted ListGraph<W> from Vec<(usize, usize, usize)>.
-        /// offset: index - offset
-        /// graph_type: Undirect or Direct
+        /// create unweighted ListGraph.  
+        /// offset: index = val - offset  
+        /// graph_type: Undirect or Direct  
         pub fn unweighted_from(vec: Vec<(usize, usize)>, offset: usize, graph_type: Direction) -> Self {
             let max_val = *vec.iter().map(|(i, j)| std::cmp::max(i, j)).max().unwrap() + 1 - offset;
             let mut graph = vec![vec![]; max_val];
@@ -185,8 +185,8 @@ pub mod listgraph {
             }
         }
 
-        /// create weighted ListGraph<W> from Vec<(usize, usize, usize)>.
-        /// offset: index - offset
+        /// create weighted ListGraph<W>.
+        /// offset: index = val - offset
         /// graph_type: Undirect or Direct
         pub fn weighted_from(vec: Vec<(usize, usize, W)>, offset: usize, graph_type: Direction) -> Self {
             let max_val = *vec.iter().map(|(i, j, _w)| std::cmp::max(i, j)).max().unwrap() + 1 - offset;
@@ -198,6 +198,18 @@ pub mod listgraph {
             Self {
                 graph
             }
+        }
+
+        /// Reverse Direction of Graph
+        pub fn t(&self) -> Self {
+            let mut vec = vec![];
+            for source in 0..self.len() {
+                for e in self.neighbors(source) {
+                    vec.push((e.target(), source, e.weight()))
+                }
+            }
+
+            ListGraph::<W>::weighted_from(vec, 0, Direction::DiGraph)
         }
 
         pub fn len(&self) -> usize {
@@ -258,7 +270,7 @@ pub mod listgraph {
     }
 
     pub trait NeighborhoodExt<W> {
-        /// get neighborhood of source with weight
+        /// get neighborhood of source with weight  
         fn neighbors(&self, source: usize) -> NeighborhoodIter<W>;
 
         /// get neighborhood of source without weight
@@ -418,6 +430,7 @@ pub mod listgraph {
             }
         }
 
+        /// update first ord  
         pub fn update_first_order(&mut self, pos: usize) {
             match self.result_type {
                 DfsResultType::FirstAndLastOrd => {
@@ -432,6 +445,7 @@ pub mod listgraph {
             }
         }
 
+        /// update last ord  
         pub fn update_last_order(&mut self, pos: usize) {
             match self.result_type {
                 DfsResultType::FirstAndLastOrd => {
@@ -544,7 +558,7 @@ mod test {
     }
 
     #[test]
-    fn test_dfs1() {
+    fn test_dfs_1() {
         let vec = vec![
             (1, 2),
             (2, 4),
