@@ -1,0 +1,3 @@
+(function() {var implementors = {};
+implementors["competitive"] = [{"text":"impl <a class=\"trait\" href=\"https://doc.rust-lang.org/nightly/core/marker/trait.StructuralEq.html\" title=\"trait core::marker::StructuralEq\">StructuralEq</a> for <a class=\"enum\" href=\"competitive/graph/listgraph/enum.DfsResultType.html\" title=\"enum competitive::graph::listgraph::DfsResultType\">DfsResultType</a>","synthetic":false,"types":["competitive::graph::listgraph::DfsResultType"]}];
+if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

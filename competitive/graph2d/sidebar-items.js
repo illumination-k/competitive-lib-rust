@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["bfs2d",""],["dfs2d",""]],"struct":[["Graph2D",""]]});
