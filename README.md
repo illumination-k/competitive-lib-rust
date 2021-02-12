@@ -1,3 +1,3 @@
-# README
+# competitive
 
 competitive library for atcoder

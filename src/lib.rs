@@ -1,3 +1,7 @@
+/*!
+competitive library for atcoder
+*/
+
 extern crate num_traits;
 extern crate cargo_snippet;
 
