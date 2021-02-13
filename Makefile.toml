@@ -10,7 +10,7 @@ args = ["atcoder", "test", "${@}"]
 script = "expand.py --bin ${@}"
 
 [tasks.submit]
-dependincies = ["expand"]
+dependencies = ["expand"]
 command = "cargo"
 args = ["atcoder", "submit", "${@}"]
 
@@ -26,7 +26,7 @@ git commit -m "update README by cargo-readme"
 """
 
 [tasks.push]
-dependincies = ["pretest", "readme"]
+dependencies = ["pretest", "readme"]
 script = """
 git push origin master
 """
