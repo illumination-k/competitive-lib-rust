@@ -591,313 +591,41 @@
 <span id="591">591</span>
 <span id="592">592</span>
 <span id="593">593</span>
-<span id="594">594</span>
-<span id="595">595</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="kw">pub</span> <span class="kw">mod</span> <span class="ident">listgraph</span> {
-    <span class="kw">use</span> <span class="ident">num_traits</span>::{<span class="ident">Bounded</span>, <span class="ident">NumCast</span>, <span class="ident">One</span>, <span class="ident">Zero</span>};
-    <span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">collections</span>::{<span class="ident">BinaryHeap</span>, <span class="ident">HashSet</span>, <span class="ident">VecDeque</span>}, <span class="ident">fmt</span>, <span class="ident">ops</span>::{<span class="ident">Index</span>, <span class="ident">IndexMut</span>}, <span class="ident">writeln</span>};
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">PartialEq</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> {
-        <span class="ident">target</span>: <span class="ident">usize</span>,
-        <span class="ident">weight</span>: <span class="ident">W</span>,
+<span class="kw">use</span> <span class="ident">num_traits</span>::{<span class="ident">Bounded</span>, <span class="ident">NumCast</span>, <span class="ident">One</span>, <span class="ident">Zero</span>};
+<span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">collections</span>::{<span class="ident">BinaryHeap</span>, <span class="ident">HashSet</span>, <span class="ident">VecDeque</span>}, <span class="ident">fmt</span>, <span class="ident">ops</span>::{<span class="ident">Index</span>, <span class="ident">IndexMut</span>}, <span class="ident">writeln</span>};
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> {
+    <span class="ident">target</span>: <span class="ident">usize</span>,
+    <span class="ident">weight</span>: <span class="ident">W</span>,
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> 
+    <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">One</span> <span class="op">+</span> <span class="ident">Copy</span>
+{
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">target</span>: <span class="ident">usize</span>, <span class="ident">weight</span>: <span class="ident">W</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="self">Self</span> { <span class="ident">target</span>, <span class="ident">weight</span> }
     }
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> 
-        <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">One</span> <span class="op">+</span> <span class="ident">Copy</span>
-    {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">target</span>: <span class="ident">usize</span>, <span class="ident">weight</span>: <span class="ident">W</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-            <span class="self">Self</span> { <span class="ident">target</span>, <span class="ident">weight</span> }
-        }
-
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_unweighted</span>(<span class="ident">target</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-            <span class="self">Self</span> { <span class="ident">target</span>, <span class="ident">weight</span>: <span class="ident">W</span>::<span class="ident">one</span>() }
-        }
-
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">target</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
-            <span class="self">self</span>.<span class="ident">target</span>
-        }
-
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">weight</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">W</span> {
-            <span class="self">self</span>.<span class="ident">weight</span>
-        }
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_unweighted</span>(<span class="ident">target</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="self">Self</span> { <span class="ident">target</span>, <span class="ident">weight</span>: <span class="ident">W</span>::<span class="ident">one</span>() }
     }
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>
-        <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">ToString</span> <span class="op">+</span> <span class="ident">One</span> <span class="op">+</span> <span class="ident">PartialEq</span> <span class="op">+</span> <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">Copy</span>
-    {   
-        <span class="doccomment">/// create dot format for graphviz</span>
-        <span class="doccomment">/// ```rust</span>
-        <span class="doccomment">/// use competitive::graph::listgraph::*;</span>
-        <span class="doccomment">/// let vec = vec![</span>
-        <span class="doccomment">///     (0, 1, 1),</span>
-        <span class="doccomment">///     (0, 2, 4),</span>
-        <span class="doccomment">///     (2, 0, 1),</span>
-        <span class="doccomment">///     (1, 2, 2),</span>
-        <span class="doccomment">///     (3, 1, 1),</span>
-        <span class="doccomment">///     (3, 2, 5),</span>
-        <span class="doccomment">/// ];</span>
-        <span class="doccomment">/// let graph: ListGraph&lt;isize&gt; = ListGraph::weighted_from(vec, 0, Direction::DiGraph);</span>
-        <span class="doccomment">/// let dot = graph.to_dot(&amp;Direction::DiGraph);</span>
-        <span class="doccomment">/// assert_eq!(</span>
-        <span class="doccomment">///     dot,</span>
-        <span class="doccomment">///     vec![</span>
-        <span class="doccomment">///         &quot;digraph example {&quot;,</span>
-        <span class="doccomment">///         &quot;  0 -&gt; 1&quot;,</span>
-        <span class="doccomment">///         &quot;  0 -&gt; 2 [ label = 4 ]&quot;,</span>
-        <span class="doccomment">///         &quot;  1 -&gt; 2 [ label = 2 ]&quot;,</span>
-        <span class="doccomment">///         &quot;  2 -&gt; 0&quot;,</span>
-        <span class="doccomment">///         &quot;  3 -&gt; 1&quot;,</span>
-        <span class="doccomment">///         &quot;  3 -&gt; 2 [ label = 5 ]&quot;,</span>
-        <span class="doccomment">///         &quot;}&quot;</span>
-        <span class="doccomment">///     ].iter().map(|x| x.to_string()).collect::&lt;Vec&lt;String&gt;&gt;()</span>
-        <span class="doccomment">/// )</span>
-        <span class="doccomment">/// ```</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_dot</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">graph_type</span>: <span class="kw-2">&amp;</span><span class="ident">Direction</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
-            <span class="kw">fn</span> <span class="ident">make_dot_edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>(<span class="ident">source</span>: <span class="ident">usize</span>, <span class="ident">target</span>: <span class="ident">usize</span>, <span class="ident">weight</span>: <span class="ident">W</span>, <span class="ident">graph_type</span>: <span class="kw-2">&amp;</span><span class="ident">Direction</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span>
-                <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">One</span> <span class="op">+</span> <span class="ident">ToString</span> <span class="op">+</span> <span class="ident">PartialEq</span>
-            {
-                <span class="kw">let</span> <span class="ident">arr</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">graph_type</span> {
-                    <span class="ident">Direction</span>::<span class="ident">DiGraph</span> <span class="op">=</span><span class="op">&gt;</span> { <span class="string">&quot;-&gt;&quot;</span> },
-                    <span class="ident">Direction</span>::<span class="ident">UnGraph</span> <span class="op">=</span><span class="op">&gt;</span> { <span class="string">&quot;-&quot;</span> }
-                };
-
-                <span class="kw">if</span> <span class="ident">weight</span> <span class="op">=</span><span class="op">=</span> <span class="ident">W</span>::<span class="ident">one</span>() {
-                    <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;  {} {} {}&quot;</span>, <span class="ident">source</span>, <span class="ident">arr</span>, <span class="ident">target</span>)
-                } <span class="kw">else</span> {
-                    <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;  {} {} {} [ label = {} ]&quot;</span>, <span class="ident">source</span>, <span class="ident">arr</span>, <span class="ident">target</span>, <span class="ident">weight</span>.<span class="ident">to_string</span>())
-                }
-            }
-
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">seen_edge</span> <span class="op">=</span> <span class="ident">HashSet</span>::<span class="ident">new</span>();
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dot</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">graph_type</span> {
-                <span class="ident">Direction</span>::<span class="ident">DiGraph</span> <span class="op">=</span><span class="op">&gt;</span> {
-                    <span class="macro">vec</span><span class="macro">!</span>[<span class="string">&quot;digraph example {&quot;</span>.<span class="ident">to_string</span>()]
-                },
-                <span class="ident">Direction</span>::<span class="ident">UnGraph</span> <span class="op">=</span><span class="op">&gt;</span> {
-                    <span class="macro">vec</span><span class="macro">!</span>[<span class="string">&quot;graph example {&quot;</span>.<span class="ident">to_string</span>()]
-                }
-            };
-            <span class="kw">for</span> <span class="ident">source</span> <span class="kw">in</span> <span class="number">0</span>..<span class="self">self</span>.<span class="ident">len</span>() {
-                <span class="kw">for</span> <span class="ident">e</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">neighbors</span>(<span class="ident">source</span>) {
-                    <span class="kw">let</span> (<span class="ident">target</span>, <span class="ident">weight</span>) <span class="op">=</span> (<span class="ident">e</span>.<span class="ident">target</span>(), <span class="ident">e</span>.<span class="ident">weight</span>());
-                    <span class="kw">let</span> <span class="ident">dot_edge</span> <span class="op">=</span> <span class="ident">make_dot_edge</span>(<span class="ident">source</span>, <span class="ident">target</span>, <span class="ident">weight</span>, <span class="kw-2">&amp;</span><span class="ident">graph_type</span>);
-                    <span class="kw">if</span> <span class="ident">seen_edge</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">dot_edge</span>) { <span class="kw">continue</span>; }
-                    <span class="ident">dot</span>.<span class="ident">push</span>(<span class="ident">dot_edge</span>.<span class="ident">clone</span>());
-                    <span class="ident">seen_edge</span>.<span class="ident">insert</span>(<span class="ident">dot_edge</span>);
-                }
-            }
-
-            <span class="ident">dot</span>.<span class="ident">push</span>(<span class="string">&quot;}&quot;</span>.<span class="ident">to_string</span>());
-            <span class="ident">dot</span>
-        } 
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">target</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+        <span class="self">self</span>.<span class="ident">target</span>
     }
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">PartialOrd</span> <span class="kw">for</span> <span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>
-        <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">PartialEq</span> <span class="op">+</span> <span class="ident">PartialOrd</span>
-    {
-        <span class="kw">fn</span> <span class="ident">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">std</span>::<span class="ident">cmp</span>::<span class="ident">Ordering</span><span class="op">&gt;</span> {
-            <span class="ident">other</span>.<span class="ident">weight</span>
-                .<span class="ident">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="ident">weight</span>)
-        }
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">weight</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">W</span> {
+        <span class="self">self</span>.<span class="ident">weight</span>
     }
+}
 
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">Eq</span> <span class="kw">for</span> <span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">PartialEq</span> <span class="op">+</span> <span class="ident">PartialOrd</span> {}
-
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">Ord</span> <span class="kw">for</span> <span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>
-        <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">PartialOrd</span> <span class="op">+</span> <span class="ident">PartialEq</span> <span class="op">+</span> <span class="ident">PartialOrd</span>
-    {
-        <span class="kw">fn</span> <span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">cmp</span>::<span class="ident">Ordering</span> {
-            <span class="ident">other</span>.<span class="ident">weight</span>.<span class="ident">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">weight</span>).<span class="ident">expect</span>(<span class="string">&quot;No Nan&quot;</span>).<span class="ident">then_with</span>(<span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">target</span>.<span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="ident">target</span>))
-        }
-    }
-
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> {
-        <span class="ident">graph</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>
-    }
-
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>
-        <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">One</span> <span class="op">+</span> <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">ToString</span>
-    {
-        <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
-            <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;&quot;</span>)<span class="question-mark">?</span>;
-            <span class="kw">for</span> <span class="ident">source</span> <span class="kw">in</span> <span class="number">0</span>..<span class="self">self</span>.<span class="ident">len</span>() {
-                <span class="kw">let</span> <span class="ident">targets</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>[<span class="ident">source</span>];
-                <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">write_str</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
-                <span class="ident">write_str</span> <span class="op">+</span><span class="op">=</span> <span class="kw-2">&amp;</span>(<span class="ident">source</span>.<span class="ident">to_string</span>() <span class="op">+</span> <span class="string">&quot; -&gt; &quot;</span>);
-                <span class="ident">write_str</span> <span class="op">+</span><span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">targets</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span>.<span class="ident">target</span>().<span class="ident">to_string</span>()).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>().<span class="ident">join</span>(<span class="string">&quot; &quot;</span>);
-                <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">write_str</span>)<span class="question-mark">?</span>
-            }
-            <span class="prelude-val">Ok</span>(())        
-        }
-    }
-
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Direction</span> {
-        <span class="ident">DiGraph</span>,
-        <span class="ident">UnGraph</span>
-    }
-
-    <span class="kw">fn</span> <span class="ident">add_target</span><span class="op">&lt;</span><span class="ident">W</span>: <span class="ident">One</span> <span class="op">+</span> <span class="ident">Copy</span><span class="op">&gt;</span>(
-        <span class="ident">source</span>: <span class="ident">usize</span>,
-        <span class="ident">target</span>: <span class="ident">usize</span>,
-        <span class="ident">weight</span>: <span class="ident">W</span>,
-        <span class="ident">graph_type</span>: <span class="kw-2">&amp;</span><span class="ident">Direction</span>,
-        <span class="ident">v</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>
-    ) {
-        <span class="kw">match</span> <span class="ident">graph_type</span> {
-            <span class="ident">Direction</span>::<span class="ident">DiGraph</span> <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="ident">v</span>[<span class="ident">source</span>].<span class="ident">push</span>(<span class="ident">Edge</span>::<span class="ident">new</span>(<span class="ident">target</span>, <span class="ident">weight</span>))
-            },
-            <span class="ident">Direction</span>::<span class="ident">UnGraph</span> <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="ident">v</span>[<span class="ident">source</span>].<span class="ident">push</span>(<span class="ident">Edge</span>::<span class="ident">new</span>(<span class="ident">target</span>, <span class="ident">weight</span>));
-                <span class="ident">v</span>[<span class="ident">target</span>].<span class="ident">push</span>(<span class="ident">Edge</span>::<span class="ident">new</span>(<span class="ident">source</span>, <span class="ident">weight</span>))
-            }
-        }
-    }
-
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>
-        <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">One</span> <span class="op">+</span> <span class="ident">Copy</span>
-    {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-            <span class="self">Self</span> {
-                <span class="ident">graph</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="macro">vec</span><span class="macro">!</span>[]; <span class="ident">n</span>]
-            }
-        }
-
-        <span class="doccomment">/// create unweighted ListGraph.  </span>
-        <span class="doccomment">/// offset: index = val - offset  </span>
-        <span class="doccomment">/// graph_type: Undirect or Direct  </span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unweighted_from</span>(<span class="ident">vec</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">usize</span>)<span class="op">&gt;</span>, <span class="ident">offset</span>: <span class="ident">usize</span>, <span class="ident">graph_type</span>: <span class="ident">Direction</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">max_val</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">vec</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">j</span>)<span class="op">|</span> <span class="ident">std</span>::<span class="ident">cmp</span>::<span class="ident">max</span>(<span class="ident">i</span>, <span class="ident">j</span>)).<span class="ident">max</span>().<span class="ident">unwrap</span>() <span class="op">+</span> <span class="number">1</span> <span class="op">-</span> <span class="ident">offset</span>;
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">graph</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="macro">vec</span><span class="macro">!</span>[]; <span class="ident">max_val</span>];
-            <span class="kw">for</span> <span class="kw-2">&amp;</span>(<span class="ident">a</span>, <span class="ident">b</span>) <span class="kw">in</span> <span class="ident">vec</span>.<span class="ident">iter</span>() {
-                <span class="ident">add_target</span>(<span class="ident">a</span><span class="op">-</span><span class="ident">offset</span>, <span class="ident">b</span><span class="op">-</span><span class="ident">offset</span>, <span class="ident">W</span>::<span class="ident">one</span>(), <span class="kw-2">&amp;</span><span class="ident">graph_type</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">graph</span>)
-            }
-
-            <span class="self">Self</span> {
-                <span class="ident">graph</span>
-            }
-        }
-
-        <span class="doccomment">/// create weighted ListGraph&lt;W&gt;.</span>
-        <span class="doccomment">/// offset: index = val - offset</span>
-        <span class="doccomment">/// graph_type: Undirect or Direct</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">weighted_from</span>(<span class="ident">vec</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">usize</span>, <span class="ident">W</span>)<span class="op">&gt;</span>, <span class="ident">offset</span>: <span class="ident">usize</span>, <span class="ident">graph_type</span>: <span class="ident">Direction</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">max_val</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">vec</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">j</span>, <span class="ident">_w</span>)<span class="op">|</span> <span class="ident">std</span>::<span class="ident">cmp</span>::<span class="ident">max</span>(<span class="ident">i</span>, <span class="ident">j</span>)).<span class="ident">max</span>().<span class="ident">unwrap</span>() <span class="op">+</span> <span class="number">1</span> <span class="op">-</span> <span class="ident">offset</span>;
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">graph</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="macro">vec</span><span class="macro">!</span>[]; <span class="ident">max_val</span>];
-            <span class="kw">for</span> <span class="kw-2">&amp;</span>(<span class="ident">a</span>, <span class="ident">b</span>, <span class="ident">w</span>) <span class="kw">in</span> <span class="ident">vec</span>.<span class="ident">iter</span>() {
-                <span class="ident">add_target</span>(<span class="ident">a</span><span class="op">-</span><span class="ident">offset</span>, <span class="ident">b</span><span class="op">-</span><span class="ident">offset</span>, <span class="ident">w</span>, <span class="kw-2">&amp;</span><span class="ident">graph_type</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">graph</span>)
-            }
-
-            <span class="self">Self</span> {
-                <span class="ident">graph</span>
-            }
-        }
-
-        <span class="doccomment">/// Reverse Direction of Graph</span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">t</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vec</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
-            <span class="kw">for</span> <span class="ident">source</span> <span class="kw">in</span> <span class="number">0</span>..<span class="self">self</span>.<span class="ident">len</span>() {
-                <span class="kw">for</span> <span class="ident">e</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">neighbors</span>(<span class="ident">source</span>) {
-                    <span class="ident">vec</span>.<span class="ident">push</span>((<span class="ident">e</span>.<span class="ident">target</span>(), <span class="ident">source</span>, <span class="ident">e</span>.<span class="ident">weight</span>()))
-                }
-            }
-
-            <span class="ident">ListGraph</span>::<span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>::<span class="ident">weighted_from</span>(<span class="ident">vec</span>, <span class="number">0</span>, <span class="ident">Direction</span>::<span class="ident">DiGraph</span>)
-        }
-
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
-            <span class="self">self</span>.<span class="ident">graph</span>.<span class="ident">len</span>()
-        }
-    }
-
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">Index</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> {
-        <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span>;
-
-        <span class="kw">fn</span> <span class="ident">index</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="self">Self</span>::<span class="ident">Output</span> {
-            <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">graph</span>[<span class="ident">index</span>]
-        }
-    }
-
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">IndexMut</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> {
-        <span class="kw">fn</span> <span class="ident">index_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-            <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">graph</span>[<span class="ident">index</span>]
-        }
-    }
-
-    <span class="kw">pub</span> <span class="kw">type</span> <span class="ident">UnweightedListGraph</span> <span class="op">=</span> <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>;
-
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">NeighborhoodIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">W</span><span class="op">&gt;</span> {
-        <span class="ident">source</span>: <span class="ident">usize</span>,
-        <span class="ident">counter</span>: <span class="ident">usize</span>,
-        <span class="ident">graph</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>,
-    }
-
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">NeighborhoodUnweightedIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">W</span><span class="op">&gt;</span> {
-        <span class="ident">source</span>: <span class="ident">usize</span>,
-        <span class="ident">counter</span>: <span class="ident">usize</span>,
-        <span class="ident">graph</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>,
-    }
-
-
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">NeighborhoodIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">W</span><span class="op">&gt;</span> {
-        <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>;
-
-        <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
-            <span class="self">self</span>.<span class="ident">counter</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-            <span class="self">self</span>.<span class="ident">graph</span>[<span class="self">self</span>.<span class="ident">source</span>].<span class="ident">get</span>(<span class="self">self</span>.<span class="ident">counter</span> <span class="op">-</span> <span class="number">1</span>)
-        }
-    }
-
-    <span class="kw">impl</span> <span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">NeighborhoodUnweightedIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">W</span><span class="op">&gt;</span>
-        <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">One</span>
-    {
-        <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">usize</span>;
-
-        <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
-            <span class="kw">if</span> <span class="self">self</span>.<span class="ident">counter</span> <span class="op">&gt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">graph</span>[<span class="self">self</span>.<span class="ident">source</span>].<span class="ident">len</span>() {
-                <span class="kw">return</span> <span class="prelude-val">None</span>
-            }
-            <span class="self">self</span>.<span class="ident">counter</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-            <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>(<span class="self">self</span>.<span class="ident">graph</span>[<span class="self">self</span>.<span class="ident">source</span>][<span class="self">self</span>.<span class="ident">counter</span> <span class="op">-</span> <span class="number">1</span>].<span class="ident">target</span>))
-        }
-    }
-
-    <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">NeighborhoodExt</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> {
-        <span class="doccomment">/// get neighborhood of source with weight  </span>
-        <span class="kw">fn</span> <span class="ident">neighbors</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">source</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">NeighborhoodIter</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>;
-
-        <span class="doccomment">/// get neighborhood of source without weight</span>
-        <span class="kw">fn</span> <span class="ident">neighbors_unweighted</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">source</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">NeighborhoodUnweightedIter</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>;
-    }
-
-    <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">NeighborhoodExt</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> {
-        <span class="kw">fn</span> <span class="ident">neighbors</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">source</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">NeighborhoodIter</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> {
-            <span class="ident">NeighborhoodIter</span> {
-                <span class="ident">source</span>,
-                <span class="ident">counter</span>: <span class="number">0</span>,
-                <span class="ident">graph</span>: <span class="self">self</span>
-            }
-        }
-
-        <span class="kw">fn</span> <span class="ident">neighbors_unweighted</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">source</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">NeighborhoodUnweightedIter</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> {
-            <span class="ident">NeighborhoodUnweightedIter</span> {
-                <span class="ident">source</span>,
-                <span class="ident">counter</span>: <span class="number">0</span>,
-                <span class="ident">graph</span>: <span class="self">self</span>
-            }
-        }
-    }
-
-    <span class="doccomment">/// **Diktstra**   </span>
-    <span class="doccomment">/// O(|E+V|log(|V|))   </span>
-    <span class="doccomment">/// let E be edge number, let V be vertex number.</span>
-    <span class="doccomment">/// return distance from start and prev nodes information.</span>
-    <span class="doccomment">/// restore_path function can create shortest path from start to goal from prev nodes.</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>
+    <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">ToString</span> <span class="op">+</span> <span class="ident">One</span> <span class="op">+</span> <span class="ident">PartialEq</span> <span class="op">+</span> <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">Copy</span>
+{   
+    <span class="doccomment">/// create dot format for graphviz</span>
     <span class="doccomment">/// ```rust</span>
-    <span class="doccomment">/// use competitive::graph::listgraph::*;</span>
+    <span class="doccomment">/// use competitive::graph::*;</span>
     <span class="doccomment">/// let vec = vec![</span>
     <span class="doccomment">///     (0, 1, 1),</span>
     <span class="doccomment">///     (0, 2, 4),</span>
@@ -907,193 +635,461 @@
     <span class="doccomment">///     (3, 2, 5),</span>
     <span class="doccomment">/// ];</span>
     <span class="doccomment">/// let graph: ListGraph&lt;isize&gt; = ListGraph::weighted_from(vec, 0, Direction::DiGraph);</span>
-    <span class="doccomment">/// </span>
-    <span class="doccomment">/// let (w, prev_nodes) = diktstra(&amp;graph, 1);</span>
-    <span class="doccomment">/// assert_eq!(w, vec![3, 0, 2, std::isize::MAX]);</span>
-    <span class="doccomment">/// assert_eq!(restore_path(1, 0, &amp;prev_nodes), vec![1, 2, 0]);</span>
+    <span class="doccomment">/// let dot = graph.to_dot(&amp;Direction::DiGraph);</span>
+    <span class="doccomment">/// assert_eq!(</span>
+    <span class="doccomment">///     dot,</span>
+    <span class="doccomment">///     vec![</span>
+    <span class="doccomment">///         &quot;digraph example {&quot;,</span>
+    <span class="doccomment">///         &quot;  0 -&gt; 1&quot;,</span>
+    <span class="doccomment">///         &quot;  0 -&gt; 2 [ label = 4 ]&quot;,</span>
+    <span class="doccomment">///         &quot;  1 -&gt; 2 [ label = 2 ]&quot;,</span>
+    <span class="doccomment">///         &quot;  2 -&gt; 0&quot;,</span>
+    <span class="doccomment">///         &quot;  3 -&gt; 1&quot;,</span>
+    <span class="doccomment">///         &quot;  3 -&gt; 2 [ label = 5 ]&quot;,</span>
+    <span class="doccomment">///         &quot;}&quot;</span>
+    <span class="doccomment">///     ].iter().map(|x| x.to_string()).collect::&lt;Vec&lt;String&gt;&gt;()</span>
+    <span class="doccomment">/// )</span>
     <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">diktstra</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>(<span class="ident">graph</span>: <span class="kw-2">&amp;</span><span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>, <span class="ident">start</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) 
-        <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">One</span> <span class="op">+</span> <span class="ident">Zero</span> <span class="op">+</span> <span class="ident">PartialEq</span> <span class="op">+</span> <span class="ident">PartialOrd</span> <span class="op">+</span> <span class="ident">NumCast</span> <span class="op">+</span> <span class="ident">Bounded</span> <span class="op">+</span> <span class="ident">fmt</span>::<span class="ident">Debug</span>
-    {
-        <span class="comment">// initialize dist</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dist</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">W</span>::<span class="ident">max_value</span>(); <span class="ident">graph</span>.<span class="ident">len</span>()];
-        <span class="ident">dist</span>[<span class="ident">start</span>] <span class="op">=</span> <span class="ident">W</span>::<span class="ident">zero</span>();
-
-        <span class="comment">// initialize BinaryHeap</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bq</span> <span class="op">=</span> <span class="ident">BinaryHeap</span>::<span class="ident">new</span>();
-        <span class="comment">// add dumy edge and start position.</span>
-        <span class="comment">// edge weight must be smaller than zero()</span>
-        <span class="ident">bq</span>.<span class="ident">push</span>((<span class="ident">Edge</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="ident">W</span>::<span class="ident">zero</span>()), <span class="ident">start</span>));
-
-        <span class="comment">// initialize prev nodes</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">prev_nodes</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">std</span>::<span class="ident">usize</span>::<span class="ident">MAX</span>; <span class="ident">graph</span>.<span class="ident">len</span>()];
-
-        <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>((<span class="ident">edge</span>, <span class="ident">position</span>)) <span class="op">=</span> <span class="ident">bq</span>.<span class="ident">pop</span>() {
-            <span class="kw">if</span> <span class="ident">dist</span>[<span class="ident">position</span>] <span class="op">&lt;</span> <span class="ident">edge</span>.<span class="ident">weight</span>() { <span class="kw">continue</span>; }
-            <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">e</span> <span class="kw">in</span> <span class="ident">graph</span>.<span class="ident">neighbors</span>(<span class="ident">position</span>) {
-                <span class="kw">if</span> <span class="ident">dist</span>[<span class="ident">e</span>.<span class="ident">target</span>()] <span class="op">&lt;</span><span class="op">=</span> <span class="ident">dist</span>[<span class="ident">position</span>] <span class="op">+</span> <span class="ident">e</span>.<span class="ident">weight</span>() { <span class="kw">continue</span>; }
-                <span class="ident">bq</span>.<span class="ident">push</span>((<span class="ident">e</span>, <span class="ident">e</span>.<span class="ident">target</span>()));
-                <span class="ident">dist</span>[<span class="ident">e</span>.<span class="ident">target</span>()] <span class="op">=</span> <span class="ident">dist</span>[<span class="ident">position</span>] <span class="op">+</span> <span class="ident">e</span>.<span class="ident">weight</span>();
-                <span class="ident">prev_nodes</span>[<span class="ident">e</span>.<span class="ident">target</span>()] <span class="op">=</span> <span class="ident">position</span>;
-            }
-        }
-
-        (<span class="ident">dist</span>, <span class="ident">prev_nodes</span>)
-    }
-
-    <span class="doccomment">/// **BFS**  </span>
-    <span class="doccomment">/// O(|V+E|)  </span>
-    <span class="doccomment">/// let E be edge numbers, Let V be vertex numbers</span>
-    <span class="doccomment">/// return distance from start and prev nodes information</span>
-    <span class="doccomment">/// restore_path function can create shortest path from start to goal from prev nodes.</span>
-    <span class="doccomment">/// ```rust</span>
-    <span class="doccomment">/// use competitive::graph::listgraph::*;</span>
-    <span class="doccomment">/// let vec = vec![</span>
-    <span class="doccomment">///     (1, 2),</span>
-    <span class="doccomment">///     (1, 4),</span>
-    <span class="doccomment">///     (2, 4),</span>
-    <span class="doccomment">///     (4, 3)    </span>
-    <span class="doccomment">/// ];</span>
-    <span class="doccomment">/// let graph: UnweightedListGraph = ListGraph::unweighted_from(vec, 1, Direction::DiGraph);</span>
-    <span class="doccomment">/// let (dist, prev_nodes) = bfs(&amp;graph, 0);</span>
-    <span class="doccomment">/// assert_eq!(dist, vec![0, 1, 2, 1]);</span>
-    <span class="doccomment">/// assert_eq!(restore_path(0, 2, &amp;prev_nodes), vec![0, 3, 2]);</span>
-    <span class="doccomment">/// ```</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bfs</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>(<span class="ident">graph</span>: <span class="kw-2">&amp;</span><span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>, <span class="ident">start</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">isize</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>)
-        <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">One</span> <span class="op">+</span> <span class="ident">Clone</span>
-    {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dist</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="op">-</span><span class="number">1</span>; <span class="ident">graph</span>.<span class="ident">len</span>()];
-        <span class="ident">dist</span>[<span class="ident">start</span>] <span class="op">=</span> <span class="number">0</span>;
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">prev_nodes</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">std</span>::<span class="ident">usize</span>::<span class="ident">MAX</span>; <span class="ident">graph</span>.<span class="ident">len</span>()];
-
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vq</span> <span class="op">=</span> <span class="ident">VecDeque</span>::<span class="ident">new</span>();
-        <span class="ident">vq</span>.<span class="ident">push_back</span>(<span class="ident">start</span>);
-
-        <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">position</span>) <span class="op">=</span> <span class="ident">vq</span>.<span class="ident">pop_front</span>() {
-            <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">next</span> <span class="kw">in</span> <span class="ident">graph</span>.<span class="ident">neighbors_unweighted</span>(<span class="ident">position</span>) {
-                <span class="kw">if</span> <span class="ident">dist</span>[<span class="ident">next</span>] <span class="op">!</span><span class="op">=</span> <span class="op">-</span><span class="number">1</span> { <span class="kw">continue</span>; }
-                <span class="ident">dist</span>[<span class="ident">next</span>] <span class="op">=</span> <span class="ident">dist</span>[<span class="ident">position</span>] <span class="op">+</span> <span class="number">1</span>;
-                <span class="ident">prev_nodes</span>[<span class="ident">next</span>] <span class="op">=</span> <span class="ident">position</span>;
-                <span class="ident">vq</span>.<span class="ident">push_back</span>(<span class="ident">next</span>)
-            }
-        }
-
-        (<span class="ident">dist</span>, <span class="ident">prev_nodes</span>)
-    }
-
-    <span class="doccomment">/// restore shortest path from start to goal</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">restore_path</span>(<span class="ident">start</span>: <span class="ident">usize</span>, <span class="ident">goal</span>: <span class="ident">usize</span>, <span class="ident">prev_nodes</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pos</span> <span class="op">=</span> <span class="ident">goal</span>;
-        <span class="kw">while</span> <span class="ident">pos</span> <span class="op">!</span><span class="op">=</span> <span class="ident">start</span> {
-            <span class="ident">res</span>.<span class="ident">push</span>(<span class="ident">pos</span>);
-            <span class="ident">pos</span> <span class="op">=</span> <span class="ident">prev_nodes</span>[<span class="ident">pos</span>];
-        }
-        <span class="ident">res</span>.<span class="ident">push</span>(<span class="ident">start</span>);
-        <span class="ident">res</span>.<span class="ident">reverse</span>();
-        <span class="ident">res</span>
-    }
-
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">DfsResultType</span> {
-        <span class="ident">FirstAndLastOrd</span>,
-        <span class="ident">TimeStamp</span>,
-        <span class="ident">NoOrd</span>,
-    }
-
-    <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
-    <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DfsResults</span> {
-        <span class="kw">pub</span> <span class="ident">seen</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
-        <span class="kw">pub</span> <span class="ident">first_order</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-        <span class="kw">pub</span> <span class="ident">last_order</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-        <span class="kw">pub</span> <span class="ident">result_type</span>: <span class="ident">DfsResultType</span>,
-        <span class="ident">ptrs</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-    }
-
-    <span class="kw">impl</span> <span class="ident">DfsResults</span> {
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">size</span>: <span class="ident">usize</span>, <span class="ident">result_type</span>: <span class="ident">DfsResultType</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-            <span class="kw">let</span> <span class="ident">ptrs</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">result_type</span> {
-                <span class="ident">DfsResultType</span>::<span class="ident">FirstAndLastOrd</span> <span class="op">=</span><span class="op">&gt;</span> { <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="number">2</span>] },
-                <span class="ident">DfsResultType</span>::<span class="ident">TimeStamp</span> <span class="op">=</span><span class="op">&gt;</span> { <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="number">1</span>] },
-                <span class="ident">DfsResultType</span>::<span class="ident">NoOrd</span> <span class="op">=</span><span class="op">&gt;</span> { <span class="macro">vec</span><span class="macro">!</span>[] }
-            };
-            <span class="self">Self</span> {
-                <span class="ident">seen</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="bool-val">false</span>; <span class="ident">size</span>],
-                <span class="ident">first_order</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="ident">size</span>],
-                <span class="ident">last_order</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="ident">size</span>],
-                <span class="ident">result_type</span>: <span class="ident">result_type</span>,
-                <span class="ident">ptrs</span>: <span class="ident">ptrs</span>,
-            }
-        }
-
-        <span class="doccomment">/// update first ord  </span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">update_first_order</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">pos</span>: <span class="ident">usize</span>) {
-            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">result_type</span> {
-                <span class="ident">DfsResultType</span>::<span class="ident">FirstAndLastOrd</span> <span class="op">=</span><span class="op">&gt;</span> {
-                    <span class="self">self</span>.<span class="ident">first_order</span>[<span class="ident">pos</span>] <span class="op">=</span> <span class="self">self</span>.<span class="ident">ptrs</span>[<span class="number">0</span>];
-                    <span class="self">self</span>.<span class="ident">ptrs</span>[<span class="number">0</span>] <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-                },
-                <span class="ident">DfsResultType</span>::<span class="ident">TimeStamp</span> <span class="op">=</span><span class="op">&gt;</span> {
-                    <span class="self">self</span>.<span class="ident">first_order</span>[<span class="ident">pos</span>] <span class="op">=</span> <span class="self">self</span>.<span class="ident">ptrs</span>[<span class="number">0</span>];
-                    <span class="self">self</span>.<span class="ident">ptrs</span>[<span class="number">0</span>] <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-                },
-                <span class="ident">DfsResultType</span>::<span class="ident">NoOrd</span> <span class="op">=</span><span class="op">&gt;</span> {}
-            }
-        }
-
-        <span class="doccomment">/// update last ord  </span>
-        <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">update_last_order</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">pos</span>: <span class="ident">usize</span>) {
-            <span class="kw">match</span> <span class="self">self</span>.<span class="ident">result_type</span> {
-                <span class="ident">DfsResultType</span>::<span class="ident">FirstAndLastOrd</span> <span class="op">=</span><span class="op">&gt;</span> {
-                    <span class="self">self</span>.<span class="ident">last_order</span>[<span class="ident">pos</span>] <span class="op">=</span> <span class="self">self</span>.<span class="ident">ptrs</span>[<span class="number">1</span>];
-                    <span class="self">self</span>.<span class="ident">ptrs</span>[<span class="number">1</span>] <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-                },
-                <span class="ident">DfsResultType</span>::<span class="ident">TimeStamp</span> <span class="op">=</span><span class="op">&gt;</span> {
-                    <span class="self">self</span>.<span class="ident">last_order</span>[<span class="ident">pos</span>] <span class="op">=</span> <span class="self">self</span>.<span class="ident">ptrs</span>[<span class="number">0</span>];
-                    <span class="self">self</span>.<span class="ident">ptrs</span>[<span class="number">0</span>] <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-                },
-                <span class="ident">DfsResultType</span>::<span class="ident">NoOrd</span> <span class="op">=</span><span class="op">&gt;</span> {}
-            }
-        }
-    }
-
-    <span class="doccomment">/// **DFS**  </span>
-    <span class="doccomment">/// O(|V+E|)  </span>
-    <span class="doccomment">/// let E be edge numbers, Let V be vertex numbers.</span>
-    <span class="doccomment">/// return the DfsResults struct, which has seen results and first and last ord or time stamps.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dfs</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>(<span class="ident">start</span>: <span class="ident">usize</span>, <span class="ident">graph</span>: <span class="kw-2">&amp;</span><span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>, <span class="ident">result_type</span>: <span class="ident">DfsResultType</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">DfsResults</span>
-        <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">One</span>
-    {   
-        <span class="doccomment">/// internal dfs implementation</span>
-        <span class="kw">fn</span> <span class="ident">_dfs</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>(<span class="ident">start</span>: <span class="ident">usize</span>, <span class="ident">graph</span>: <span class="kw-2">&amp;</span><span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>, <span class="ident">dfs_result</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">DfsResults</span>)
-            <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">One</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">to_dot</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">graph_type</span>: <span class="kw-2">&amp;</span><span class="ident">Direction</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span> {
+        <span class="kw">fn</span> <span class="ident">make_dot_edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>(<span class="ident">source</span>: <span class="ident">usize</span>, <span class="ident">target</span>: <span class="ident">usize</span>, <span class="ident">weight</span>: <span class="ident">W</span>, <span class="ident">graph_type</span>: <span class="kw-2">&amp;</span><span class="ident">Direction</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span>
+            <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">One</span> <span class="op">+</span> <span class="ident">ToString</span> <span class="op">+</span> <span class="ident">PartialEq</span>
         {
-            <span class="comment">// memo of first ord</span>
-            <span class="ident">dfs_result</span>.<span class="ident">update_first_order</span>(<span class="ident">start</span>);
+            <span class="kw">let</span> <span class="ident">arr</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">graph_type</span> {
+                <span class="ident">Direction</span>::<span class="ident">DiGraph</span> <span class="op">=</span><span class="op">&gt;</span> { <span class="string">&quot;-&gt;&quot;</span> },
+                <span class="ident">Direction</span>::<span class="ident">UnGraph</span> <span class="op">=</span><span class="op">&gt;</span> { <span class="string">&quot;-&quot;</span> }
+            };
 
-            <span class="ident">dfs_result</span>.<span class="ident">seen</span>[<span class="ident">start</span>] <span class="op">=</span> <span class="bool-val">true</span>;
-            <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">next</span> <span class="kw">in</span> <span class="ident">graph</span>.<span class="ident">neighbors_unweighted</span>(<span class="ident">start</span>) {
-                <span class="kw">if</span> <span class="ident">dfs_result</span>.<span class="ident">seen</span>[<span class="ident">next</span>] { <span class="kw">continue</span>; }
-                <span class="ident">_dfs</span>(<span class="ident">next</span>, <span class="ident">graph</span>, <span class="ident">dfs_result</span>)
+            <span class="kw">if</span> <span class="ident">weight</span> <span class="op">=</span><span class="op">=</span> <span class="ident">W</span>::<span class="ident">one</span>() {
+                <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;  {} {} {}&quot;</span>, <span class="ident">source</span>, <span class="ident">arr</span>, <span class="ident">target</span>)
+            } <span class="kw">else</span> {
+                <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;  {} {} {} [ label = {} ]&quot;</span>, <span class="ident">source</span>, <span class="ident">arr</span>, <span class="ident">target</span>, <span class="ident">weight</span>.<span class="ident">to_string</span>())
             }
-
-            <span class="comment">// memo of last ord</span>
-            <span class="ident">dfs_result</span>.<span class="ident">update_last_order</span>(<span class="ident">start</span>);
         }
 
-        <span class="comment">// initialize dfs results</span>
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dfs_result</span> <span class="op">=</span> <span class="ident">DfsResults</span>::<span class="ident">new</span>(<span class="ident">graph</span>.<span class="ident">len</span>(), <span class="ident">result_type</span>);
-        <span class="ident">dfs_result</span>.<span class="ident">seen</span>[<span class="ident">start</span>] <span class="op">=</span> <span class="bool-val">true</span>;
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">seen_edge</span> <span class="op">=</span> <span class="ident">HashSet</span>::<span class="ident">new</span>();
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dot</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">graph_type</span> {
+            <span class="ident">Direction</span>::<span class="ident">DiGraph</span> <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="macro">vec</span><span class="macro">!</span>[<span class="string">&quot;digraph example {&quot;</span>.<span class="ident">to_string</span>()]
+            },
+            <span class="ident">Direction</span>::<span class="ident">UnGraph</span> <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="macro">vec</span><span class="macro">!</span>[<span class="string">&quot;graph example {&quot;</span>.<span class="ident">to_string</span>()]
+            }
+        };
+        <span class="kw">for</span> <span class="ident">source</span> <span class="kw">in</span> <span class="number">0</span>..<span class="self">self</span>.<span class="ident">len</span>() {
+            <span class="kw">for</span> <span class="ident">e</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">neighbors</span>(<span class="ident">source</span>) {
+                <span class="kw">let</span> (<span class="ident">target</span>, <span class="ident">weight</span>) <span class="op">=</span> (<span class="ident">e</span>.<span class="ident">target</span>(), <span class="ident">e</span>.<span class="ident">weight</span>());
+                <span class="kw">let</span> <span class="ident">dot_edge</span> <span class="op">=</span> <span class="ident">make_dot_edge</span>(<span class="ident">source</span>, <span class="ident">target</span>, <span class="ident">weight</span>, <span class="kw-2">&amp;</span><span class="ident">graph_type</span>);
+                <span class="kw">if</span> <span class="ident">seen_edge</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">dot_edge</span>) { <span class="kw">continue</span>; }
+                <span class="ident">dot</span>.<span class="ident">push</span>(<span class="ident">dot_edge</span>.<span class="ident">clone</span>());
+                <span class="ident">seen_edge</span>.<span class="ident">insert</span>(<span class="ident">dot_edge</span>);
+            }
+        }
 
-        <span class="comment">// rec dfs</span>
-        <span class="ident">_dfs</span>(<span class="ident">start</span>, <span class="ident">graph</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">dfs_result</span>);
-        <span class="ident">dfs_result</span>
+        <span class="ident">dot</span>.<span class="ident">push</span>(<span class="string">&quot;}&quot;</span>.<span class="ident">to_string</span>());
+        <span class="ident">dot</span>
+    } 
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">PartialOrd</span> <span class="kw">for</span> <span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>
+    <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">PartialEq</span> <span class="op">+</span> <span class="ident">PartialOrd</span>
+{
+    <span class="kw">fn</span> <span class="ident">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">std</span>::<span class="ident">cmp</span>::<span class="ident">Ordering</span><span class="op">&gt;</span> {
+        <span class="ident">other</span>.<span class="ident">weight</span>
+            .<span class="ident">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="ident">weight</span>)
     }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">Eq</span> <span class="kw">for</span> <span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">PartialEq</span> <span class="op">+</span> <span class="ident">PartialOrd</span> {}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">Ord</span> <span class="kw">for</span> <span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>
+    <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">PartialOrd</span> <span class="op">+</span> <span class="ident">PartialEq</span> <span class="op">+</span> <span class="ident">PartialOrd</span>
+{
+    <span class="kw">fn</span> <span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">cmp</span>::<span class="ident">Ordering</span> {
+        <span class="ident">other</span>.<span class="ident">weight</span>.<span class="ident">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">weight</span>).<span class="ident">expect</span>(<span class="string">&quot;No Nan&quot;</span>).<span class="ident">then_with</span>(<span class="op">|</span><span class="op">|</span> <span class="self">self</span>.<span class="ident">target</span>.<span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="ident">target</span>))
+    }
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> {
+    <span class="ident">graph</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>
+    <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">One</span> <span class="op">+</span> <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">ToString</span>
+{
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
+        <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;&quot;</span>)<span class="question-mark">?</span>;
+        <span class="kw">for</span> <span class="ident">source</span> <span class="kw">in</span> <span class="number">0</span>..<span class="self">self</span>.<span class="ident">len</span>() {
+            <span class="kw">let</span> <span class="ident">targets</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>[<span class="ident">source</span>];
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">write_str</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
+            <span class="ident">write_str</span> <span class="op">+</span><span class="op">=</span> <span class="kw-2">&amp;</span>(<span class="ident">source</span>.<span class="ident">to_string</span>() <span class="op">+</span> <span class="string">&quot; -&gt; &quot;</span>);
+            <span class="ident">write_str</span> <span class="op">+</span><span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">targets</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span>.<span class="ident">target</span>().<span class="ident">to_string</span>()).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>().<span class="ident">join</span>(<span class="string">&quot; &quot;</span>);
+            <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">write_str</span>)<span class="question-mark">?</span>
+        }
+        <span class="prelude-val">Ok</span>(())        
+    }
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Direction</span> {
+    <span class="ident">DiGraph</span>,
+    <span class="ident">UnGraph</span>
+}
+
+<span class="kw">fn</span> <span class="ident">add_target</span><span class="op">&lt;</span><span class="ident">W</span>: <span class="ident">One</span> <span class="op">+</span> <span class="ident">Copy</span><span class="op">&gt;</span>(
+    <span class="ident">source</span>: <span class="ident">usize</span>,
+    <span class="ident">target</span>: <span class="ident">usize</span>,
+    <span class="ident">weight</span>: <span class="ident">W</span>,
+    <span class="ident">graph_type</span>: <span class="kw-2">&amp;</span><span class="ident">Direction</span>,
+    <span class="ident">v</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>
+) {
+    <span class="kw">match</span> <span class="ident">graph_type</span> {
+        <span class="ident">Direction</span>::<span class="ident">DiGraph</span> <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">v</span>[<span class="ident">source</span>].<span class="ident">push</span>(<span class="ident">Edge</span>::<span class="ident">new</span>(<span class="ident">target</span>, <span class="ident">weight</span>))
+        },
+        <span class="ident">Direction</span>::<span class="ident">UnGraph</span> <span class="op">=</span><span class="op">&gt;</span> {
+            <span class="ident">v</span>[<span class="ident">source</span>].<span class="ident">push</span>(<span class="ident">Edge</span>::<span class="ident">new</span>(<span class="ident">target</span>, <span class="ident">weight</span>));
+            <span class="ident">v</span>[<span class="ident">target</span>].<span class="ident">push</span>(<span class="ident">Edge</span>::<span class="ident">new</span>(<span class="ident">source</span>, <span class="ident">weight</span>))
+        }
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>
+    <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">One</span> <span class="op">+</span> <span class="ident">Copy</span>
+{
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="self">Self</span> {
+            <span class="ident">graph</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="macro">vec</span><span class="macro">!</span>[]; <span class="ident">n</span>]
+        }
+    }
+
+    <span class="doccomment">/// create unweighted ListGraph.  </span>
+    <span class="doccomment">/// offset: index = val - offset  </span>
+    <span class="doccomment">/// graph_type: Undirect or Direct  </span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unweighted_from</span>(<span class="ident">vec</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">usize</span>)<span class="op">&gt;</span>, <span class="ident">offset</span>: <span class="ident">usize</span>, <span class="ident">graph_type</span>: <span class="ident">Direction</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="kw">let</span> <span class="ident">max_val</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">vec</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">j</span>)<span class="op">|</span> <span class="ident">std</span>::<span class="ident">cmp</span>::<span class="ident">max</span>(<span class="ident">i</span>, <span class="ident">j</span>)).<span class="ident">max</span>().<span class="ident">unwrap</span>() <span class="op">+</span> <span class="number">1</span> <span class="op">-</span> <span class="ident">offset</span>;
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">graph</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="macro">vec</span><span class="macro">!</span>[]; <span class="ident">max_val</span>];
+        <span class="kw">for</span> <span class="kw-2">&amp;</span>(<span class="ident">a</span>, <span class="ident">b</span>) <span class="kw">in</span> <span class="ident">vec</span>.<span class="ident">iter</span>() {
+            <span class="ident">add_target</span>(<span class="ident">a</span><span class="op">-</span><span class="ident">offset</span>, <span class="ident">b</span><span class="op">-</span><span class="ident">offset</span>, <span class="ident">W</span>::<span class="ident">one</span>(), <span class="kw-2">&amp;</span><span class="ident">graph_type</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">graph</span>)
+        }
+
+        <span class="self">Self</span> {
+            <span class="ident">graph</span>
+        }
+    }
+
+    <span class="doccomment">/// create weighted ListGraph&lt;W&gt;.</span>
+    <span class="doccomment">/// offset: index = val - offset</span>
+    <span class="doccomment">/// graph_type: Undirect or Direct</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">weighted_from</span>(<span class="ident">vec</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">usize</span>, <span class="ident">W</span>)<span class="op">&gt;</span>, <span class="ident">offset</span>: <span class="ident">usize</span>, <span class="ident">graph_type</span>: <span class="ident">Direction</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="kw">let</span> <span class="ident">max_val</span> <span class="op">=</span> <span class="kw-2">*</span><span class="ident">vec</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span>(<span class="ident">i</span>, <span class="ident">j</span>, <span class="ident">_w</span>)<span class="op">|</span> <span class="ident">std</span>::<span class="ident">cmp</span>::<span class="ident">max</span>(<span class="ident">i</span>, <span class="ident">j</span>)).<span class="ident">max</span>().<span class="ident">unwrap</span>() <span class="op">+</span> <span class="number">1</span> <span class="op">-</span> <span class="ident">offset</span>;
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">graph</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="macro">vec</span><span class="macro">!</span>[]; <span class="ident">max_val</span>];
+        <span class="kw">for</span> <span class="kw-2">&amp;</span>(<span class="ident">a</span>, <span class="ident">b</span>, <span class="ident">w</span>) <span class="kw">in</span> <span class="ident">vec</span>.<span class="ident">iter</span>() {
+            <span class="ident">add_target</span>(<span class="ident">a</span><span class="op">-</span><span class="ident">offset</span>, <span class="ident">b</span><span class="op">-</span><span class="ident">offset</span>, <span class="ident">w</span>, <span class="kw-2">&amp;</span><span class="ident">graph_type</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">graph</span>)
+        }
+
+        <span class="self">Self</span> {
+            <span class="ident">graph</span>
+        }
+    }
+
+    <span class="doccomment">/// Reverse Direction of Graph</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">t</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vec</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
+        <span class="kw">for</span> <span class="ident">source</span> <span class="kw">in</span> <span class="number">0</span>..<span class="self">self</span>.<span class="ident">len</span>() {
+            <span class="kw">for</span> <span class="ident">e</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">neighbors</span>(<span class="ident">source</span>) {
+                <span class="ident">vec</span>.<span class="ident">push</span>((<span class="ident">e</span>.<span class="ident">target</span>(), <span class="ident">source</span>, <span class="ident">e</span>.<span class="ident">weight</span>()))
+            }
+        }
+
+        <span class="ident">ListGraph</span>::<span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>::<span class="ident">weighted_from</span>(<span class="ident">vec</span>, <span class="number">0</span>, <span class="ident">Direction</span>::<span class="ident">DiGraph</span>)
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">len</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+        <span class="self">self</span>.<span class="ident">graph</span>.<span class="ident">len</span>()
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">Index</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> {
+    <span class="kw">type</span> <span class="ident">Output</span> <span class="op">=</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span>;
+
+    <span class="kw">fn</span> <span class="ident">index</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="self">Self</span>::<span class="ident">Output</span> {
+        <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">graph</span>[<span class="ident">index</span>]
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">IndexMut</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">index_mut</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">index</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span> {
+        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">graph</span>[<span class="ident">index</span>]
+    }
+}
+
+<span class="kw">pub</span> <span class="kw">type</span> <span class="ident">UnweightedListGraph</span> <span class="op">=</span> <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>;
+
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">NeighborhoodIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">W</span><span class="op">&gt;</span> {
+    <span class="ident">source</span>: <span class="ident">usize</span>,
+    <span class="ident">counter</span>: <span class="ident">usize</span>,
+    <span class="ident">graph</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>,
+}
+
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">NeighborhoodUnweightedIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">W</span><span class="op">&gt;</span> {
+    <span class="ident">source</span>: <span class="ident">usize</span>,
+    <span class="ident">counter</span>: <span class="ident">usize</span>,
+    <span class="ident">graph</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>,
+}
+
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">NeighborhoodIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">W</span><span class="op">&gt;</span> {
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>;
+
+    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">counter</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+        <span class="self">self</span>.<span class="ident">graph</span>[<span class="self">self</span>.<span class="ident">source</span>].<span class="ident">get</span>(<span class="self">self</span>.<span class="ident">counter</span> <span class="op">-</span> <span class="number">1</span>)
+    }
+}
+
+<span class="kw">impl</span> <span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">W</span><span class="op">&gt;</span> <span class="ident">Iterator</span> <span class="kw">for</span> <span class="ident">NeighborhoodUnweightedIter</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">W</span><span class="op">&gt;</span>
+    <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">One</span>
+{
+    <span class="kw">type</span> <span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">usize</span>;
+
+    <span class="kw">fn</span> <span class="ident">next</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="self">Self</span>::<span class="ident">Item</span><span class="op">&gt;</span> {
+        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">counter</span> <span class="op">&gt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">graph</span>[<span class="self">self</span>.<span class="ident">source</span>].<span class="ident">len</span>() {
+            <span class="kw">return</span> <span class="prelude-val">None</span>
+        }
+        <span class="self">self</span>.<span class="ident">counter</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+        <span class="prelude-val">Some</span>(<span class="kw-2">&amp;</span>(<span class="self">self</span>.<span class="ident">graph</span>[<span class="self">self</span>.<span class="ident">source</span>][<span class="self">self</span>.<span class="ident">counter</span> <span class="op">-</span> <span class="number">1</span>].<span class="ident">target</span>))
+    }
+}
+
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">NeighborhoodExt</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> {
+    <span class="doccomment">/// get neighborhood of source with weight  </span>
+    <span class="kw">fn</span> <span class="ident">neighbors</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">source</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">NeighborhoodIter</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>;
+
+    <span class="doccomment">/// get neighborhood of source without weight</span>
+    <span class="kw">fn</span> <span class="ident">neighbors_unweighted</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">source</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">NeighborhoodUnweightedIter</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>;
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">NeighborhoodExt</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">neighbors</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">source</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">NeighborhoodIter</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> {
+        <span class="ident">NeighborhoodIter</span> {
+            <span class="ident">source</span>,
+            <span class="ident">counter</span>: <span class="number">0</span>,
+            <span class="ident">graph</span>: <span class="self">self</span>
+        }
+    }
+
+    <span class="kw">fn</span> <span class="ident">neighbors_unweighted</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">source</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">NeighborhoodUnweightedIter</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> {
+        <span class="ident">NeighborhoodUnweightedIter</span> {
+            <span class="ident">source</span>,
+            <span class="ident">counter</span>: <span class="number">0</span>,
+            <span class="ident">graph</span>: <span class="self">self</span>
+        }
+    }
+}
+
+<span class="doccomment">/// **Diktstra**   </span>
+<span class="doccomment">/// O(|E+V|log(|V|))   </span>
+<span class="doccomment">/// let E be edge number, let V be vertex number.</span>
+<span class="doccomment">/// return distance from start and prev nodes information.</span>
+<span class="doccomment">/// restore_path function can create shortest path from start to goal from prev nodes.</span>
+<span class="doccomment">/// ```rust</span>
+<span class="doccomment">/// use competitive::graph::*;</span>
+<span class="doccomment">/// let vec = vec![</span>
+<span class="doccomment">///     (0, 1, 1),</span>
+<span class="doccomment">///     (0, 2, 4),</span>
+<span class="doccomment">///     (2, 0, 1),</span>
+<span class="doccomment">///     (1, 2, 2),</span>
+<span class="doccomment">///     (3, 1, 1),</span>
+<span class="doccomment">///     (3, 2, 5),</span>
+<span class="doccomment">/// ];</span>
+<span class="doccomment">/// let graph: ListGraph&lt;isize&gt; = ListGraph::weighted_from(vec, 0, Direction::DiGraph);</span>
+<span class="doccomment">/// </span>
+<span class="doccomment">/// let (w, prev_nodes) = diktstra(&amp;graph, 1);</span>
+<span class="doccomment">/// assert_eq!(w, vec![3, 0, 2, std::isize::MAX]);</span>
+<span class="doccomment">/// assert_eq!(restore_path(1, 0, &amp;prev_nodes), vec![1, 2, 0]);</span>
+<span class="doccomment">/// ```</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">diktstra</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>(<span class="ident">graph</span>: <span class="kw-2">&amp;</span><span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>, <span class="ident">start</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) 
+    <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">One</span> <span class="op">+</span> <span class="ident">Zero</span> <span class="op">+</span> <span class="ident">PartialEq</span> <span class="op">+</span> <span class="ident">PartialOrd</span> <span class="op">+</span> <span class="ident">NumCast</span> <span class="op">+</span> <span class="ident">Bounded</span> <span class="op">+</span> <span class="ident">fmt</span>::<span class="ident">Debug</span>
+{
+    <span class="comment">// initialize dist</span>
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dist</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">W</span>::<span class="ident">max_value</span>(); <span class="ident">graph</span>.<span class="ident">len</span>()];
+    <span class="ident">dist</span>[<span class="ident">start</span>] <span class="op">=</span> <span class="ident">W</span>::<span class="ident">zero</span>();
+
+    <span class="comment">// initialize BinaryHeap</span>
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">bq</span> <span class="op">=</span> <span class="ident">BinaryHeap</span>::<span class="ident">new</span>();
+    <span class="comment">// add dumy edge and start position.</span>
+    <span class="comment">// edge weight must be smaller than zero()</span>
+    <span class="ident">bq</span>.<span class="ident">push</span>((<span class="ident">Edge</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="ident">W</span>::<span class="ident">zero</span>()), <span class="ident">start</span>));
+
+    <span class="comment">// initialize prev nodes</span>
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">prev_nodes</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">std</span>::<span class="ident">usize</span>::<span class="ident">MAX</span>; <span class="ident">graph</span>.<span class="ident">len</span>()];
+
+    <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>((<span class="ident">edge</span>, <span class="ident">position</span>)) <span class="op">=</span> <span class="ident">bq</span>.<span class="ident">pop</span>() {
+        <span class="kw">if</span> <span class="ident">dist</span>[<span class="ident">position</span>] <span class="op">&lt;</span> <span class="ident">edge</span>.<span class="ident">weight</span>() { <span class="kw">continue</span>; }
+        <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">e</span> <span class="kw">in</span> <span class="ident">graph</span>.<span class="ident">neighbors</span>(<span class="ident">position</span>) {
+            <span class="kw">if</span> <span class="ident">dist</span>[<span class="ident">e</span>.<span class="ident">target</span>()] <span class="op">&lt;</span><span class="op">=</span> <span class="ident">dist</span>[<span class="ident">position</span>] <span class="op">+</span> <span class="ident">e</span>.<span class="ident">weight</span>() { <span class="kw">continue</span>; }
+            <span class="ident">bq</span>.<span class="ident">push</span>((<span class="ident">e</span>, <span class="ident">e</span>.<span class="ident">target</span>()));
+            <span class="ident">dist</span>[<span class="ident">e</span>.<span class="ident">target</span>()] <span class="op">=</span> <span class="ident">dist</span>[<span class="ident">position</span>] <span class="op">+</span> <span class="ident">e</span>.<span class="ident">weight</span>();
+            <span class="ident">prev_nodes</span>[<span class="ident">e</span>.<span class="ident">target</span>()] <span class="op">=</span> <span class="ident">position</span>;
+        }
+    }
+
+    (<span class="ident">dist</span>, <span class="ident">prev_nodes</span>)
+}
+
+<span class="doccomment">/// **BFS**  </span>
+<span class="doccomment">/// O(|V+E|)  </span>
+<span class="doccomment">/// let E be edge numbers, Let V be vertex numbers</span>
+<span class="doccomment">/// return distance from start and prev nodes information</span>
+<span class="doccomment">/// restore_path function can create shortest path from start to goal from prev nodes.</span>
+<span class="doccomment">/// ```rust</span>
+<span class="doccomment">/// use competitive::graph::*;</span>
+<span class="doccomment">/// let vec = vec![</span>
+<span class="doccomment">///     (1, 2),</span>
+<span class="doccomment">///     (1, 4),</span>
+<span class="doccomment">///     (2, 4),</span>
+<span class="doccomment">///     (4, 3)    </span>
+<span class="doccomment">/// ];</span>
+<span class="doccomment">/// let graph: UnweightedListGraph = ListGraph::unweighted_from(vec, 1, Direction::DiGraph);</span>
+<span class="doccomment">/// let (dist, prev_nodes) = bfs(&amp;graph, 0);</span>
+<span class="doccomment">/// assert_eq!(dist, vec![0, 1, 2, 1]);</span>
+<span class="doccomment">/// assert_eq!(restore_path(0, 2, &amp;prev_nodes), vec![0, 3, 2]);</span>
+<span class="doccomment">/// ```</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bfs</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>(<span class="ident">graph</span>: <span class="kw-2">&amp;</span><span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>, <span class="ident">start</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">isize</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>)
+    <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">One</span> <span class="op">+</span> <span class="ident">Clone</span>
+{
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dist</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="op">-</span><span class="number">1</span>; <span class="ident">graph</span>.<span class="ident">len</span>()];
+    <span class="ident">dist</span>[<span class="ident">start</span>] <span class="op">=</span> <span class="number">0</span>;
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">prev_nodes</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">std</span>::<span class="ident">usize</span>::<span class="ident">MAX</span>; <span class="ident">graph</span>.<span class="ident">len</span>()];
+
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vq</span> <span class="op">=</span> <span class="ident">VecDeque</span>::<span class="ident">new</span>();
+    <span class="ident">vq</span>.<span class="ident">push_back</span>(<span class="ident">start</span>);
+
+    <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">position</span>) <span class="op">=</span> <span class="ident">vq</span>.<span class="ident">pop_front</span>() {
+        <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">next</span> <span class="kw">in</span> <span class="ident">graph</span>.<span class="ident">neighbors_unweighted</span>(<span class="ident">position</span>) {
+            <span class="kw">if</span> <span class="ident">dist</span>[<span class="ident">next</span>] <span class="op">!</span><span class="op">=</span> <span class="op">-</span><span class="number">1</span> { <span class="kw">continue</span>; }
+            <span class="ident">dist</span>[<span class="ident">next</span>] <span class="op">=</span> <span class="ident">dist</span>[<span class="ident">position</span>] <span class="op">+</span> <span class="number">1</span>;
+            <span class="ident">prev_nodes</span>[<span class="ident">next</span>] <span class="op">=</span> <span class="ident">position</span>;
+            <span class="ident">vq</span>.<span class="ident">push_back</span>(<span class="ident">next</span>)
+        }
+    }
+
+    (<span class="ident">dist</span>, <span class="ident">prev_nodes</span>)
+}
+
+<span class="doccomment">/// restore shortest path from start to goal</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">restore_path</span>(<span class="ident">start</span>: <span class="ident">usize</span>, <span class="ident">goal</span>: <span class="ident">usize</span>, <span class="ident">prev_nodes</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">pos</span> <span class="op">=</span> <span class="ident">goal</span>;
+    <span class="kw">while</span> <span class="ident">pos</span> <span class="op">!</span><span class="op">=</span> <span class="ident">start</span> {
+        <span class="ident">res</span>.<span class="ident">push</span>(<span class="ident">pos</span>);
+        <span class="ident">pos</span> <span class="op">=</span> <span class="ident">prev_nodes</span>[<span class="ident">pos</span>];
+    }
+    <span class="ident">res</span>.<span class="ident">push</span>(<span class="ident">start</span>);
+    <span class="ident">res</span>.<span class="ident">reverse</span>();
+    <span class="ident">res</span>
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
+<span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">DfsResultType</span> {
+    <span class="ident">FirstAndLastOrd</span>,
+    <span class="ident">TimeStamp</span>,
+    <span class="ident">NoOrd</span>,
+}
+
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">DfsResults</span> {
+    <span class="kw">pub</span> <span class="ident">seen</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">bool</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">first_order</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">last_order</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
+    <span class="kw">pub</span> <span class="ident">result_type</span>: <span class="ident">DfsResultType</span>,
+    <span class="ident">ptrs</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">DfsResults</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">size</span>: <span class="ident">usize</span>, <span class="ident">result_type</span>: <span class="ident">DfsResultType</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="kw">let</span> <span class="ident">ptrs</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">result_type</span> {
+            <span class="ident">DfsResultType</span>::<span class="ident">FirstAndLastOrd</span> <span class="op">=</span><span class="op">&gt;</span> { <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="number">2</span>] },
+            <span class="ident">DfsResultType</span>::<span class="ident">TimeStamp</span> <span class="op">=</span><span class="op">&gt;</span> { <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="number">1</span>] },
+            <span class="ident">DfsResultType</span>::<span class="ident">NoOrd</span> <span class="op">=</span><span class="op">&gt;</span> { <span class="macro">vec</span><span class="macro">!</span>[] }
+        };
+        <span class="self">Self</span> {
+            <span class="ident">seen</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="bool-val">false</span>; <span class="ident">size</span>],
+            <span class="ident">first_order</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="ident">size</span>],
+            <span class="ident">last_order</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="ident">size</span>],
+            <span class="ident">result_type</span>: <span class="ident">result_type</span>,
+            <span class="ident">ptrs</span>: <span class="ident">ptrs</span>,
+        }
+    }
+
+    <span class="doccomment">/// update first ord  </span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">update_first_order</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">pos</span>: <span class="ident">usize</span>) {
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">result_type</span> {
+            <span class="ident">DfsResultType</span>::<span class="ident">FirstAndLastOrd</span> <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="self">self</span>.<span class="ident">first_order</span>[<span class="ident">pos</span>] <span class="op">=</span> <span class="self">self</span>.<span class="ident">ptrs</span>[<span class="number">0</span>];
+                <span class="self">self</span>.<span class="ident">ptrs</span>[<span class="number">0</span>] <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+            },
+            <span class="ident">DfsResultType</span>::<span class="ident">TimeStamp</span> <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="self">self</span>.<span class="ident">first_order</span>[<span class="ident">pos</span>] <span class="op">=</span> <span class="self">self</span>.<span class="ident">ptrs</span>[<span class="number">0</span>];
+                <span class="self">self</span>.<span class="ident">ptrs</span>[<span class="number">0</span>] <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+            },
+            <span class="ident">DfsResultType</span>::<span class="ident">NoOrd</span> <span class="op">=</span><span class="op">&gt;</span> {}
+        }
+    }
+
+    <span class="doccomment">/// update last ord  </span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">update_last_order</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">pos</span>: <span class="ident">usize</span>) {
+        <span class="kw">match</span> <span class="self">self</span>.<span class="ident">result_type</span> {
+            <span class="ident">DfsResultType</span>::<span class="ident">FirstAndLastOrd</span> <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="self">self</span>.<span class="ident">last_order</span>[<span class="ident">pos</span>] <span class="op">=</span> <span class="self">self</span>.<span class="ident">ptrs</span>[<span class="number">1</span>];
+                <span class="self">self</span>.<span class="ident">ptrs</span>[<span class="number">1</span>] <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+            },
+            <span class="ident">DfsResultType</span>::<span class="ident">TimeStamp</span> <span class="op">=</span><span class="op">&gt;</span> {
+                <span class="self">self</span>.<span class="ident">last_order</span>[<span class="ident">pos</span>] <span class="op">=</span> <span class="self">self</span>.<span class="ident">ptrs</span>[<span class="number">0</span>];
+                <span class="self">self</span>.<span class="ident">ptrs</span>[<span class="number">0</span>] <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
+            },
+            <span class="ident">DfsResultType</span>::<span class="ident">NoOrd</span> <span class="op">=</span><span class="op">&gt;</span> {}
+        }
+    }
+}
+
+<span class="doccomment">/// **DFS**  </span>
+<span class="doccomment">/// O(|V+E|)  </span>
+<span class="doccomment">/// let E be edge numbers, Let V be vertex numbers.</span>
+<span class="doccomment">/// return the DfsResults struct, which has seen results and first and last ord or time stamps.</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dfs</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>(<span class="ident">start</span>: <span class="ident">usize</span>, <span class="ident">graph</span>: <span class="kw-2">&amp;</span><span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>, <span class="ident">result_type</span>: <span class="ident">DfsResultType</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">DfsResults</span>
+    <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">One</span>
+{   
+    <span class="doccomment">/// internal dfs implementation</span>
+    <span class="kw">fn</span> <span class="ident">_dfs</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>(<span class="ident">start</span>: <span class="ident">usize</span>, <span class="ident">graph</span>: <span class="kw-2">&amp;</span><span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>, <span class="ident">dfs_result</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">DfsResults</span>)
+        <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">One</span>
+    {
+        <span class="comment">// memo of first ord</span>
+        <span class="ident">dfs_result</span>.<span class="ident">update_first_order</span>(<span class="ident">start</span>);
+
+        <span class="ident">dfs_result</span>.<span class="ident">seen</span>[<span class="ident">start</span>] <span class="op">=</span> <span class="bool-val">true</span>;
+        <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">next</span> <span class="kw">in</span> <span class="ident">graph</span>.<span class="ident">neighbors_unweighted</span>(<span class="ident">start</span>) {
+            <span class="kw">if</span> <span class="ident">dfs_result</span>.<span class="ident">seen</span>[<span class="ident">next</span>] { <span class="kw">continue</span>; }
+            <span class="ident">_dfs</span>(<span class="ident">next</span>, <span class="ident">graph</span>, <span class="ident">dfs_result</span>)
+        }
+
+        <span class="comment">// memo of last ord</span>
+        <span class="ident">dfs_result</span>.<span class="ident">update_last_order</span>(<span class="ident">start</span>);
+    }
+
+    <span class="comment">// initialize dfs results</span>
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dfs_result</span> <span class="op">=</span> <span class="ident">DfsResults</span>::<span class="ident">new</span>(<span class="ident">graph</span>.<span class="ident">len</span>(), <span class="ident">result_type</span>);
+    <span class="ident">dfs_result</span>.<span class="ident">seen</span>[<span class="ident">start</span>] <span class="op">=</span> <span class="bool-val">true</span>;
+
+    <span class="comment">// rec dfs</span>
+    <span class="ident">_dfs</span>(<span class="ident">start</span>, <span class="ident">graph</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">dfs_result</span>);
+    <span class="ident">dfs_result</span>
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">test</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">listgraph</span>::<span class="kw-2">*</span>;
+    <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_fmt</span>() {
         <span class="kw">let</span> <span class="ident">graph</span>: <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">ListGraph</span>::<span class="ident">unweighted_from</span>(<span class="macro">vec</span><span class="macro">!</span>[(<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">2</span>), (<span class="number">4</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">3</span>)], <span class="number">0</span>, <span class="ident">Direction</span>::<span class="ident">UnGraph</span>);

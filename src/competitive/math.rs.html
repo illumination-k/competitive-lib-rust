@@ -134,11 +134,10 @@
 <span id="134">134</span>
 <span id="135">135</span>
 <span id="136">136</span>
+<span id="137">137</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">num_traits</span>::{ <span class="ident">PrimInt</span>, <span class="ident">zero</span>, <span class="ident">one</span>, <span class="ident">NumCast</span> };
-<span class="kw">use</span> <span class="ident">cargo_snippet</span>::<span class="ident">snippet</span>;
 
-<span class="attribute">#[<span class="ident">snippet</span>(<span class="string">&quot;gcd&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">gcd</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PrimInt</span><span class="op">&gt;</span>(<span class="ident">a</span>: <span class="ident">T</span>, <span class="ident">b</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">T</span> {
     <span class="kw">if</span> <span class="ident">b</span> <span class="op">=</span><span class="op">=</span> <span class="ident">zero</span>()  {
         <span class="ident">a</span>
@@ -147,27 +146,22 @@
     }
 }
 
-<span class="attribute">#[<span class="ident">snippet</span>(<span class="string">&quot;lcm&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">snippet</span>(<span class="ident">include</span><span class="op">=</span><span class="string">&quot;gcd&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lcm</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PrimInt</span><span class="op">&gt;</span>(<span class="ident">a</span>: <span class="ident">T</span>, <span class="ident">b</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">T</span> {
     <span class="ident">a</span> <span class="op">/</span> <span class="ident">gcd</span>(<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">*</span> <span class="ident">b</span>
 }
 
-<span class="attribute">#[<span class="ident">snippet</span>(<span class="string">&quot;gcd_list&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">snippet</span>(<span class="ident">include</span><span class="op">=</span><span class="string">&quot;gcd&quot;</span>)]</span>
+
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">gcd_list</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PrimInt</span><span class="op">&gt;</span>(<span class="ident">vec</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">T</span> {
     <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">vec</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">1</span>);
     <span class="ident">vec</span>.<span class="ident">iter</span>().<span class="ident">fold</span>(<span class="ident">vec</span>[<span class="number">0</span>], <span class="op">|</span><span class="ident">acc</span>, <span class="ident">x</span><span class="op">|</span> <span class="ident">gcd</span>(<span class="kw-2">*</span><span class="ident">x</span>, <span class="ident">acc</span>))
 }
 
-<span class="attribute">#[<span class="ident">snippet</span>(<span class="string">&quot;lcm_list&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">snippet</span>(<span class="ident">include</span><span class="op">=</span><span class="string">&quot;lcm&quot;</span>)]</span>
+
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lcm_list</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PrimInt</span><span class="op">&gt;</span>(<span class="ident">vec</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">T</span> {
     <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">vec</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">1</span>);
     <span class="ident">vec</span>.<span class="ident">iter</span>().<span class="ident">fold</span>(<span class="ident">vec</span>[<span class="number">0</span>], <span class="op">|</span><span class="ident">acc</span>, <span class="ident">x</span><span class="op">|</span> <span class="ident">lcm</span>(<span class="kw-2">*</span><span class="ident">x</span>, <span class="ident">acc</span>))
 }
 
-<span class="attribute">#[<span class="ident">snippet</span>(<span class="string">&quot;quadratic_formula&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">quadratic_formula</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">NumCast</span><span class="op">&gt;</span>(<span class="ident">a</span>: <span class="ident">T</span>, <span class="ident">b</span>: <span class="ident">T</span>, <span class="ident">c</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">f64</span>, <span class="ident">f64</span>)<span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">a</span>.<span class="ident">to_f64</span>().<span class="ident">unwrap</span>();
     <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">b</span>.<span class="ident">to_f64</span>().<span class="ident">unwrap</span>();
@@ -236,6 +230,14 @@
     <span class="kw">let</span> <span class="ident">z</span> <span class="op">=</span> <span class="ident">ext_gcd</span>(<span class="ident">x</span>, <span class="ident">m</span>);
     <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">z</span>.<span class="number">0</span> <span class="op">=</span><span class="op">=</span> <span class="ident">one</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>());
     <span class="ident">z</span>.<span class="number">1</span>
+}
+
+
+<span class="doccomment">/// a0: the first term of serires</span>
+<span class="doccomment">/// d: common difference</span>
+<span class="doccomment">/// n: number of terms</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">arithmetic_progression</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PrimInt</span><span class="op">&gt;</span>(<span class="ident">a0</span>: <span class="ident">T</span>, <span class="ident">d</span>: <span class="ident">T</span>, <span class="ident">n</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">T</span> {
+    <span class="ident">n</span> <span class="op">*</span> ((<span class="ident">T</span>::<span class="ident">one</span>() <span class="op">+</span> <span class="ident">T</span>::<span class="ident">one</span>()) <span class="op">*</span> <span class="ident">a0</span> <span class="op">+</span> (<span class="ident">n</span> <span class="op">-</span> <span class="ident">T</span>::<span class="ident">one</span>()) <span class="op">*</span> <span class="ident">d</span>) <span class="op">/</span> (<span class="ident">T</span>::<span class="ident">one</span>() <span class="op">+</span> <span class="ident">T</span>::<span class="ident">one</span>())
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>

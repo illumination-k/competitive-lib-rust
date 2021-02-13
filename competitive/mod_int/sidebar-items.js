@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["mod_int",""]]});
+initSidebarItems({"struct":[["ModInt",""]]});

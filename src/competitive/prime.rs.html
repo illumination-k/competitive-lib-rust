@@ -214,21 +214,9 @@
 <span id="214">214</span>
 <span id="215">215</span>
 <span id="216">216</span>
-<span id="217">217</span>
-<span id="218">218</span>
-<span id="219">219</span>
-<span id="220">220</span>
-<span id="221">221</span>
-<span id="222">222</span>
-<span id="223">223</span>
-<span id="224">224</span>
-<span id="225">225</span>
-<span id="226">226</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="kw">use</span> <span class="ident">cargo_snippet</span>::<span class="ident">snippet</span>;
 <span class="kw">use</span> <span class="ident">num_traits</span>::<span class="kw-2">*</span>;
 
-<span class="attribute">#[<span class="ident">snippet</span>(<span class="string">&quot;is_prime&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_prime</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PrimInt</span><span class="op">+</span><span class="ident">NumAssign</span><span class="op">&gt;</span>(<span class="ident">n</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
     <span class="comment">// O(sqrt(n))</span>
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">flag</span>: <span class="ident">bool</span> <span class="op">=</span> <span class="bool-val">true</span>;
@@ -245,7 +233,6 @@
     <span class="ident">flag</span>
 }
 
-<span class="attribute">#[<span class="ident">snippet</span>(<span class="string">&quot;enum_divisors&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">enum_divisors</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PrimInt</span><span class="op">+</span><span class="ident">NumAssign</span><span class="op">&gt;</span>(<span class="ident">n</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
     <span class="comment">// O(sqrt(n))</span>
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
@@ -264,7 +251,6 @@
 }
 
 
-<span class="attribute">#[<span class="ident">snippet</span>(<span class="string">&quot;prime_factorize&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">prime_factorize</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PrimInt</span><span class="op">+</span><span class="ident">NumAssign</span><span class="op">&gt;</span>(<span class="kw-2">mut</span> <span class="ident">n</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">T</span>, <span class="ident">T</span>)<span class="op">&gt;</span> {
     <span class="comment">// O(sqrt(n))</span>
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">res</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">T</span>, <span class="ident">T</span>)<span class="op">&gt;</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
@@ -290,7 +276,6 @@
 }
 
 
-<span class="attribute">#[<span class="ident">snippet</span>(<span class="string">&quot;sieve_of_eratosthenes&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">sieve_of_eratosthenes</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">NumCast</span><span class="op">&gt;</span>(<span class="ident">n</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
     <span class="kw">let</span> <span class="ident">n</span> <span class="op">=</span> <span class="ident">n</span>.<span class="ident">to_usize</span>().<span class="ident">expect</span>(<span class="string">&quot;cannot convert n to usize&quot;</span>);
     <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span> <span class="number">2</span> {
@@ -319,15 +304,11 @@
     ).<span class="ident">collect</span>()
 }
 
-<span class="attribute">#[<span class="ident">snippet</span>(<span class="string">&quot;osa_k&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">snippet</span>(<span class="ident">include</span><span class="op">=</span><span class="string">&quot;osa_k_make_sieves&quot;</span>)]</span>
-<span class="attribute">#[<span class="ident">snippet</span>(<span class="ident">include</span><span class="op">=</span><span class="string">&quot;osa_k_impl&quot;</span>)]</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">OsaK</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PrimInt</span> <span class="op">+</span> <span class="ident">std</span>::<span class="ident">hash</span>::<span class="ident">Hash</span> <span class="op">+</span> <span class="ident">NumAssign</span> <span class="op">&gt;</span> {
     <span class="ident">sieve</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
 }
 
-<span class="attribute">#[<span class="ident">snippet</span>(<span class="string">&quot;osa_k_make_sieves&quot;</span>)]</span>
 <span class="kw">fn</span> <span class="ident">_make_sieve</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PrimInt</span><span class="op">&gt;</span>(<span class="kw-2">mut</span> <span class="ident">maxu</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
     <span class="ident">maxu</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">sieve</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> <span class="op">=</span> (<span class="number">0</span>..<span class="ident">maxu</span>).<span class="ident">collect</span>();
@@ -346,7 +327,6 @@
         .<span class="ident">collect</span>()
 }
 
-<span class="attribute">#[<span class="ident">snippet</span>(<span class="string">&quot;osa_k_impl&quot;</span>)]</span>
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PrimInt</span> <span class="op">+</span> <span class="ident">std</span>::<span class="ident">hash</span>::<span class="ident">Hash</span> <span class="op">+</span> <span class="ident">NumAssign</span> <span class="op">&gt;</span> <span class="ident">OsaK</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
     <span class="doccomment">/// O(maxloglog(max))</span>
     <span class="doccomment">/// construct osa-k from max size</span>
