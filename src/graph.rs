@@ -31,7 +31,7 @@ impl<W> ListGraph<W>
 {   
     /// create dot format for graphviz
     /// ```rust
-    /// use competitive::graph::listgraph::*;
+    /// use competitive::graph::*;
     /// let vec = vec![
     ///     (0, 1, 1),
     ///     (0, 2, 4),
@@ -300,7 +300,7 @@ impl<W> NeighborhoodExt<W> for ListGraph<W> {
 /// return distance from start and prev nodes information.
 /// restore_path function can create shortest path from start to goal from prev nodes.
 /// ```rust
-/// use competitive::graph::listgraph::*;
+/// use competitive::graph::*;
 /// let vec = vec![
 ///     (0, 1, 1),
 ///     (0, 2, 4),
@@ -350,7 +350,7 @@ pub fn diktstra<W>(graph: &ListGraph<W>, start: usize) -> (Vec<W>, Vec<usize>)
 /// return distance from start and prev nodes information
 /// restore_path function can create shortest path from start to goal from prev nodes.
 /// ```rust
-/// use competitive::graph::listgraph::*;
+/// use competitive::graph::*;
 /// let vec = vec![
 ///     (1, 2),
 ///     (1, 4),

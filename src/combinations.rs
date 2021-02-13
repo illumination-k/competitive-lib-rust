@@ -63,7 +63,7 @@ impl Combination {
 
 /// simple calculation of combinations without modulo
 /// ```
-/// use competitive::calc_comb::combination;
+/// use competitive::combinations::combination;
 /// let res = combination(16);
 /// // get 16C11
 /// assert_eq!(res[16][11], 4368);
