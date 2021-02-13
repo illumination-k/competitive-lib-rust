@@ -1,7 +1,6 @@
 use num_traits::{Zero, One, Bounded};
 use std::ops::*;
 
-
 pub trait Monoid: Sized {
     /// 単位元
     fn mempty() -> Self;

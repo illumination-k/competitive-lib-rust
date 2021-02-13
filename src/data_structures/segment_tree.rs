@@ -1,6 +1,6 @@
 // https://github.com/tanakh/competitive-rs/blob/master/src/segment_tree.rs
 
-use crate::data_structures::monoid::Monoid;
+use crate::data_structures::monoid::*;
 
 use std::{
     ops::Bound,
@@ -138,53 +138,57 @@ impl<T: Clone + Monoid> SegmentTree<T> {
     }
 }
 
-#[test]
-fn test() {
-    use crate::data_structures::monoid::Sum;
+#[cfg(test)]
+mod test {
+    use super::*;
+    #[test]
+    fn test() {
+        use crate::data_structures::monoid::Sum;
 
-    {
-        let st = SegmentTree::<Sum<i64>>::new(5);
-        assert_eq!(st.v.iter().map(|r| r.0).collect::<Vec<_>>(), vec![0; 15]);
+        {
+            let st = SegmentTree::<Sum<i64>>::new(5);
+            assert_eq!(st.v.iter().map(|r| r.0).collect::<Vec<_>>(), vec![0; 15]);
+        }
+
+        {
+            let st = SegmentTree::<Sum<i64>>::from_slice(&[1, 2, 3, 4, 5]);
+            assert_eq!(
+                st.v.iter().map(|r| r.0).collect::<Vec<_>>(),
+                vec![
+                    15, //
+                    10, 5, //
+                    3, 7, 5, 0, //
+                    1, 2, 3, 4, 5, 0, 0, 0
+                ]
+            );
+        }
+
+        let mut st = SegmentTree::<Sum<i64>>::new(5);
+        st.set(2, 1);
+        assert_eq!(st.query(0..5).0, 1);
+        assert_eq!(st.query(0..2).0, 0);
+        assert_eq!(st.query(3..5).0, 0);
+        assert_eq!(st.query(2..3).0, 1);
+        assert_eq!(st.query(2..2).0, 0);
+        st.mappend(2, 2);
+        assert_eq!(st.query(0..5).0, 3);
+        assert_eq!(st.query(0..2).0, 0);
+        assert_eq!(st.query(3..5).0, 0);
+        assert_eq!(st.query(2..3).0, 3);
+        assert_eq!(st.query(2..2).0, 0);
+        st.set(0, 1);
+        st.set(1, 2);
+        st.set(3, 4);
+        st.set(4, 5);
+        assert_eq!(st.query(0..5).0, 15);
+        assert_eq!(st.query(0..2).0, 3);
+        assert_eq!(st.query(3..5).0, 9);
+        assert_eq!(st.query(2..3).0, 3);
+        assert_eq!(st.query(2..2).0, 0);
+        assert_eq!(st.query(2..=2).0, 3);
+        assert_eq!(st.query(..).0, 15);
+        assert_eq!(st.query(1..).0, 14);
+        assert_eq!(st.query(..3).0, 6);
+        assert_eq!(st.query(..=3).0, 10);
     }
-
-    {
-        let st = SegmentTree::<Sum<i64>>::from_slice(&[1, 2, 3, 4, 5]);
-        assert_eq!(
-            st.v.iter().map(|r| r.0).collect::<Vec<_>>(),
-            vec![
-                15, //
-                10, 5, //
-                3, 7, 5, 0, //
-                1, 2, 3, 4, 5, 0, 0, 0
-            ]
-        );
-    }
-
-    let mut st = SegmentTree::<Sum<i64>>::new(5);
-    st.set(2, 1);
-    assert_eq!(st.query(0..5).0, 1);
-    assert_eq!(st.query(0..2).0, 0);
-    assert_eq!(st.query(3..5).0, 0);
-    assert_eq!(st.query(2..3).0, 1);
-    assert_eq!(st.query(2..2).0, 0);
-    st.mappend(2, 2);
-    assert_eq!(st.query(0..5).0, 3);
-    assert_eq!(st.query(0..2).0, 0);
-    assert_eq!(st.query(3..5).0, 0);
-    assert_eq!(st.query(2..3).0, 3);
-    assert_eq!(st.query(2..2).0, 0);
-    st.set(0, 1);
-    st.set(1, 2);
-    st.set(3, 4);
-    st.set(4, 5);
-    assert_eq!(st.query(0..5).0, 15);
-    assert_eq!(st.query(0..2).0, 3);
-    assert_eq!(st.query(3..5).0, 9);
-    assert_eq!(st.query(2..3).0, 3);
-    assert_eq!(st.query(2..2).0, 0);
-    assert_eq!(st.query(2..=2).0, 3);
-    assert_eq!(st.query(..).0, 15);
-    assert_eq!(st.query(1..).0, 14);
-    assert_eq!(st.query(..3).0, 6);
-    assert_eq!(st.query(..=3).0, 10);
 }

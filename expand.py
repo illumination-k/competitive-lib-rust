@@ -6,6 +6,11 @@ import tempfile
 import subprocess
 import sys
 
+# settings
+indent = " " * 4
+cur_dir = os.path.dirname(os.path.abspath(__file__))
+
+
 def get_module_name(line: str) -> str:
     """
     >>> get_module_name("use competitive::prime;")
@@ -14,6 +19,8 @@ def get_module_name(line: str) -> str:
     'data_structures/union_find'
     >>> get_module_name("use competitive::prime::*;")
     'prime'
+    >>> get_module_name("use crate::data_structures::monoid::*;")
+    'data_structures/monoid'
     """
     line = line.rstrip(";\n")
     line = line.rstrip("::*")
@@ -25,9 +32,14 @@ def get_module_name(line: str) -> str:
     assert(len(names) == 2)
     return os.path.join(names[0], names[1])
 
-# settings
-indent = " " * 4
-cur_dir = os.path.dirname(os.path.abspath(__file__))
+def make_module_path(module_name: str) -> str:
+    """
+    >>> make_module_path("data_structures/monoid") == cur_dir + "/src/data_structures/monoid.rs"
+    True
+    """
+    global cur_dir
+    return os.path.join(cur_dir, "src", module_name + ".rs")
+
 
 
 def main():
@@ -60,7 +72,7 @@ def main():
 
     all_modules_codes = ['', f'mod {args.crate_name}_internal_mod ' + '{']
     for module_name in module_names:
-        module_path = os.path.join(cur_dir, "src", module_name + ".rs")
+        module_path = make_module_path(module_name)
         depth = len(module_name.split(os.path.sep))
         
         module_codes = []
@@ -81,6 +93,24 @@ def main():
                 # remove cargo snippet dependencies
                 if "snippet" in line:
                     continue
+
+                if line.startswith("use crate::"):
+                    #!TODO 依存関係の解決
+                    # 入れ子のmodを作る
+                    # 再帰で書くべき?
+                    dependent_module_name = get_module_name(line)
+                    dependent_module_path = make_module_path(dependent_module_name)
+                    module_codes.append(indent * (depth+1) + "pub mod " + os.path.split(dependent_module_name)[-1] + " {")
+                    with open(dependent_module_path) as f:
+                        for l in f:
+                            if line.startswith("#[cfg(test)]"):
+                                break
+                            module_codes.append(indent * (depth+2) + l.rstrip("\n"))
+                    module_codes.append(indent * (depth+1) + "}")
+                    if "*" in line:
+                        line = f'use {os.path.split(dependent_module_name)[-1]}::*;'
+                    else:
+                        line = f'use {os.path.split(dependent_module_name)[-1]};'
 
                 module_codes.append(indent_num + line.rstrip("\n"))    
 
