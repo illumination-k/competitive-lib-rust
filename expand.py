@@ -12,8 +12,11 @@ def get_module_name(line: str) -> str:
     'prime'
     >>> get_module_name("use competitive::data_structures::union_find;")
     'data_structures/union_find'
+    >>> get_module_name("use competitive::prime::*;")
+    'prime'
     """
     line = line.rstrip(";\n")
+    line = line.rstrip("::*")
     names = line.split(" ")[1].split("::")[1:]
     assert(len(names) != 0)
     if len(names) == 1:
@@ -28,7 +31,7 @@ cur_dir = os.path.dirname(os.path.abspath(__file__))
 
 
 def main():
-    parser = argparse.ArgumentParser("expand use::competitive::xxxx")
+    parser = argparse.ArgumentParser("expand use::crate_name::xxxx")
     parser.add_argument("--bin", type=str)
     parser.add_argument("--crate_name", type=str, default="competitive")
     parser.add_argument("--stdout", action='store_true', help="stdout instead of overwrite")
@@ -78,7 +81,7 @@ def main():
                 # remove cargo snippet dependencies
                 if "snippet" in line:
                     continue
-                
+
                 module_codes.append(indent_num + line.rstrip("\n"))    
 
         for i in range(depth, 0, -1):

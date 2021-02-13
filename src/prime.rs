@@ -1,7 +1,5 @@
-use cargo_snippet::snippet;
 use num_traits::*;
 
-#[snippet("is_prime")]
 pub fn is_prime<T: PrimInt+NumAssign>(n: T) -> bool {
     // O(sqrt(n))
     let mut flag: bool = true;
@@ -18,7 +16,6 @@ pub fn is_prime<T: PrimInt+NumAssign>(n: T) -> bool {
     flag
 }
 
-#[snippet("enum_divisors")]
 pub fn enum_divisors<T: PrimInt+NumAssign>(n: T) -> Vec<T> {
     // O(sqrt(n))
     let mut res: Vec<T> = Vec::new();
@@ -37,7 +34,6 @@ pub fn enum_divisors<T: PrimInt+NumAssign>(n: T) -> Vec<T> {
 }
 
 
-#[snippet("prime_factorize")]
 pub fn prime_factorize<T: PrimInt+NumAssign>(mut n: T) -> Vec<(T, T)> {
     // O(sqrt(n))
     let mut res: Vec<(T, T)> = Vec::new();
@@ -63,7 +59,6 @@ pub fn prime_factorize<T: PrimInt+NumAssign>(mut n: T) -> Vec<(T, T)> {
 }
 
 
-#[snippet("sieve_of_eratosthenes")]
 pub fn sieve_of_eratosthenes<T: NumCast>(n: T) -> Vec<usize> {
     let n = n.to_usize().expect("cannot convert n to usize");
     if n < 2 {
@@ -92,15 +87,11 @@ pub fn sieve_of_eratosthenes<T: NumCast>(n: T) -> Vec<usize> {
     ).collect()
 }
 
-#[snippet("osa_k")]
-#[snippet(include="osa_k_make_sieves")]
-#[snippet(include="osa_k_impl")]
 #[derive(Debug, Clone)]
 pub struct OsaK<T: PrimInt + std::hash::Hash + NumAssign > {
     sieve: Vec<T>
 }
 
-#[snippet("osa_k_make_sieves")]
 fn _make_sieve<T: PrimInt>(mut maxu: usize) -> Vec<T> {
     maxu += 1;
     let mut sieve: Vec<usize> = (0..maxu).collect();
@@ -119,7 +110,6 @@ fn _make_sieve<T: PrimInt>(mut maxu: usize) -> Vec<T> {
         .collect()
 }
 
-#[snippet("osa_k_impl")]
 impl<T: PrimInt + std::hash::Hash + NumAssign > OsaK<T> {
     /// O(maxloglog(max))
     /// construct osa-k from max size

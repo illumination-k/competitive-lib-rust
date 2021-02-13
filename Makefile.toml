@@ -18,11 +18,15 @@ args = ["atcoder", "submit", "${@}"]
 command = "cargo"
 args = ["test"]
 
-[tasks.push]
-dependincies = ["pretest"]
+[tasks.readme]
 script = """
 cargo readme > README.md
 git add README.md
 git commit -m "update README by cargo-readme"
+"""
+
+[tasks.push]
+dependincies = ["pretest", "readme"]
+script = """
 git push origin master
 """

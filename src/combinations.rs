@@ -1,6 +1,3 @@
-use cargo_snippet::snippet;
-
-#[snippet("struct_comb")]
 #[derive(Debug, Clone)]
 pub struct Combination {
     fact_inv: Vec<usize>,
@@ -9,8 +6,6 @@ pub struct Combination {
     modulo: usize,
 }
 
-#[snippet("calc_comb")]
-#[snippet(include="struct_comb")]
 impl Combination {
     pub fn new(upper: usize, modulo: usize) -> Self {
         let mut fact_inv = vec![0; upper+1];

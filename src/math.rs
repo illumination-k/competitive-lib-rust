@@ -1,7 +1,5 @@
 use num_traits::{ PrimInt, zero, one, NumCast };
-use cargo_snippet::snippet;
 
-#[snippet("gcd")]
 pub fn gcd<T: PrimInt>(a: T, b: T) -> T {
     if b == zero()  {
         a
@@ -10,27 +8,22 @@ pub fn gcd<T: PrimInt>(a: T, b: T) -> T {
     }
 }
 
-#[snippet("lcm")]
-#[snippet(include="gcd")]
 pub fn lcm<T: PrimInt>(a: T, b: T) -> T {
     a / gcd(a, b) * b
 }
 
-#[snippet("gcd_list")]
-#[snippet(include="gcd")]
+
 pub fn gcd_list<T: PrimInt>(vec: Vec<T>) -> T {
     assert!(vec.len() > 1);
     vec.iter().fold(vec[0], |acc, x| gcd(*x, acc))
 }
 
-#[snippet("lcm_list")]
-#[snippet(include="lcm")]
+
 pub fn lcm_list<T: PrimInt>(vec: Vec<T>) -> T {
     assert!(vec.len() > 1);
     vec.iter().fold(vec[0], |acc, x| lcm(*x, acc))
 }
 
-#[snippet("quadratic_formula")]
 pub fn quadratic_formula<T: NumCast>(a: T, b: T, c: T) -> Option<(f64, f64)> {
     let a = a.to_f64().unwrap();
     let b = b.to_f64().unwrap();
@@ -99,6 +92,14 @@ pub fn inv_mod<T: NumCast + PrimInt>(x: T, m: T) -> T {
     let z = ext_gcd(x, m);
     assert!(z.0 == one::<T>());
     z.1
+}
+
+
+/// a0: the first term of serires
+/// d: common difference
+/// n: number of terms
+pub fn arithmetic_progression<T: PrimInt>(a0: T, d: T, n: T) -> T {
+    n * ((T::one() + T::one()) * a0 + (n - T::one()) * d) / (T::one() + T::one())
 }
 
 #[cfg(test)]
