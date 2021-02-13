@@ -22,7 +22,11 @@ args = ["test"]
 script = """
 cargo readme > README.md
 git add README.md
-git commit -m "update README by cargo-readme"
+
+lines=$(git diff --name-only | wc -l)
+if [ $lines -gt 1 ]; then
+    git commit -m "update README by cargo-readme"
+fi
 """
 
 [tasks.push]
