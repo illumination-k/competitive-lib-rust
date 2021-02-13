@@ -14,7 +14,12 @@ dependincies = ["expand"]
 command = "cargo"
 args = ["atcoder", "submit", "${@}"]
 
+[tasks.pretest]
+command = "cargo"
+args = ["test"]
+
 [tasks.push]
+dependincies = ["pretest"]
 script = """
 #!/bin/bash
 set -eu
