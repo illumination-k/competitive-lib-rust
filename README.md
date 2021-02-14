@@ -12,6 +12,8 @@ exapnd.py --bin a
 
 This python script can expand modules in a.rs.
 
+#### Examples
+
 ```rust
 use competitive::math::*;
 ```
@@ -26,3 +28,4 @@ mod competitive_internal {
         /* math codes! */
     }
 }
+```
