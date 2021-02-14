@@ -560,7 +560,9 @@ mod test {
             let graph_type = if i % 2 == 0 { Direction::DiGraph } else { Direction::UnGraph };
             let vec = make_random_unweighted_graph(node_number, edge_number, false);
             let graph: UnweightedListGraph = ListGraph::unweighted_from(vec, node_number, 0, graph_type);
-            let _ = dfs(0, &graph, DfsResultType::FirstAndLastOrd);
+            for start in 0..node_number {
+                let _ = dfs(start, &graph, DfsResultType::FirstAndLastOrd);
+            }
         }
     }
 }
