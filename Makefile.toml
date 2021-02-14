@@ -24,7 +24,7 @@ cargo readme > README.md
 git add README.md
 
 lines=$(git diff --name-only | wc -l)
-if [ $lines -gt 1 ]; then
+if [ $lines -eq 1 ]; then
     git commit -m "update README by cargo-readme"
 fi
 """
