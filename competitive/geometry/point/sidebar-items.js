@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["triangle_space",""]],"struct":[["Point",""]]});
+initSidebarItems({"fn":[["gradient",""],["triangle_space",""]],"struct":[["Point",""]]});
