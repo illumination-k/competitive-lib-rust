@@ -9,7 +9,7 @@ competitive library for atcoder.
 exapnd.py --bin a
 ```
 
-This python script can expand modules in a.rs.  
+This python script can expand modules in a.rs. (expected directory made by `cargo-atcoder`). 
 
 ### Examples
 
@@ -35,6 +35,7 @@ mod competitive_internal {
 extern crate approx;
 
 extern crate num_traits;
+extern crate rand;
 
 pub mod dp;
 pub mod mod_int;
@@ -46,3 +47,5 @@ pub mod math;
 pub mod scanner;
 pub mod data_structures;
 pub mod geometry;
+
+pub mod test_utility;

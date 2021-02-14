@@ -29,6 +29,10 @@ if [ $lines -eq 1 ]; then
 fi
 """
 
+[tasks.cargo-atcoder-config]
+command = "cp"
+args = ["./cargo-atcoder.toml", "${HOME}/.config/cargo-atcoder.toml"]
+
 [tasks.push]
 dependencies = ["pretest", "readme"]
 script = """

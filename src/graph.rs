@@ -1,5 +1,5 @@
 use num_traits::{Bounded, NumCast, One, Zero};
-use std::{collections::{BinaryHeap, HashSet, VecDeque}, fmt, ops::{Index, IndexMut}, writeln};
+use std::{collections::{BinaryHeap, HashSet, VecDeque}, fmt, ops::{Index, IndexMut}, slice::Iter, writeln};
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Edge<W> {
     target: usize,
@@ -40,7 +40,7 @@ impl<W> ListGraph<W>
     ///     (3, 1, 1),
     ///     (3, 2, 5),
     /// ];
-    /// let graph: ListGraph<isize> = ListGraph::weighted_from(vec, 0, Direction::DiGraph);
+    /// let graph: ListGraph<isize> = ListGraph::weighted_from(vec, 4, 0, Direction::DiGraph);
     /// let dot = graph.to_dot(&Direction::DiGraph);
     /// assert_eq!(
     ///     dot,
@@ -172,9 +172,8 @@ impl<W> ListGraph<W>
     /// create unweighted ListGraph.  
     /// offset: index = val - offset  
     /// graph_type: Undirect or Direct  
-    pub fn unweighted_from(vec: Vec<(usize, usize)>, offset: usize, graph_type: Direction) -> Self {
-        let max_val = *vec.iter().map(|(i, j)| std::cmp::max(i, j)).max().unwrap() + 1 - offset;
-        let mut graph = vec![vec![]; max_val];
+    pub fn unweighted_from(vec: Vec<(usize, usize)>, size: usize, offset: usize, graph_type: Direction) -> Self {
+        let mut graph = vec![vec![]; size];
         for &(a, b) in vec.iter() {
             add_target(a-offset, b-offset, W::one(), &graph_type, &mut graph)
         }
@@ -187,9 +186,8 @@ impl<W> ListGraph<W>
     /// create weighted ListGraph<W>.
     /// offset: index = val - offset
     /// graph_type: Undirect or Direct
-    pub fn weighted_from(vec: Vec<(usize, usize, W)>, offset: usize, graph_type: Direction) -> Self {
-        let max_val = *vec.iter().map(|(i, j, _w)| std::cmp::max(i, j)).max().unwrap() + 1 - offset;
-        let mut graph = vec![vec![]; max_val];
+    pub fn weighted_from(vec: Vec<(usize, usize, W)>, size: usize, offset: usize, graph_type: Direction) -> Self {
+        let mut graph = vec![vec![]; size];
         for &(a, b, w) in vec.iter() {
             add_target(a-offset, b-offset, w, &graph_type, &mut graph)
         }
@@ -208,11 +206,19 @@ impl<W> ListGraph<W>
             }
         }
 
-        ListGraph::<W>::weighted_from(vec, 0, Direction::DiGraph)
+        ListGraph::<W>::weighted_from(vec, self.len(), 0, Direction::DiGraph)
     }
 
     pub fn len(&self) -> usize {
         self.graph.len()
+    }
+
+    fn neighbors(&self, source: usize) -> Iter<Edge<W>> {
+        self[source].iter()
+    }
+
+    pub fn neighbors_unweighted<'a>(&'a self, source: usize) -> impl Iterator<Item = &'a usize> + 'a {
+        self[source].iter().clone().map(|x| &x.target)
     }
 }
 
@@ -232,68 +238,6 @@ impl<W> IndexMut<usize> for ListGraph<W> {
 
 pub type UnweightedListGraph = ListGraph<usize>;
 
-pub struct NeighborhoodIter<'a, W> {
-    source: usize,
-    counter: usize,
-    graph: &'a ListGraph<W>,
-}
-
-pub struct NeighborhoodUnweightedIter<'a, W> {
-    source: usize,
-    counter: usize,
-    graph: &'a ListGraph<W>,
-}
-
-
-impl<'a, W> Iterator for NeighborhoodIter<'a, W> {
-    type Item = &'a Edge<W>;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        self.counter += 1;
-        self.graph[self.source].get(self.counter - 1)
-    }
-}
-
-impl <'a, W> Iterator for NeighborhoodUnweightedIter<'a, W>
-    where W: Copy + One
-{
-    type Item = &'a usize;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        if self.counter >= self.graph[self.source].len() {
-            return None
-        }
-        self.counter += 1;
-        Some(&(self.graph[self.source][self.counter - 1].target))
-    }
-}
-
-pub trait NeighborhoodExt<W> {
-    /// get neighborhood of source with weight  
-    fn neighbors(&self, source: usize) -> NeighborhoodIter<W>;
-
-    /// get neighborhood of source without weight
-    fn neighbors_unweighted(&self, source: usize) -> NeighborhoodUnweightedIter<W>;
-}
-
-impl<W> NeighborhoodExt<W> for ListGraph<W> {
-    fn neighbors(&self, source: usize) -> NeighborhoodIter<W> {
-        NeighborhoodIter {
-            source,
-            counter: 0,
-            graph: self
-        }
-    }
-
-    fn neighbors_unweighted(&self, source: usize) -> NeighborhoodUnweightedIter<W> {
-        NeighborhoodUnweightedIter {
-            source,
-            counter: 0,
-            graph: self
-        }
-    }
-}
-
 /// **Diktstra**   
 /// O(|E+V|log(|V|))   
 /// let E be edge number, let V be vertex number.
@@ -309,7 +253,7 @@ impl<W> NeighborhoodExt<W> for ListGraph<W> {
 ///     (3, 1, 1),
 ///     (3, 2, 5),
 /// ];
-/// let graph: ListGraph<isize> = ListGraph::weighted_from(vec, 0, Direction::DiGraph);
+/// let graph: ListGraph<isize> = ListGraph::weighted_from(vec, 4, 0, Direction::DiGraph);
 /// 
 /// let (w, prev_nodes) = diktstra(&graph, 1);
 /// assert_eq!(w, vec![3, 0, 2, std::isize::MAX]);
@@ -357,7 +301,7 @@ pub fn diktstra<W>(graph: &ListGraph<W>, start: usize) -> (Vec<W>, Vec<usize>)
 ///     (2, 4),
 ///     (4, 3)    
 /// ];
-/// let graph: UnweightedListGraph = ListGraph::unweighted_from(vec, 1, Direction::DiGraph);
+/// let graph: UnweightedListGraph = ListGraph::unweighted_from(vec, 4, 1, Direction::DiGraph);
 /// let (dist, prev_nodes) = bfs(&graph, 0);
 /// assert_eq!(dist, vec![0, 1, 2, 1]);
 /// assert_eq!(restore_path(0, 2, &prev_nodes), vec![0, 3, 2]);
@@ -496,15 +440,16 @@ pub fn dfs<W>(start: usize, graph: &ListGraph<W>, result_type: DfsResultType) ->
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::test_utility::*;
     #[test]
     fn test_fmt() {
-        let graph: ListGraph<usize> = ListGraph::unweighted_from(vec![(0, 1), (1, 2), (4, 1), (1, 3)], 0, Direction::UnGraph);
+        let graph: ListGraph<usize> = ListGraph::unweighted_from(vec![(0, 1), (1, 2), (4, 1), (1, 3)], 5, 0, Direction::UnGraph);
         dbg!(&graph);
     }
 
     #[test]
     fn test_iter() {
-        let graph: ListGraph<usize> = ListGraph::unweighted_from(vec![(0, 1), (1, 2), (4, 1), (1, 3)], 0, Direction::UnGraph);
+        let graph: ListGraph<usize> = ListGraph::unweighted_from(vec![(0, 1), (1, 2), (4, 1), (1, 3)], 5, 0, Direction::UnGraph);
         let mut v = vec![];
         for e in graph.neighbors(1) {
             v.push(e.target());
@@ -513,7 +458,7 @@ mod test {
     }
     #[test]
     fn test_iter_unweighted() {
-        let graph: ListGraph<usize> = ListGraph::unweighted_from(vec![(0, 1), (1, 2), (4, 1), (1, 3)], 0, Direction::UnGraph);
+        let graph: ListGraph<usize> = ListGraph::unweighted_from(vec![(0, 1), (1, 2), (4, 1), (1, 3)], 5, 0, Direction::UnGraph);
         let mut v = vec![];
         for &n in graph.neighbors_unweighted(1) {
             v.push(n);
@@ -530,7 +475,7 @@ mod test {
             (2, 3, 1),
             (1, 3, 5),
         ];
-        let graph: ListGraph<isize> = ListGraph::weighted_from(vec, 0, Direction::DiGraph);
+        let graph: ListGraph<isize> = ListGraph::weighted_from(vec, 4, 0, Direction::DiGraph);
         // dbg!(&graph);
         let (w, prev_nodes) = diktstra(&graph, 0);
         assert_eq!(w, vec![0, 1, 3, 4]);
@@ -548,11 +493,26 @@ mod test {
             (3, 1, 1),
             (3, 2, 5),
         ];
-        let graph: ListGraph<isize> = ListGraph::weighted_from(vec, 0, Direction::DiGraph);
+        let graph: ListGraph<isize> = ListGraph::weighted_from(vec, 4, 0, Direction::DiGraph);
         // dbg!(&graph);
         let (w, prev_nodes) = diktstra(&graph, 1);
         assert_eq!(w, vec![3, 0, 2, std::isize::MAX]);
         assert_eq!(restore_path(1, 0, &prev_nodes), vec![1, 2, 0]);
+    }
+
+    #[test]
+    fn test_diktstra_small_rand() {
+        let node_number = 100;
+        let edge_number = 100;
+        let weight_range = (1, 10e7 as isize);
+
+        for _ in 0..100 {
+            let vec = make_random_isize_weighted_graph(node_number, edge_number, weight_range, true);
+            let graph:ListGraph<isize> = ListGraph::weighted_from(vec, node_number, 0, Direction::DiGraph);
+            for i in 0..node_number {
+                let (_, _) = diktstra(&graph, i);
+            }
+        }
     }
 
     #[test]
@@ -563,7 +523,7 @@ mod test {
             (4, 3)
         ];
 
-        let graph: UnweightedListGraph = ListGraph::unweighted_from(vec, 1, Direction::DiGraph);
+        let graph: UnweightedListGraph = ListGraph::unweighted_from(vec, 4, 1, Direction::DiGraph);
 
         let res = dfs(0, &graph, DfsResultType::TimeStamp);
         assert_eq!(res.seen, vec![true, true, true, true]);
@@ -583,11 +543,24 @@ mod test {
             (5, 6),
         ];
 
-        let graph: UnweightedListGraph = ListGraph::unweighted_from(vec, 1, Direction::DiGraph);
+        let graph: UnweightedListGraph = ListGraph::unweighted_from(vec, 6, 1, Direction::DiGraph);
         let res = dfs(0, &graph, DfsResultType::TimeStamp);
 
         assert_eq!(res.seen, vec![true; graph.len()]);
         assert_eq!(res.first_order, vec![0, 1, 2, 8, 3, 4]);
         assert_eq!(res.last_order, vec![11, 10, 7, 9, 6, 5]);
+    }
+
+    #[test]
+    fn test_df_small_rand() {
+        let node_number = 100;
+        let edge_number = 100;
+
+        for i in 0..200 {
+            let graph_type = if i % 2 == 0 { Direction::DiGraph } else { Direction::UnGraph };
+            let vec = make_random_unweighted_graph(node_number, edge_number, false);
+            let graph: UnweightedListGraph = ListGraph::unweighted_from(vec, node_number, 0, graph_type);
+            let _ = dfs(0, &graph, DfsResultType::FirstAndLastOrd);
+        }
     }
 }

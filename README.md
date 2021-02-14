@@ -10,7 +10,7 @@ competitive library for atcoder.
 exapnd.py --bin a
 ```
 
-This python script can expand modules in a.rs.
+This python script can expand modules in a.rs .
 
 #### Examples
 
