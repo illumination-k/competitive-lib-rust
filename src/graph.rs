@@ -213,7 +213,7 @@ impl<W> ListGraph<W>
         self.graph.len()
     }
 
-    fn neighbors(&self, source: usize) -> Iter<Edge<W>> {
+    pub fn neighbors(&self, source: usize) -> Iter<Edge<W>> {
         self[source].iter()
     }
 
