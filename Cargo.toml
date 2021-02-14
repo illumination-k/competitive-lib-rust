@@ -3,7 +3,6 @@ name = "competitive"
 version = "0.1.0"
 authors = ["illumination-k <illumination.k.27@gmail.com>"]
 edition = "2018"
-license = "MIT"
 license-file = "LICENSE"
 repository = "https://github.com/illumination-k/markov-clustering-rs"
 readme = "README.md"
@@ -14,3 +13,5 @@ readme = "README.md"
 num-traits = "0.2"
 rand = "0.4.2"
 
+[dev-dependencies]
+approx = "*"

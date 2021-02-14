@@ -1,364 +1,358 @@
 use num_traits::*;
 
-use competitive_internal_mod::data_structures::union_find;
-use competitive_internal_mod::prime;
+use competitive_internal_mod::data_structures::segment_tree;
+use competitive_internal_mod::math::*;
 
 mod competitive_internal_mod {
-    pub mod prime {
+    pub mod math {
+        use num_traits::{one, zero, NumCast, PrimInt};
 
-        pub fn is_prime<T: PrimInt + NumAssign>(n: T) -> bool {
-            // O(sqrt(n))
-            let mut flag: bool = true;
-
-            if n == one() {
-                flag = false
+        pub fn gcd<T: PrimInt>(a: T, b: T) -> T {
+            if b == zero() {
+                a
+            } else {
+                gcd(b, a % b)
             }
-            let mut i: T = one::<T>().signed_shl(1);
-            while i * i <= n {
-                if n % i == zero() {
-                    flag = false;
-                    break;
-                }
-                i += one();
-            }
-            flag
         }
 
-        pub fn enum_divisors<T: PrimInt + NumAssign>(n: T) -> Vec<T> {
-            // O(sqrt(n))
-            let mut res: Vec<T> = Vec::new();
-
-            let mut i: T = one();
-
-            while i * i <= n {
-                if n % i == zero() {
-                    res.push(i);
-                    if n / i != i {
-                        res.push(n / i)
-                    }
-                }
-                i += one();
-            }
-            res.sort();
-            res
+        pub fn lcm<T: PrimInt>(a: T, b: T) -> T {
+            a / gcd(a, b) * b
         }
 
-        pub fn prime_factorize<T: PrimInt + NumAssign>(mut n: T) -> Vec<(T, T)> {
-            // O(sqrt(n))
-            let mut res: Vec<(T, T)> = Vec::new();
-
-            let mut i: T = one::<T>().signed_shl(1);
-
-            while i * i <= n {
-                if n % i == zero() {
-                    let mut ex = zero::<T>();
-
-                    while n % i == zero() {
-                        ex += one();
-                        n = n / i;
-                    }
-                    res.push((i, ex));
-                }
-                i += one();
-            }
-
-            if n != one() {
-                res.push((n, one()))
-            }
-
-            res
+        pub fn gcd_list<T: PrimInt>(vec: Vec<T>) -> T {
+            assert!(vec.len() > 1);
+            vec.iter().fold(vec[0], |acc, x| gcd(*x, acc))
         }
 
-        pub fn sieve_of_eratosthenes<T: NumCast>(n: T) -> Vec<usize> {
-            let n = n.to_usize().expect("cannot convert n to usize");
-            if n < 2 {
-                return vec![];
-            }
-
-            let mut flags = vec![true; n / 2];
-            flags[0] = false;
-
-            let sqrt_x = (((n as f64).sqrt() + 0.1).ceil() + 0.5) as usize;
-            let sqrt_xi = sqrt_x / 2;
-
-            for i in 1..sqrt_xi {
-                if !flags[i] {
-                    continue;
-                }
-                let p = 2 * i + 1;
-                let start = 2 * i * (i + 1);
-                for mult in (start..flags.len()).step_by(p) {
-                    flags[mult] = false;
-                }
-            }
-
-            std::iter::once(2)
-                .chain(
-                    flags
-                        .iter()
-                        .enumerate()
-                        .filter(|(_i, flag)| **flag)
-                        .map(|(i, _flag)| 2 * i + 1),
-                )
-                .collect()
+        pub fn lcm_list<T: PrimInt>(vec: Vec<T>) -> T {
+            assert!(vec.len() > 1);
+            vec.iter().fold(vec[0], |acc, x| lcm(*x, acc))
         }
 
-        #[derive(Debug, Clone)]
-        pub struct OsaK<T: PrimInt + std::hash::Hash + NumAssign> {
-            sieve: Vec<T>,
+        pub fn quadratic_formula<T: NumCast>(a: T, b: T, c: T) -> Option<(f64, f64)> {
+            let a = a.to_f64().unwrap();
+            let b = b.to_f64().unwrap();
+            let c = c.to_f64().unwrap();
+
+            let descriminant = b * b - 4.0 * a * c;
+
+            if descriminant > 0.0 {
+                let ans_1 = (-b + descriminant.sqrt()) / (2.0 * a);
+                let ans_2 = (-b - descriminant.sqrt()) / (2.0 * a);
+                return Some((ans_1, ans_2));
+            } else if descriminant == 0.0 {
+                let ans = -b / (2.0 * a);
+                return Some((ans, ans));
+            } else {
+                return None;
+            }
         }
 
-        fn _make_sieve<T: PrimInt>(mut maxu: usize) -> Vec<T> {
-            maxu += 1;
-            let mut sieve: Vec<usize> = (0..maxu).collect();
-
-            let mut i = 2;
-            while i * i < maxu {
-                if sieve[i] < i {
-                    i += 1;
-                    continue;
-                }
-                for j in (i * i..maxu).step_by(i) {
-                    if sieve[j] == j {
-                        sieve[j] = i
-                    }
-                }
-                i += 1;
+        fn safe_mod(mut x: i64, modulo: i64) -> i64 {
+            x %= modulo;
+            if x < 0 {
+                x += modulo;
             }
-
-            sieve.into_iter().filter_map(|x| T::from(x)).collect()
+            x
         }
 
-        impl<T: PrimInt + std::hash::Hash + NumAssign> OsaK<T> {
-            /// O(maxloglog(max))
-            /// construct osa-k from max size
-            pub fn new(max: T) -> Self {
-                let maxu = max.to_usize().expect("cannot convert to usize");
-                let sieve = _make_sieve(maxu);
-
-                Self { sieve }
+        pub fn ext_gcd<T: NumCast + PrimInt>(a: T, b: T) -> (T, T) {
+            let a = a.to_i64().expect("a can not convert to i64");
+            let b = b.to_i64().expect("b cannot convert to i64");
+            let a = safe_mod(a, b);
+            if a == 0 {
+                return (T::from(b).unwrap(), T::from(0).unwrap());
             }
 
-            /// O(max(vec)loglog(max(vec)))
-            /// construct osa-k from Vector
-            pub fn from(vec: Vec<T>) -> Self {
-                assert!(vec.len() > 0);
-                let max = vec.iter().max().unwrap();
-                let maxu = max.to_usize().unwrap();
-                let sieve = _make_sieve(maxu);
+            // Contracts:
+            // [1] s - m0 * a = 0 (mod b)
+            // [2] t - m1 * a = 0 (mod b)
+            // [3] s * |m1| + t * |m0| <= b
+            let mut s = b;
+            let mut t = a;
+            let mut m0 = 0;
+            let mut m1 = 1;
 
-                Self { sieve }
-            }
+            while t != 0 {
+                let u = s / t;
+                s -= t * u;
+                m0 -= m1 * u; // |m1 * u| <= |m1| * s <= b
 
-            /// O(1)
-            /// test x is prime or not
-            pub fn is_prime(&self, x: T) -> bool {
-                if x == one() || x == zero() {
-                    return false;
-                }
-                self.sieve[x.to_usize().unwrap()] == x
-            }
+                // [3]:
+                // (s - t * u) * |m1| + t * |m0 - m1 * u|
+                // <= s * |m1| - t * u * |m1| + t * (|m0| + |m1| * u)
+                // = s * |m1| + t * |m0| <= b
 
-            /// O(log(n))
-            pub fn prime_factorize(&self, mut n: T) -> std::collections::HashMap<T, T> {
-                let mut res: std::collections::HashMap<T, T> = std::collections::HashMap::new();
-                while n > one() {
-                    *res.entry(self.sieve[n.to_usize().unwrap()])
-                        .or_insert(zero()) += one();
-                    n /= self.sieve[n.to_usize().unwrap()]
-                }
-                res
+                std::mem::swap(&mut s, &mut t);
+                std::mem::swap(&mut m0, &mut m1);
             }
+            // by [3]: |m0| <= b/g
+            // by g != b: |m0| < b/g
+            if m0 < 0 {
+                m0 += b / s;
+            }
+            (T::from(s).unwrap(), T::from(m0).unwrap())
+        }
+
+        pub fn inv_mod<T: NumCast + PrimInt>(x: T, m: T) -> T {
+            assert!(one::<T>() <= m);
+            let z = ext_gcd(x, m);
+            assert!(z.0 == one::<T>());
+            z.1
+        }
+
+        /// a0: the first term of serires
+        /// d: common difference
+        /// n: number of terms
+        pub fn arithmetic_progression<T: PrimInt>(a0: T, d: T, n: T) -> T {
+            n * ((T::one() + T::one()) * a0 + (n - T::one()) * d) / (T::one() + T::one())
         }
     }
     pub mod data_structures {
-        pub mod union_find {
-            // from petgraph to customize UnionFind. rank -> size
+        pub mod segment_tree {
+            // https://github.com/tanakh/competitive-rs/blob/master/src/segment_tree.rs
 
-            use num_traits::PrimInt;
-            use std::collections::*;
-            #[derive(Debug, Clone)]
-            pub struct UnionFind<K> {
-                // For element at index *i*, store the index of its parent; the representative itself
-                // stores its own index. This forms equivalence classes which are the disjoint sets, each
-                // with a unique representative.
-                parent: Vec<K>,
+            pub mod monoid {
+                use num_traits::{Bounded, One, Zero};
+                use std::ops::*;
 
-                // size vector
-                size: Vec<usize>,
-                // group_num
-                group_num: usize,
+                pub trait Monoid: Sized {
+                    /// 単位元
+                    fn mempty() -> Self;
+
+                    /// op
+                    fn mappend(l: &Self, r: &Self) -> Self;
+                }
+                #[derive(Debug, Clone, Copy, Default)]
+                pub struct Sum<T>(pub T);
+
+                impl<T: Copy + Zero + Add<Output = T>> Monoid for Sum<T> {
+                    fn mempty() -> Self {
+                        Self(T::zero())
+                    }
+
+                    fn mappend(l: &Self, r: &Self) -> Self {
+                        Self(l.0 + r.0)
+                    }
+                }
+
+                impl<T> From<T> for Sum<T> {
+                    fn from(v: T) -> Self {
+                        Sum(v)
+                    }
+                }
+
+                #[derive(Clone, Copy, Debug, Default)]
+                pub struct Product<T>(pub T);
+
+                impl<T: Copy + One + Mul<Output = T>> Monoid for Product<T> {
+                    fn mempty() -> Self {
+                        Self(T::one())
+                    }
+
+                    fn mappend(l: &Self, r: &Self) -> Self {
+                        Self(l.0 * r.0)
+                    }
+                }
+
+                impl<T> From<T> for Product<T> {
+                    fn from(v: T) -> Self {
+                        Product(v)
+                    }
+                }
+
+                #[derive(Clone, Copy, Debug, Default, PartialEq)]
+                pub struct Max<T>(pub T);
+
+                impl<T: Copy + Ord + Bounded> Monoid for Max<T> {
+                    fn mempty() -> Self {
+                        Self(<T as Bounded>::min_value())
+                    }
+
+                    fn mappend(l: &Self, r: &Self) -> Self {
+                        Self(l.0.max(r.0))
+                    }
+                }
+
+                impl<T> From<T> for Max<T> {
+                    fn from(v: T) -> Self {
+                        Max(v)
+                    }
+                }
+
+                #[derive(Clone, Copy, Debug, Default)]
+                pub struct Min<T>(pub T);
+
+                impl<T: Copy + Ord + Bounded> Monoid for Min<T> {
+                    fn mempty() -> Self {
+                        Self(<T as Bounded>::max_value())
+                    }
+
+                    fn mappend(l: &Self, r: &Self) -> Self {
+                        Self(l.0.min(r.0))
+                    }
+                }
+
+                impl<T> From<T> for Min<T> {
+                    fn from(v: T) -> Self {
+                        Min(v)
+                    }
+                }
+
+                #[derive(Debug, Clone, Copy, Default)]
+                pub struct XOR<T>(pub T);
+
+                impl<T: Copy + Zero + BitXor<Output = T>> Monoid for XOR<T> {
+                    fn mempty() -> Self {
+                        Self(T::zero())
+                    }
+
+                    fn mappend(l: &Self, r: &Self) -> Self {
+                        Self(l.0 ^ r.0)
+                    }
+                }
+
+                impl<T> From<T> for XOR<T> {
+                    fn from(v: T) -> Self {
+                        XOR(v)
+                    }
+                }
+            }
+            use monoid::*;
+
+            use std::{ops::Bound, ops::RangeBounds};
+
+            /// Segment tree
+            #[derive(Debug)]
+            pub struct SegmentTree<T> {
+                len: usize,
+                v: Vec<T>,
             }
 
-            #[inline]
-            unsafe fn get_unchecked<K>(xs: &[K], index: usize) -> &K {
-                debug_assert!(index < xs.len());
-                xs.get_unchecked(index)
-            }
-
-            #[inline]
-            unsafe fn get_unchecked_mut<K>(xs: &mut [K], index: usize) -> &mut K {
-                debug_assert!(index < xs.len());
-                xs.get_unchecked_mut(index)
-            }
-
-            impl<K> UnionFind<K>
-            where
-                K: PrimInt + std::hash::Hash,
-            {
-                /// Create a new `UnionFind` of `n` disjoint sets.
+            impl<T: Clone + Monoid> SegmentTree<T> {
+                /// O(n).
+                /// Construct segment tree for given size.
                 pub fn new(n: usize) -> Self {
-                    let size = vec![1; n];
-                    let parent = (0..n).map(|x| K::from(x).unwrap()).collect::<Vec<K>>();
-                    let group_num = n;
-                    Self {
-                        parent,
-                        size,
-                        group_num,
-                    }
+                    let s: &[T] = &[];
+                    Self::init(n, s)
                 }
 
-                /// Return the representative for `x`.
-                ///
-                /// **Panics** if `x` is out of bounds.
-                pub fn find(&self, x: K) -> K {
-                    assert!(x.to_usize().unwrap() < self.parent.len());
-                    unsafe {
-                        let mut x = x;
-                        loop {
-                            // Use unchecked indexing because we can trust the internal set ids.
-                            let xparent = *get_unchecked(&self.parent, x.to_usize().unwrap());
-                            if xparent == x {
-                                break;
-                            }
-                            x = xparent;
+                /// O(n).
+                /// Construct segment tree from slice.
+                pub fn from_slice(s: &[impl Into<T> + Clone]) -> Self {
+                    Self::init(s.len(), s)
+                }
+
+                fn init(len: usize, s: &[impl Into<T> + Clone]) -> Self {
+                    let n = len.next_power_of_two();
+                    let mut v = vec![T::mempty(); n * 2 - 1];
+                    for i in 0..s.len() {
+                        v[n - 1 + i] = s[i].clone().into();
+                    }
+
+                    let mut l = n / 2;
+                    let mut ofs = n - 1 - l;
+
+                    while l > 0 {
+                        for i in 0..l {
+                            let ix = ofs + i;
+                            v[ix] = T::mappend(&v[ix * 2 + 1], &v[ix * 2 + 2]);
                         }
-                        x
+                        l /= 2;
+                        ofs -= l;
+                    }
+
+                    Self { len, v }
+                }
+
+                /// O(1).
+                /// Length of sequence.
+                pub fn len(&self) -> usize {
+                    self.len
+                }
+
+                /// O(log n).
+                /// Set v to `i`-th element.
+                /// `s[i] = v`
+                pub fn set(&mut self, i: usize, v: impl Into<T>) {
+                    let n = (self.v.len() + 1) / 2;
+                    let mut cur = n - 1 + i;
+                    self.v[cur] = v.into();
+                    while cur > 0 {
+                        cur = (cur - 1) / 2;
+                        self.v[cur] = T::mappend(&self.v[cur * 2 + 1], &self.v[cur * 2 + 2]);
                     }
                 }
 
-                /// Return the representative for `x`.
+                /// O(log n).
+                /// mappend v to `i`-th element
+                /// `s[i] = mappend(s[i], v)`
+                pub fn mappend(&mut self, i: usize, v: impl Into<T>) {
+                    self.set(i, T::mappend(&self.get(i), &v.into()));
+                }
+
+                /// O(1).
+                /// Get i-th element
+                /// Equals to `query(i, i + 1)`
+                pub fn get(&self, i: usize) -> T {
+                    let n = (self.v.len() + 1) / 2;
+                    self.v[n - 1 + i].clone()
+                }
+
+                /// O(log n).
+                /// Query for `range`.
+                /// Returns `T::mconcat(&s[range])`.
                 ///
-                /// Write back the found representative, flattening the internal
-                /// datastructure in the process and quicken future lookups.
+                /// # Examples
                 ///
-                /// **Panics** if `x` is out of bounds.
-                pub fn find_mut(&mut self, x: K) -> K {
-                    assert!(x.to_usize().unwrap() < self.parent.len());
-                    unsafe { self.find_mut_recursive(x) }
-                }
-
-                unsafe fn find_mut_recursive(&mut self, mut x: K) -> K {
-                    let mut parent = *get_unchecked(&self.parent, x.to_usize().unwrap());
-                    while parent != x {
-                        let grandparent = *get_unchecked(
-                            &self.parent,
-                            parent
-                                .to_usize()
-                                .expect("Cannot convert to usize. maybe negative number!"),
-                        );
-                        *get_unchecked_mut(
-                            &mut self.parent,
-                            x.to_usize()
-                                .expect("Cannot convert to usize. maybe negative number!"),
-                        ) = grandparent;
-                        x = parent;
-                        parent = grandparent;
-                    }
-                    x
-                }
-
-                /// Returns `true` if the given elements belong to the same set, and returns
-                /// `false` otherwise.
-                pub fn equiv(&self, x: K, y: K) -> bool {
-                    self.find(x) == self.find(y)
-                }
-
-                /// Unify the two sets containing `x` and `y`.
+                /// ```
+                /// use competitive::data_structures::monoid::Sum;
+                /// use competitive::data_structures::segment_tree::SegmentTree;
                 ///
-                /// Return `false` if the sets were already the same, `true` if they were unified.
+                /// let mut st = SegmentTree::<Sum<i64>>::new(5);
+                /// st.set(2, 3);
+                /// assert_eq!(st.query(0..=2).0, 3);
+                /// assert_eq!(st.query(0..2).0, 0);
+                /// ```
                 ///
-                /// **Panics** if `x` or `y` is out of bounds.
-                pub fn union(&mut self, x: K, y: K) -> bool {
-                    if x == y {
-                        return false;
-                    }
-                    let xrep = self.find_mut(x);
-                    let yrep = self.find_mut(y);
+                pub fn query(&self, range: impl RangeBounds<usize>) -> T {
+                    let l = match range.start_bound() {
+                        Bound::Included(v) => *v,
+                        Bound::Excluded(v) => v + 1,
+                        Bound::Unbounded => 0,
+                    };
+                    let r = match range.end_bound() {
+                        Bound::Included(v) => v + 1,
+                        Bound::Excluded(v) => *v,
+                        Bound::Unbounded => self.len,
+                    };
 
-                    if xrep == yrep {
-                        return false;
-                    }
+                    assert!(l <= r);
+                    assert!(r <= self.len);
 
-                    let xrepu = xrep
-                        .to_usize()
-                        .expect("Cannot convert to usize. maybe negative number!");
-                    let yrepu = yrep
-                        .to_usize()
-                        .expect("Cannot convert to usize. maybe negative number!");
-                    let xsize = self.size[xrepu];
-                    let ysize = self.size[yrepu];
+                    let n = (self.v.len() + 1) / 2;
+                    let mut l = n + l;
+                    let mut r = n + r;
 
-                    // The rank corresponds roughly to the depth of the treeset, so put the
-                    // smaller set below the larger
-                    if xsize > ysize {
-                        self.parent[yrepu] = xrep;
-                        self.size[xrepu] += ysize;
-                    } else {
-                        self.parent[xrepu] = yrep;
-                        self.size[yrepu] += xsize;
-                    }
-                    self.group_num -= 1;
-                    true
-                }
-
-                /// Return a vector mapping each element to its representative.
-                pub fn into_labeling(mut self) -> Vec<K> {
-                    // write in the labeling of each element
-                    unsafe {
-                        for ix in 0..self.parent.len() {
-                            let k = *get_unchecked(&self.parent, ix);
-                            let xrep = self.find_mut_recursive(k);
-                            *self.parent.get_unchecked_mut(ix) = xrep;
+                    let mut ret_l = T::mempty();
+                    let mut ret_r = T::mempty();
+                    while l < r {
+                        if l & 1 != 0 {
+                            ret_l = T::mappend(&ret_l, &self.v[l - 1]);
+                            l += 1;
                         }
-                    }
-                    self.parent
-                }
-
-                pub fn size(&self, x: K) -> usize {
-                    let xrep = self.find(x);
-                    let xrepu = xrep
-                        .to_usize()
-                        .expect("Cannot convert to usize. maybe negative number!");
-
-                    self.size[xrepu]
-                }
-
-                pub fn member(&self, x: K) -> HashSet<K> {
-                    // O(n)
-                    let xrep = self.find(x);
-                    let mut set: HashSet<K> = HashSet::new();
-
-                    for i in 0..self.parent.len() {
-                        let i_k = K::from(i).unwrap();
-                        if self.find(i_k) == xrep {
-                            set.insert(i_k);
+                        if r & 1 != 0 {
+                            r -= 1;
+                            ret_r = T::mappend(&self.v[r - 1], &ret_r);
                         }
+                        l /= 2;
+                        r /= 2;
                     }
 
-                    set
-                }
-
-                pub fn member_map(&self) -> HashMap<K, HashSet<K>> {
-                    // O(n^2)
-                    let mut map: HashMap<K, HashSet<K>> = HashMap::new();
-                    for i in 0..self.parent.len() {
-                        map.entry(K::from(i).unwrap())
-                            .or_insert(self.member(K::from(i).unwrap()));
-                    }
-                    map
+                    T::mappend(&ret_l, &ret_r)
                 }
             }
         }
     }
 }
+

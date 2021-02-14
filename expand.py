@@ -40,7 +40,41 @@ def make_module_path(module_name: str) -> str:
     global cur_dir
     return os.path.join(cur_dir, "src", module_name + ".rs")
 
+def read_dependency(dependent_module_name: str, depth: int, first_line: str) -> list:
+    """read dependency recursively
+    """
+    dependency_codes = []
+    
+    def _internal_reader(dependent_module_name: str, depth: int, first_line: str):
+        global indent
+        nonlocal dependency_codes
 
+        module_path = make_module_path(dependent_module_name)
+        dependency_codes.append(indent * (depth+1) + "pub mod " + os.path.split(dependent_module_name)[-1] + " {")
+        
+        with open(module_path, "r") as f:
+            for line in f:
+                if line.startswith("#[cfg(test)]") or line.startswith("#[test]"):
+                    break
+
+                dependency_codes.append(indent * (depth + 2) + line.rstrip("\n"))
+
+                if line.startswith("use crate::"):
+                    # resolve internal dependencies
+                    dependent_module_name = get_module_name(line)
+                    _internal_reader(dependent_module_name, depth+1, first_line)
+
+            dependency_codes.append(indent * (depth+1) + "}")
+
+        if "*" in first_line:
+            first_line = f'use {os.path.split(dependent_module_name)[-1]}::*;'
+        else:
+            first_line = f'use {os.path.split(dependent_module_name)[-1]};'
+        dependency_codes.append(first_line)
+    
+    # start read dependency
+    _internal_reader(dependent_module_name, depth, first_line)
+    return dependency_codes
 
 def main():
     parser = argparse.ArgumentParser("expand use::crate_name::xxxx")
@@ -95,22 +129,11 @@ def main():
                     continue
 
                 if line.startswith("use crate::"):
-                    #!TODO 依存関係の解決
-                    # 入れ子のmodを作る
-                    # 再帰で書くべき?
+                    # resolve dependency
                     dependent_module_name = get_module_name(line)
-                    dependent_module_path = make_module_path(dependent_module_name)
-                    module_codes.append(indent * (depth+1) + "pub mod " + os.path.split(dependent_module_name)[-1] + " {")
-                    with open(dependent_module_path) as f:
-                        for l in f:
-                            if line.startswith("#[cfg(test)]"):
-                                break
-                            module_codes.append(indent * (depth+2) + l.rstrip("\n"))
-                    module_codes.append(indent * (depth+1) + "}")
-                    if "*" in line:
-                        line = f'use {os.path.split(dependent_module_name)[-1]}::*;'
-                    else:
-                        line = f'use {os.path.split(dependent_module_name)[-1]};'
+                    dependency_codes = read_dependency(dependent_module_name, depth, line)
+                    module_codes.extend(dependency_codes)
+                    continue
 
                 module_codes.append(indent_num + line.rstrip("\n"))    
 
@@ -128,6 +151,7 @@ def main():
         with open(temp_file, 'w') as w:
             w.write("\n".join(codes))
         subprocess.run(["rustfmt", temp_file], check=True)
+        
 
         with open(temp_file, 'r') as f:
             lines = f.readlines()

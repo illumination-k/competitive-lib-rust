@@ -10,6 +10,10 @@ exapnd.py --bin a
 ```
 */
 
+#[cfg(test)]
+#[macro_use]
+extern crate approx;
+
 extern crate num_traits;
 
 pub mod dp;
@@ -21,3 +25,4 @@ pub mod combinations;
 pub mod math;
 pub mod scanner;
 pub mod data_structures;
+pub mod geometry;
