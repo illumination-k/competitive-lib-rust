@@ -9,3 +9,20 @@ competitive library for atcoder.
 ```bash
 exapnd.py --bin a
 ```
+
+This python script can expand modules in a.rs.
+
+```rust
+use competitive::math::*;
+```
+
+Convert the above code as follows
+
+```rust
+use competitive_internal::math::*;
+
+mod competitive_internal {
+    pub mod math {
+        /* math codes! */
+    }
+}
