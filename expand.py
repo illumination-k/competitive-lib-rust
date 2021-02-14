@@ -104,46 +104,48 @@ def main():
 
             codes.append(line.rstrip("\n"))
 
-    all_modules_codes = ['', f'mod {args.crate_name}_internal_mod ' + '{']
-    for module_name in module_names:
-        module_path = make_module_path(module_name)
-        depth = len(module_name.split(os.path.sep))
+    if len(module_names) != 0:
+        all_modules_codes = ['', f'mod {args.crate_name}_internal_mod ' + '{']
+
+        for module_name in module_names:
+            module_path = make_module_path(module_name)
+            depth = len(module_name.split(os.path.sep))
+            
+            module_codes = []
+            if depth == 1:
+                module_codes.append(indent + "pub mod " + module_name + " {")
+            else:
+                module_codes.append(indent + "pub mod " + os.path.split(module_name)[0] + " {")
+                module_codes.append(indent*depth + "pub mod " + os.path.split(module_name)[1] + " {")
+            
+            # open module
+            with open(module_path) as f:
+                indent_num = (depth+1) * indent
+                for line in f:
+                    # emit test mod
+                    if line.startswith("#[cfg(test)]"):
+                        break
+                    
+                    # remove cargo snippet dependencies
+                    if "snippet" in line:
+                        continue
+
+                    if line.startswith("use crate::"):
+                        # resolve dependency
+                        dependent_module_name = get_module_name(line)
+                        dependency_codes = read_dependency(dependent_module_name, depth, line)
+                        module_codes.extend(dependency_codes)
+                        continue
+
+                    module_codes.append(indent_num + line.rstrip("\n"))    
+
+            for i in range(depth, 0, -1):
+                module_codes.append(indent * i + "}")
+
+            all_modules_codes.extend(module_codes)
+        all_modules_codes.append("}")
         
-        module_codes = []
-        if depth == 1:
-            module_codes.append(indent + "pub mod " + module_name + " {")
-        else:
-            module_codes.append(indent + "pub mod " + os.path.split(module_name)[0] + " {")
-            module_codes.append(indent*depth + "pub mod " + os.path.split(module_name)[1] + " {")
-        
-        # open module
-        with open(module_path) as f:
-            indent_num = (depth+1) * indent
-            for line in f:
-                # emit test mod
-                if line.startswith("#[cfg(test)]"):
-                    break
-                
-                # remove cargo snippet dependencies
-                if "snippet" in line:
-                    continue
-
-                if line.startswith("use crate::"):
-                    # resolve dependency
-                    dependent_module_name = get_module_name(line)
-                    dependency_codes = read_dependency(dependent_module_name, depth, line)
-                    module_codes.extend(dependency_codes)
-                    continue
-
-                module_codes.append(indent_num + line.rstrip("\n"))    
-
-        for i in range(depth, 0, -1):
-            module_codes.append(indent * i + "}")
-
-        all_modules_codes.extend(module_codes)
-    all_modules_codes.append("}")
-    
-    codes.extend(all_modules_codes)
+        codes.extend(all_modules_codes)
 
     # rust fmt
     with tempfile.TemporaryDirectory() as temp_dir:
