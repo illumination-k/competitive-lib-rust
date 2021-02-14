@@ -9,5 +9,3 @@ competitive library for atcoder.
 ```bash
 exapnd.py --bin a
 ```
-
-License: MIT

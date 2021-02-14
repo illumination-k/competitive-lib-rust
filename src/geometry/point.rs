@@ -41,6 +41,17 @@ pub fn triangle_space<T>(o: Point<T>, a: Point<T>, b: Point<T>) -> T
     (oa.x * ob.y - oa.y * ob.x).abs() / T::from(2).unwrap()
 }
 
+pub fn gradient<T>(a: Point<T>, b: Point<T>) -> Option<T>
+    where T: Float
+{
+    let x = b - a;
+    if x.x == T::zero() {
+        return None
+    }
+
+    Some(x.y / x.x)
+}
+
 impl<T> Add<T> for Point<T>
     where T: Copy + NumOps
 {
@@ -296,6 +307,6 @@ mod test {
     #[test]
     fn test_rotation() {
         let p1 = Point::new(1., -3.0.sqrt());
-        assert_abs_diff_eq!(p1.rotaion(60.), Point::new(2., 0.))
+        assert_abs_diff_eq!(p1.rotaion(60.), Point::new(2., 0.));
     }
 }
