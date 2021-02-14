@@ -1,5 +1,6 @@
 use num_traits::{Bounded, NumCast, One, Zero};
 use std::{collections::{BinaryHeap, HashSet, VecDeque}, fmt, ops::{Index, IndexMut}, slice::Iter, writeln};
+use std::cmp::Reverse;
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct Edge<W> {
     target: usize,
@@ -100,7 +101,7 @@ impl<W> PartialOrd for Edge<W>
     where W: PartialEq + PartialOrd
 {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        other.weight
+        self.weight
             .partial_cmp(&other.weight)
     }
 }
@@ -111,7 +112,7 @@ impl<W> Ord for Edge<W>
     where W: PartialOrd + PartialEq + PartialOrd
 {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        other.weight.partial_cmp(&self.weight).expect("No Nan").then_with(|| self.target.cmp(&other.target))
+        self.weight.partial_cmp(&other.weight).expect("No Nan") // if dist[position] < edge.weight() { continue; }
     }
 }
 
@@ -218,7 +219,7 @@ impl<W> ListGraph<W>
     }
 
     pub fn neighbors_unweighted<'a>(&'a self, source: usize) -> impl Iterator<Item = &'a usize> + 'a {
-        self[source].iter().clone().map(|x| &x.target)
+        self[source].iter().map(|x| &x.target)
     }
 }
 
@@ -270,16 +271,16 @@ pub fn diktstra<W>(graph: &ListGraph<W>, start: usize) -> (Vec<W>, Vec<usize>)
     let mut bq = BinaryHeap::new();
     // add dumy edge and start position.
     // edge weight must be smaller than zero()
-    bq.push((Edge::new(0, W::zero()), start));
+    bq.push((Reverse(Edge::new(0, W::zero())), start));
 
     // initialize prev nodes
     let mut prev_nodes = vec![std::usize::MAX; graph.len()];
 
-    while let Some((edge, position)) = bq.pop() {
+    while let Some((Reverse(edge), position)) = bq.pop() {
         if dist[position] < edge.weight() { continue; }
         for &e in graph.neighbors(position) {
             if dist[e.target()] <= dist[position] + e.weight() { continue; }
-            bq.push((e, e.target()));
+            bq.push((Reverse(e), e.target()));
             dist[e.target()] = dist[position] + e.weight();
             prev_nodes[e.target()] = position;
         }
@@ -439,12 +440,44 @@ pub fn dfs<W>(start: usize, graph: &ListGraph<W>, result_type: DfsResultType) ->
 
 #[cfg(test)]
 mod test {
+    use std::cmp::Reverse;
+
     use super::*;
     use crate::test_utility::*;
     #[test]
     fn test_fmt() {
         let graph: ListGraph<usize> = ListGraph::unweighted_from(vec![(0, 1), (1, 2), (4, 1), (1, 3)], 5, 0, Direction::UnGraph);
         dbg!(&graph);
+    }
+
+    #[test]
+    fn test_cmp() {
+        let e1 = Edge::new(1, 2);
+        let e2 = Edge::new(1, 3);
+        let e3 = Edge::new(2, 1);
+        let mut bq = BinaryHeap::new();
+        bq.push(e1);
+        bq.push(e2);
+        bq.push(e3);
+
+        assert_eq!(bq.pop(), Some(e2));
+        assert_eq!(bq.pop(), Some(e1));
+        assert_eq!(bq.pop(), Some(e3));
+    }
+
+    #[test]
+    fn test_cmp_rev() {
+        let e1 = Edge::new(1, 2);
+        let e2 = Edge::new(1, 3);
+        let e3 = Edge::new(2, 1);
+        let mut bq = BinaryHeap::new();
+        bq.push(Reverse(e1));
+        bq.push(Reverse(e2));
+        bq.push(Reverse(e3));
+
+        assert_eq!(bq.pop().unwrap().0, e3);
+        assert_eq!(bq.pop().unwrap().0, e1);
+        assert_eq!(bq.pop().unwrap().0, e2);
     }
 
     #[test]
