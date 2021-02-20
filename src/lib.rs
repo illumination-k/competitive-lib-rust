@@ -47,5 +47,5 @@ pub mod math;
 pub mod scanner;
 pub mod data_structures;
 pub mod geometry;
-
+pub mod format;
 pub mod test_utility;
