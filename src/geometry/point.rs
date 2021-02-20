@@ -33,6 +33,8 @@ impl<T> Point<T>
     }
 }
 
+
+/// calculate space of triangle
 pub fn triangle_space<T>(o: Point<T>, a: Point<T>, b: Point<T>) -> T
     where T: Float
 {
@@ -41,6 +43,8 @@ pub fn triangle_space<T>(o: Point<T>, a: Point<T>, b: Point<T>) -> T
     (oa.x * ob.y - oa.y * ob.x).abs() / T::from(2).unwrap()
 }
 
+/// calculate gradient  
+/// if zero division occur, return None
 pub fn gradient<T>(a: Point<T>, b: Point<T>) -> Option<T>
     where T: Float
 {

@@ -1,4 +1,4 @@
-use rand::distributions::{IndependentSample, Range};
+use rand::distributions::{IndependentSample, Range, range::SampleRange};
 
 
 pub fn make_random_unweighted_graph(node_number: usize, mut edge_number: usize, contain_loop: bool) -> Vec<(usize, usize)> {
@@ -16,7 +16,13 @@ pub fn make_random_unweighted_graph(node_number: usize, mut edge_number: usize, 
     graph
 }
 
-pub fn make_random_isize_weighted_graph(node_number: usize, mut edge_number: usize, weight_range: (isize, isize), contain_loop: bool) -> Vec<(usize, usize, isize)> {
+pub fn make_random_weighted_graph<T>(
+    node_number: usize,
+    mut edge_number: usize,
+    weight_range: (T, T),
+    contain_loop: bool) -> Vec<(usize, usize, T)>
+    where T: PartialOrd + SampleRange
+{
     let node_between = Range::new(0, node_number);
     let weight_between = Range::new(weight_range.0, weight_range.1);
     let mut rng = rand::thread_rng();
@@ -30,6 +36,15 @@ pub fn make_random_isize_weighted_graph(node_number: usize, mut edge_number: usi
         edge_number -= 1;
     }
     graph
+}
+
+pub fn make_random_vec<T>(size: usize, range: (T, T)) -> Vec<T>
+    where T: PartialOrd + SampleRange
+{
+    let between = Range::new(range.0, range.1);
+    let mut rng = rand::thread_rng();
+    
+    (0..size).map(|_| between.ind_sample(&mut rng)).collect()
 }
 
 #[cfg(test)]

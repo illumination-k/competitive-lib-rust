@@ -1,5 +1,6 @@
 use num_traits::*;
 
+
 pub fn is_prime<T: PrimInt+NumAssign>(n: T) -> bool {
     // O(sqrt(n))
     let mut flag: bool = true;

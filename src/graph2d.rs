@@ -1,12 +1,28 @@
 #[allow(unused_imports)]
 use std::collections::*;
-use std::ops::*;
+use std::{ops::*, writeln};
+use std::fmt;
 
-#[derive(Debug, Clone)]
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Graph2D<T> {
     graph: Vec<Vec<T>>,
     width: isize,
     height: isize
+}
+
+impl<T> fmt::Debug for Graph2D<T>
+    where T: ToString + Eq + Copy
+{
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        writeln!(f, "")?;
+        writeln!(f, "width = {}, height = {}", self.width, self.height)?;
+        for y in 0..self.height() {
+            let s: String = self.graph[y].iter().map(|x| x.to_string()).collect();
+            writeln!(f, "{}", s)?;
+        }
+
+        Ok(())
+    }
 }
 
 impl<K> Graph2D<K>
@@ -20,6 +36,10 @@ where K: Eq + Copy
 
     pub fn is_not_in(&self, x: isize, y: isize) -> bool {
         x < 0 || y < 0 || x >= self.width || y >= self.height
+    }
+
+    pub fn is_in(&self, x: isize, y: isize) -> bool {
+        !(self.is_not_in(x, y))
     }
 
     pub fn is_go(&self, x: isize, y: isize, obs: &Option<K>) -> Option<(usize, usize)> {
@@ -38,6 +58,28 @@ where K: Eq + Copy
 
     pub fn height(&self) -> usize {
         self.height as usize
+    }
+
+    /// get Iterator of a row
+    pub fn row(&self, y: usize) -> std::slice::Iter<K> {
+        self.graph[y].iter()
+    }
+
+    /// get Iterator of a column
+    pub fn col(&self, x: usize) -> impl Iterator<Item = K> + '_ {
+        let height = self.height();
+        (0..height).map(move |y| self[(x, y)])
+    }
+
+    pub fn t(&self) -> Self {
+        let mut vec = vec![vec![]; self.width()];
+
+        for i in 0..self.width() {
+            for x in self.col(i) {
+                vec[i].push(x);
+            }
+        }
+        Graph2D::new(vec)
     }
 }
 
@@ -124,12 +166,25 @@ pub fn dfs2d<T: Eq + Copy>(graph: &Graph2D<T>, seen: &mut Vec<Vec<bool>>, start:
 mod test_graph2d {
     use super::Graph2D;
 
+    fn make_graph2d() -> Graph2D<usize> {
+        let graph: Vec<Vec<usize>> = vec![(0..10).collect(); 10];
+        Graph2D::new(graph)
+    }
+
     #[test]
     fn test_index() {
         let mut graph = Graph2D::new(vec![vec![0; 10]; 10]);
         assert_eq!(graph[(1, 1)], 0);
         graph[(1, 1)] = 1;
         assert_eq!(graph[(1, 1)], 1);
+    }
+
+    #[test]
+    fn test_col() {
+        let graph = make_graph2d();
+        for i in graph.col(1) {
+            assert_eq!(i, 1)
+        }
     }
 }
 

@@ -173,9 +173,9 @@ impl<W> ListGraph<W>
     /// create unweighted ListGraph.  
     /// offset: index = val - offset  
     /// graph_type: Undirect or Direct  
-    pub fn unweighted_from(vec: Vec<(usize, usize)>, size: usize, offset: usize, graph_type: Direction) -> Self {
+    pub fn unweighted_from(edges: Vec<(usize, usize)>, size: usize, offset: usize, graph_type: Direction) -> Self {
         let mut graph = vec![vec![]; size];
-        for &(a, b) in vec.iter() {
+        for &(a, b) in edges.iter() {
             add_target(a-offset, b-offset, W::one(), &graph_type, &mut graph)
         }
 
@@ -187,9 +187,9 @@ impl<W> ListGraph<W>
     /// create weighted ListGraph<W>.
     /// offset: index = val - offset
     /// graph_type: Undirect or Direct
-    pub fn weighted_from(vec: Vec<(usize, usize, W)>, size: usize, offset: usize, graph_type: Direction) -> Self {
+    pub fn weighted_from(edges: Vec<(usize, usize, W)>, size: usize, offset: usize, graph_type: Direction) -> Self {
         let mut graph = vec![vec![]; size];
-        for &(a, b, w) in vec.iter() {
+        for &(a, b, w) in edges.iter() {
             add_target(a-offset, b-offset, w, &graph_type, &mut graph)
         }
 
@@ -533,6 +533,7 @@ mod test {
         assert_eq!(restore_path(1, 0, &prev_nodes), vec![1, 2, 0]);
     }
 
+    // test not error in any condition with diktstra
     #[test]
     fn test_diktstra_small_rand() {
         let node_number = 100;
@@ -540,10 +541,26 @@ mod test {
         let weight_range = (1, 10e7 as isize);
 
         for _ in 0..100 {
-            let vec = make_random_isize_weighted_graph(node_number, edge_number, weight_range, true);
+
+            let vec = make_random_weighted_graph(node_number, edge_number, weight_range, true);
             let graph:ListGraph<isize> = ListGraph::weighted_from(vec, node_number, 0, Direction::DiGraph);
             for i in 0..node_number {
                 let (_, _) = diktstra(&graph, i);
+            }
+        }
+    }
+    
+    #[test]
+    fn test_bfs_small_rand() {
+        let node_number = 100;
+        let edge_number = 100;
+
+        for i in 0..200 {
+            let graph_type = if i % 2 == 0 { Direction::DiGraph } else { Direction::UnGraph };
+            let vec = make_random_unweighted_graph(node_number, edge_number, false);
+            let graph: UnweightedListGraph = ListGraph::unweighted_from(vec, node_number, 0, graph_type);
+            for start in 0..node_number {
+                let _ = bfs(&graph, start);
             }
         }
     }
@@ -585,7 +602,7 @@ mod test {
     }
 
     #[test]
-    fn test_df_small_rand() {
+    fn test_dfs_small_rand() {
         let node_number = 100;
         let edge_number = 100;
 

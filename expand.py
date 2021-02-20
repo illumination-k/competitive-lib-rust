@@ -57,6 +57,10 @@ def read_dependency(dependent_module_name: str, depth: int, first_line: str) -> 
                 if line.startswith("#[cfg(test)]") or line.startswith("#[test]"):
                     break
 
+                # emit comment
+                if line.startswith("/"):
+                    continue
+
                 dependency_codes.append(indent * (depth + 2) + line.rstrip("\n"))
 
                 if line.startswith("use crate::"):
@@ -97,10 +101,9 @@ def main():
 
     with open(path) as f:
         for line in f:
-            if line.startswith("use"):
-                if line.startswith(f'use {args.crate_name}::'):
-                    line = line.replace(args.crate_name, args.crate_name + "_internal_mod")
-                    module_names.append(get_module_name(line))
+            if line.startswith(f'use {args.crate_name}::'):
+                line = line.replace(args.crate_name, args.crate_name + "_internal_mod")
+                module_names.append(get_module_name(line))
 
             codes.append(line.rstrip("\n"))
 

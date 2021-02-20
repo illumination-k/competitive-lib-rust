@@ -1,5 +1,6 @@
 use num_traits::{ PrimInt, zero, one, NumCast };
 
+/// GCD
 pub fn gcd<T: PrimInt>(a: T, b: T) -> T {
     if b == zero()  {
         a
@@ -8,6 +9,8 @@ pub fn gcd<T: PrimInt>(a: T, b: T) -> T {
     }
 }
 
+
+/// LCM
 pub fn lcm<T: PrimInt>(a: T, b: T) -> T {
     a / gcd(a, b) * b
 }
@@ -95,9 +98,9 @@ pub fn inv_mod<T: NumCast + PrimInt>(x: T, m: T) -> T {
 }
 
 
-/// a0: the first term of serires
-/// d: common difference
-/// n: number of terms
+/// a0: the first term of serires  
+/// d: common difference  
+/// n: number of terms  
 pub fn arithmetic_progression<T: PrimInt>(a0: T, d: T, n: T) -> T {
     n * ((T::one() + T::one()) * a0 + (n - T::one()) * d) / (T::one() + T::one())
 }
