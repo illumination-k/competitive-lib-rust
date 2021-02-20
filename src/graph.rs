@@ -42,50 +42,61 @@ impl<W> ListGraph<W>
     ///     (3, 2, 5),
     /// ];
     /// let graph: ListGraph<isize> = ListGraph::weighted_from(vec, 4, 0, Direction::DiGraph);
-    /// let dot = graph.to_dot(&Direction::DiGraph);
+    /// let dot = graph.to_dot(true, &Direction::DiGraph);
     /// assert_eq!(
     ///     dot,
     ///     vec![
     ///         "digraph example {",
-    ///         "  0 -> 1",
+    ///         "  0 -> 1 [ label = 1 ]",
     ///         "  0 -> 2 [ label = 4 ]",
     ///         "  1 -> 2 [ label = 2 ]",
-    ///         "  2 -> 0",
-    ///         "  3 -> 1",
+    ///         "  2 -> 0 [ label = 1 ]",
+    ///         "  3 -> 1 [ label = 1 ]",
     ///         "  3 -> 2 [ label = 5 ]",
     ///         "}"
     ///     ].iter().map(|x| x.to_string()).collect::<Vec<String>>()
     /// )
     /// ```
-    pub fn to_dot(&self, graph_type: &Direction) -> Vec<String> {
-        fn make_dot_edge<W>(source: usize, target: usize, weight: W, graph_type: &Direction) -> String
+    pub fn to_dot(&self, weighted: bool, graph_type: &Direction) -> Vec<String> {
+        fn make_dot_edge<W>(
+            source: usize,
+            target: usize,
+            weight: W,
+            weighted: bool,
+            graph_type: &Direction) -> String
             where W: One + ToString + PartialEq
         {
-            let arr = match graph_type {
-                Direction::DiGraph => { "->" },
-                Direction::UnGraph => { "-" }
-            };
-
-            if weight == W::one() {
-                format!("  {} {} {}", source, arr, target)
-            } else {
-                format!("  {} {} {} [ label = {} ]", source, arr, target, weight.to_string())
+            match graph_type {
+                Direction::DiGraph => {
+                    if weighted {
+                        format!("  {} -> {} [ label = {} ]", source, target, weight.to_string())
+                    } else {
+                        format!("  {} -> {}", source, target)
+                    }
+                },
+                Direction::UnGraph => {
+                    if weighted {
+                        format!("  {} -> {} [ label = {}, dir = both ]", source, target, weight.to_string())
+                    } else {
+                        format!("  {} -> {} [ dir = both ]", source, target)
+                    }
+                }
             }
         }
 
         let mut seen_edge = HashSet::new();
         let mut dot = match graph_type {
             Direction::DiGraph => {
-                vec!["digraph example {".to_string()]
+                vec!["digraph digraph_example {".to_string()]
             },
             Direction::UnGraph => {
-                vec!["graph example {".to_string()]
+                vec!["digraph ungraph_example {".to_string()]
             }
         };
         for source in 0..self.len() {
             for e in self.neighbors(source) {
                 let (target, weight) = (e.target(), e.weight());
-                let dot_edge = make_dot_edge(source, target, weight, &graph_type);
+                let dot_edge = make_dot_edge(source, target, weight, weighted, &graph_type);
                 if seen_edge.contains(&dot_edge) { continue; }
                 dot.push(dot_edge.clone());
                 seen_edge.insert(dot_edge);
