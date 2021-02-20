@@ -247,16 +247,87 @@
 <span id="247">247</span>
 <span id="248">248</span>
 <span id="249">249</span>
+<span id="250">250</span>
+<span id="251">251</span>
+<span id="252">252</span>
+<span id="253">253</span>
+<span id="254">254</span>
+<span id="255">255</span>
+<span id="256">256</span>
+<span id="257">257</span>
+<span id="258">258</span>
+<span id="259">259</span>
+<span id="260">260</span>
+<span id="261">261</span>
+<span id="262">262</span>
+<span id="263">263</span>
+<span id="264">264</span>
+<span id="265">265</span>
+<span id="266">266</span>
+<span id="267">267</span>
+<span id="268">268</span>
+<span id="269">269</span>
+<span id="270">270</span>
+<span id="271">271</span>
+<span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
+<span id="281">281</span>
+<span id="282">282</span>
+<span id="283">283</span>
+<span id="284">284</span>
+<span id="285">285</span>
+<span id="286">286</span>
+<span id="287">287</span>
+<span id="288">288</span>
+<span id="289">289</span>
+<span id="290">290</span>
+<span id="291">291</span>
+<span id="292">292</span>
+<span id="293">293</span>
+<span id="294">294</span>
+<span id="295">295</span>
+<span id="296">296</span>
+<span id="297">297</span>
+<span id="298">298</span>
+<span id="299">299</span>
+<span id="300">300</span>
+<span id="301">301</span>
+<span id="302">302</span>
+<span id="303">303</span>
+<span id="304">304</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="attribute">#[<span class="ident">allow</span>(<span class="ident">unused_imports</span>)]</span>
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="kw-2">*</span>;
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::<span class="kw-2">*</span>;
+<span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">ops</span>::<span class="kw-2">*</span>, <span class="ident">writeln</span>};
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>;
 
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>, <span class="ident">PartialOrd</span>, <span class="ident">Ord</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Graph2D</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> {
     <span class="ident">graph</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     <span class="ident">width</span>: <span class="ident">isize</span>,
     <span class="ident">height</span>: <span class="ident">isize</span>
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">Graph2D</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>
+    <span class="kw">where</span> <span class="ident">T</span>: <span class="ident">ToString</span> <span class="op">+</span> <span class="ident">Eq</span> <span class="op">+</span> <span class="ident">Copy</span>
+{
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
+        <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;&quot;</span>)<span class="question-mark">?</span>;
+        <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;width = {}, height = {}&quot;</span>, <span class="self">self</span>.<span class="ident">width</span>, <span class="self">self</span>.<span class="ident">height</span>)<span class="question-mark">?</span>;
+        <span class="kw">for</span> <span class="ident">y</span> <span class="kw">in</span> <span class="number">0</span>..<span class="self">self</span>.<span class="ident">height</span>() {
+            <span class="kw">let</span> <span class="ident">s</span>: <span class="ident">String</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">graph</span>[<span class="ident">y</span>].<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span>.<span class="ident">to_string</span>()).<span class="ident">collect</span>();
+            <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">s</span>)<span class="question-mark">?</span>;
+        }
+
+        <span class="prelude-val">Ok</span>(())
+    }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">K</span><span class="op">&gt;</span> <span class="ident">Graph2D</span><span class="op">&lt;</span><span class="ident">K</span><span class="op">&gt;</span>
@@ -270,6 +341,10 @@
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_not_in</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">x</span>: <span class="ident">isize</span>, <span class="ident">y</span>: <span class="ident">isize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
         <span class="ident">x</span> <span class="op">&lt;</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">y</span> <span class="op">&lt;</span> <span class="number">0</span> <span class="op">|</span><span class="op">|</span> <span class="ident">x</span> <span class="op">&gt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">width</span> <span class="op">|</span><span class="op">|</span> <span class="ident">y</span> <span class="op">&gt;</span><span class="op">=</span> <span class="self">self</span>.<span class="ident">height</span>
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_in</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">x</span>: <span class="ident">isize</span>, <span class="ident">y</span>: <span class="ident">isize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">bool</span> {
+        <span class="op">!</span>(<span class="self">self</span>.<span class="ident">is_not_in</span>(<span class="ident">x</span>, <span class="ident">y</span>))
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">is_go</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">x</span>: <span class="ident">isize</span>, <span class="ident">y</span>: <span class="ident">isize</span>, <span class="ident">obs</span>: <span class="kw-2">&amp;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">K</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">usize</span>)<span class="op">&gt;</span> {
@@ -288,6 +363,28 @@
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">height</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
         <span class="self">self</span>.<span class="ident">height</span> <span class="kw">as</span> <span class="ident">usize</span>
+    }
+
+    <span class="doccomment">/// get Iterator of a row</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">row</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">y</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">slice</span>::<span class="ident">Iter</span><span class="op">&lt;</span><span class="ident">K</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">graph</span>[<span class="ident">y</span>].<span class="ident">iter</span>()
+    }
+
+    <span class="doccomment">/// get Iterator of a column</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">col</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">x</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="ident">K</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;_</span> {
+        <span class="kw">let</span> <span class="ident">height</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">height</span>();
+        (<span class="number">0</span>..<span class="ident">height</span>).<span class="ident">map</span>(<span class="kw">move</span> <span class="op">|</span><span class="ident">y</span><span class="op">|</span> <span class="self">self</span>[(<span class="ident">x</span>, <span class="ident">y</span>)])
+    }
+
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">t</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">vec</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="macro">vec</span><span class="macro">!</span>[]; <span class="self">self</span>.<span class="ident">width</span>()];
+
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="self">self</span>.<span class="ident">width</span>() {
+            <span class="kw">for</span> <span class="ident">x</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">col</span>(<span class="ident">i</span>) {
+                <span class="ident">vec</span>[<span class="ident">i</span>].<span class="ident">push</span>(<span class="ident">x</span>);
+            }
+        }
+        <span class="ident">Graph2D</span>::<span class="ident">new</span>(<span class="ident">vec</span>)
     }
 }
 
@@ -374,12 +471,25 @@
 <span class="kw">mod</span> <span class="ident">test_graph2d</span> {
     <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">Graph2D</span>;
 
+    <span class="kw">fn</span> <span class="ident">make_graph2d</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Graph2D</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> {
+        <span class="kw">let</span> <span class="ident">graph</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[(<span class="number">0</span>..<span class="number">10</span>).<span class="ident">collect</span>(); <span class="number">10</span>];
+        <span class="ident">Graph2D</span>::<span class="ident">new</span>(<span class="ident">graph</span>)
+    }
+
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_index</span>() {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">graph</span> <span class="op">=</span> <span class="ident">Graph2D</span>::<span class="ident">new</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="number">10</span>]; <span class="number">10</span>]);
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">graph</span>[(<span class="number">1</span>, <span class="number">1</span>)], <span class="number">0</span>);
         <span class="ident">graph</span>[(<span class="number">1</span>, <span class="number">1</span>)] <span class="op">=</span> <span class="number">1</span>;
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">graph</span>[(<span class="number">1</span>, <span class="number">1</span>)], <span class="number">1</span>);
+    }
+
+    <span class="attribute">#[<span class="ident">test</span>]</span>
+    <span class="kw">fn</span> <span class="ident">test_col</span>() {
+        <span class="kw">let</span> <span class="ident">graph</span> <span class="op">=</span> <span class="ident">make_graph2d</span>();
+        <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="ident">graph</span>.<span class="ident">col</span>(<span class="number">1</span>) {
+            <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">i</span>, <span class="number">1</span>)
+        }
     }
 }
 

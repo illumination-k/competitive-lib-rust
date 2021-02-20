@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["gradient",""],["triangle_space",""]],"struct":[["Point",""]]});
+initSidebarItems({"fn":[["gradient","calculate gradient   if zero division occur, return None"],["triangle_space","calculate space of triangle"]],"struct":[["Point",""]]});

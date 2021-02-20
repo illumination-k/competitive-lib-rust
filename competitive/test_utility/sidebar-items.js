@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["make_random_isize_weighted_graph",""],["make_random_unweighted_graph",""]]});
+initSidebarItems({"fn":[["make_random_unweighted_graph",""],["make_random_vec",""],["make_random_weighted_graph",""]]});
