@@ -71,6 +71,7 @@ where K: Eq + Copy
         (0..height).map(move |y| self[(x, y)])
     }
 
+    // transpose
     pub fn t(&self) -> Self {
         let mut vec = vec![vec![]; self.width()];
 
@@ -103,6 +104,7 @@ impl<K> IndexMut<(usize, usize)> for Graph2D<K>
     }
 }
 
+/// bfs of 2d graph
 pub fn bfs2d<T: Eq + Copy>(graph: &Graph2D<T>, start: (usize, usize), obs: Option<T>) -> Graph2D<isize> {
     let directions = vec![(0, 1), (1, 0), (0, -1), (-1, 0)];
     let mut dist: Graph2D<isize> = Graph2D::new(vec![vec![-1; graph.width()]; graph.height()]);
@@ -131,7 +133,7 @@ pub fn bfs2d<T: Eq + Copy>(graph: &Graph2D<T>, start: (usize, usize), obs: Optio
     dist
 }
 
-
+/// dfs of 2d graph
 pub fn dfs2d<T: Eq + Copy>(graph: &Graph2D<T>, seen: &mut Vec<Vec<bool>>, start: (usize, usize), obs: Option<T>) {
     fn dfs<T: Eq + Copy>(
         graph: &Graph2D<T>, 

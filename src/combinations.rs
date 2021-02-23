@@ -87,6 +87,19 @@ pub fn combination(n: usize) -> Vec<Vec<usize>> {
     v
 }
 
+/// Simple wrapper of combinaiton  
+/// ```
+/// use competitive::combinations::*;
+/// assert_eq!(nck(16, 11), 4368)
+/// ```
+pub fn nck(n: usize, k: usize) -> usize {
+    combination(n)[n][k]
+}
+
+/// Simple wrapper of combinations for multi choises
+pub fn nhk(n: usize, k: usize) -> usize {
+    combination(n+k-1)[n+k-1][k]
+}
 
 #[cfg(test)]
 mod test {
