@@ -90,7 +90,8 @@ pub fn sieve_of_eratosthenes<T: NumCast>(n: T) -> Vec<usize> {
 
 #[derive(Debug, Clone)]
 pub struct OsaK<T: PrimInt + std::hash::Hash + NumAssign > {
-    sieve: Vec<T>
+    sieve: Vec<T>,
+    max: T,
 }
 
 fn _make_sieve<T: PrimInt>(mut maxu: usize) -> Vec<T> {
@@ -112,16 +113,16 @@ fn _make_sieve<T: PrimInt>(mut maxu: usize) -> Vec<T> {
 }
 
 impl<T: PrimInt + std::hash::Hash + NumAssign > OsaK<T> {
-    /// O(maxloglog(max))
+    /// O(maxloglog(max))   
     /// construct osa-k from max size
     pub fn new(max: T) -> Self {
         let maxu = max.to_usize().expect("cannot convert to usize");
         let sieve = _make_sieve(maxu);
 
-        Self { sieve }
+        Self { sieve, max }
     }
 
-    /// O(max(vec)loglog(max(vec)))
+    /// O(max(vec)loglog(max(vec)))  
     /// construct osa-k from Vector
     pub fn from(vec: Vec<T>) -> Self {
         assert!(vec.len() > 0);
@@ -129,18 +130,25 @@ impl<T: PrimInt + std::hash::Hash + NumAssign > OsaK<T> {
         let maxu = max.to_usize().unwrap();
         let sieve = _make_sieve(maxu);
         
-        Self { sieve }
+        Self { sieve, max: *max }
     }
 
     /// O(1)
     /// test x is prime or not
     pub fn is_prime(&self, x: T) -> bool {
+        assert!(x <= self.max);
         if x == one() || x == zero() { return false }
         self.sieve[x.to_usize().unwrap()] == x
     } 
 
-    /// O(log(n))
+    /// O(log(n))  
+    /// prime factoraize 
     pub fn prime_factorize(&self, mut n: T) -> std::collections::HashMap<T, T> {
+        assert!(n <= self.max);
+        if n == zero() || n == one() {
+            return std::collections::HashMap::new()
+        }
+
         let mut res: std::collections::HashMap<T, T> = std::collections::HashMap::new();
         while n > one() {
             *res.entry(self.sieve[n.to_usize().unwrap()]).or_insert(zero()) += one();
@@ -196,6 +204,9 @@ mod test {
     #[test]
     fn test_osa_k() {
         let osa_k = OsaK::new(18);
+        // one and zero
+        assert!(!osa_k.is_prime(0));
+        assert!(!osa_k.is_prime(1));
 
         // prime
         assert!(osa_k.is_prime(2));

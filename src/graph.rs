@@ -46,7 +46,7 @@ impl<W> ListGraph<W>
     /// assert_eq!(
     ///     dot,
     ///     vec![
-    ///         "digraph example {",
+    ///         "digraph digraph_example {",
     ///         "  0 -> 1 [ label = 1 ]",
     ///         "  0 -> 2 [ label = 4 ]",
     ///         "  1 -> 2 [ label = 2 ]",

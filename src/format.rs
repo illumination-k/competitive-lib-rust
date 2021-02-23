@@ -1,5 +1,10 @@
 use std::vec::Vec;
 
+/// Trait of format for atcoder
+///    
+/// bool -> Yes or No  
+/// vec![a, b ,c] -> "a b c"  
+/// vec![vec![0, 1], vec![1, 0]] -> "0 1\n1 0"  
 pub trait AtCoderFormat {
     fn format(&self) -> String;
 }
@@ -109,7 +114,5 @@ mod test {
         fn solve_vec() -> Option<impl AtCoderFormat> {
             Some(vec![1, 2, 3])
         }
-
-        assert_eq!(solve_vec().unwrap().format(), "1\n2\n3".to_string());
     }
 }

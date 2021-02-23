@@ -37,6 +37,7 @@ extern crate approx;
 extern crate num_traits;
 extern crate rand;
 
+pub mod binary_search;
 pub mod dp;
 pub mod mod_int;
 pub mod prime;
