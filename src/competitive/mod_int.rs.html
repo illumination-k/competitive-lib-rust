@@ -396,6 +396,7 @@
 <span id="396">396</span>
 <span id="397">397</span>
 <span id="398">398</span>
+<span id="399">399</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">ops</span>::{
     <span class="ident">Add</span>, <span class="ident">AddAssign</span>, <span class="ident">BitAnd</span>, <span class="ident">Div</span>, <span class="ident">DivAssign</span>, <span class="ident">Mul</span>, <span class="ident">MulAssign</span>, <span class="ident">RemAssign</span>, <span class="ident">ShrAssign</span>, <span class="ident">Sub</span>,
@@ -676,18 +677,19 @@
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">test</span> {
+    <span class="kw">use</span> <span class="ident">rand</span>::<span class="ident">Rng</span>;
+
     <span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
-    <span class="kw">use</span> <span class="ident">rand</span>::<span class="ident">distributions</span>::{<span class="ident">IndependentSample</span>, <span class="ident">Range</span>};
 
     <span class="kw">const</span> <span class="ident">MOD</span>: <span class="ident">u64</span> <span class="op">=</span> <span class="number">1_000_000_007</span>;
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">random_add_sub</span>() {
-        <span class="kw">let</span> <span class="ident">between</span> <span class="op">=</span> <span class="ident">Range</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="ident">MOD</span>);
+        <span class="kw">let</span> <span class="ident">between</span> <span class="op">=</span> (<span class="number">0</span>, <span class="ident">MOD</span>);
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rng</span> <span class="op">=</span> <span class="ident">rand</span>::<span class="ident">thread_rng</span>();
         <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">1000</span> {
-            <span class="kw">let</span> <span class="ident">x</span>: <span class="ident">u64</span> <span class="op">=</span> <span class="ident">between</span>.<span class="ident">ind_sample</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rng</span>);
-            <span class="kw">let</span> <span class="ident">y</span>: <span class="ident">u64</span> <span class="op">=</span> <span class="ident">between</span>.<span class="ident">ind_sample</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rng</span>);
+            <span class="kw">let</span> <span class="ident">x</span>: <span class="ident">u64</span> <span class="op">=</span> <span class="ident">rng</span>.<span class="ident">gen_range</span>(<span class="ident">between</span>.<span class="number">0</span>, <span class="ident">between</span>.<span class="number">1</span>);
+            <span class="kw">let</span> <span class="ident">y</span>: <span class="ident">u64</span> <span class="op">=</span> <span class="ident">rng</span>.<span class="ident">gen_range</span>(<span class="ident">between</span>.<span class="number">0</span>, <span class="ident">between</span>.<span class="number">1</span>);
 
             <span class="kw">let</span> <span class="ident">mx</span> <span class="op">=</span> <span class="ident">ModInt</span>::<span class="ident">new</span>(<span class="ident">x</span>, <span class="ident">MOD</span>);
             <span class="kw">let</span> <span class="ident">my</span> <span class="op">=</span> <span class="ident">ModInt</span>::<span class="ident">new</span>(<span class="ident">y</span>, <span class="ident">MOD</span>);
@@ -719,11 +721,11 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">random_mul</span>() {
-        <span class="kw">let</span> <span class="ident">between</span> <span class="op">=</span> <span class="ident">Range</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="ident">MOD</span>);
+        <span class="kw">let</span> <span class="ident">between</span> <span class="op">=</span> (<span class="number">0</span>, <span class="ident">MOD</span>);
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">rng</span> <span class="op">=</span> <span class="ident">rand</span>::<span class="ident">thread_rng</span>();
         <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">1000</span> {
-            <span class="kw">let</span> <span class="ident">x</span>: <span class="ident">u64</span> <span class="op">=</span> <span class="ident">between</span>.<span class="ident">ind_sample</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rng</span>);
-            <span class="kw">let</span> <span class="ident">y</span>: <span class="ident">u64</span> <span class="op">=</span> <span class="ident">between</span>.<span class="ident">ind_sample</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">rng</span>);
+            <span class="kw">let</span> <span class="ident">x</span>: <span class="ident">u64</span> <span class="op">=</span> <span class="ident">rng</span>.<span class="ident">gen_range</span>(<span class="ident">between</span>.<span class="number">0</span>, <span class="ident">between</span>.<span class="number">1</span>);
+            <span class="kw">let</span> <span class="ident">y</span>: <span class="ident">u64</span> <span class="op">=</span> <span class="ident">rng</span>.<span class="ident">gen_range</span>(<span class="ident">between</span>.<span class="number">0</span>, <span class="ident">between</span>.<span class="number">1</span>);
 
             <span class="kw">let</span> <span class="ident">mx</span> <span class="op">=</span> <span class="ident">ModInt</span>::<span class="ident">new</span>(<span class="ident">x</span>, <span class="ident">MOD</span>);
             <span class="kw">let</span> <span class="ident">my</span> <span class="op">=</span> <span class="ident">ModInt</span>::<span class="ident">new</span>(<span class="ident">y</span>, <span class="ident">MOD</span>);
