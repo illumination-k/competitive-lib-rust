@@ -1,1 +1,1 @@
-initSidebarItems({"trait":[["AtCoderFormat",""]]});
+initSidebarItems({"trait":[["AtCoderFormat","Trait of format for atcoder"]]});

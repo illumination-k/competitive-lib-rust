@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["bfs2d",""],["dfs2d",""]],"struct":[["Graph2D",""]]});
+initSidebarItems({"fn":[["bfs2d","bfs of 2d graph"],["dfs2d","dfs of 2d graph"]],"struct":[["Graph2D",""]]});

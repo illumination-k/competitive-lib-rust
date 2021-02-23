@@ -122,6 +122,19 @@
 <span id="122">122</span>
 <span id="123">123</span>
 <span id="124">124</span>
+<span id="125">125</span>
+<span id="126">126</span>
+<span id="127">127</span>
+<span id="128">128</span>
+<span id="129">129</span>
+<span id="130">130</span>
+<span id="131">131</span>
+<span id="132">132</span>
+<span id="133">133</span>
+<span id="134">134</span>
+<span id="135">135</span>
+<span id="136">136</span>
+<span id="137">137</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Combination</span> {
@@ -212,6 +225,19 @@
     <span class="ident">v</span>
 }
 
+<span class="doccomment">/// Simple wrapper of combinaiton  </span>
+<span class="doccomment">/// ```</span>
+<span class="doccomment">/// use competitive::combinations::*;</span>
+<span class="doccomment">/// assert_eq!(nck(16, 11), 4368)</span>
+<span class="doccomment">/// ```</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">nck</span>(<span class="ident">n</span>: <span class="ident">usize</span>, <span class="ident">k</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+    <span class="ident">combination</span>(<span class="ident">n</span>)[<span class="ident">n</span>][<span class="ident">k</span>]
+}
+
+<span class="doccomment">/// Simple wrapper of combinations for multi choises</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">nhk</span>(<span class="ident">n</span>: <span class="ident">usize</span>, <span class="ident">k</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
+    <span class="ident">combination</span>(<span class="ident">n</span><span class="op">+</span><span class="ident">k</span><span class="op">-</span><span class="number">1</span>)[<span class="ident">n</span><span class="op">+</span><span class="ident">k</span><span class="op">-</span><span class="number">1</span>][<span class="ident">k</span>]
+}
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">test</span> {

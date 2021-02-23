@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["combinations",""],["data_structures",""],["dp",""],["format",""],["geometry",""],["graph",""],["graph2d",""],["math",""],["mod_int",""],["prime",""],["scanner",""],["test_utility",""]]});
+initSidebarItems({"mod":[["binary_search",""],["combinations",""],["data_structures",""],["dp",""],["format",""],["geometry",""],["graph",""],["graph2d",""],["math",""],["mod_int",""],["prime",""],["scanner",""],["test_utility",""]]});
