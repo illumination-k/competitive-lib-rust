@@ -69,7 +69,7 @@ template = """
 use proconio::{input, fastout};
 use proconio::marker::*;
 use whiteread::parse_line;
-use std::{collections::*, error::Error};
+use std::collections::*;
 use num::*;
 use num_traits::*;
 use superslice::*;
@@ -78,6 +78,8 @@ use std::ops::*;
 use itertools::Itertools;
 use itertools::iproduct;
 use itertools_num::ItertoolsNum;
+
+use competitive::format::*;
 
 #[allow(unused_macros)]
 macro_rules! debug {
@@ -88,17 +90,17 @@ macro_rules! debug {
 }
 
 #[fastout]
-fn solve() -> Result<(), Box<dyn Error>> {
+fn solve() -> impl AtCoderFormat {
     const MOD: usize = 1_000_000_007;
     const UINF: usize = std::usize::MAX;
     const IINF: isize = std::isize::MAX;
 
     input!{}
-    println!("", );
-    Ok(())
+    
+    ""
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
-    solve()
+fn main() {
+    println!("{}", solve().format());
 }
 """
