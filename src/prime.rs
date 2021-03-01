@@ -1,11 +1,12 @@
 use num_traits::*;
 
-
-pub fn is_prime<T: PrimInt+NumAssign>(n: T) -> bool {
+pub fn is_prime<T: PrimInt + NumAssign>(n: T) -> bool {
     // O(sqrt(n))
     let mut flag: bool = true;
 
-    if n == one() { flag = false }
+    if n == one() {
+        flag = false
+    }
     let mut i: T = one::<T>().signed_shl(1);
     while i * i <= n {
         if n % i == zero() {
@@ -17,7 +18,7 @@ pub fn is_prime<T: PrimInt+NumAssign>(n: T) -> bool {
     flag
 }
 
-pub fn enum_divisors<T: PrimInt+NumAssign>(n: T) -> Vec<T> {
+pub fn enum_divisors<T: PrimInt + NumAssign>(n: T) -> Vec<T> {
     // O(sqrt(n))
     let mut res: Vec<T> = Vec::new();
 
@@ -26,7 +27,9 @@ pub fn enum_divisors<T: PrimInt+NumAssign>(n: T) -> Vec<T> {
     while i * i <= n {
         if n % i == zero() {
             res.push(i);
-            if n / i != i { res.push(n / i) }
+            if n / i != i {
+                res.push(n / i)
+            }
         }
         i += one();
     }
@@ -34,8 +37,7 @@ pub fn enum_divisors<T: PrimInt+NumAssign>(n: T) -> Vec<T> {
     res
 }
 
-
-pub fn prime_factorize<T: PrimInt+NumAssign>(mut n: T) -> Vec<(T, T)> {
+pub fn prime_factorize<T: PrimInt + NumAssign>(mut n: T) -> Vec<(T, T)> {
     // O(sqrt(n))
     let mut res: Vec<(T, T)> = Vec::new();
 
@@ -54,16 +56,17 @@ pub fn prime_factorize<T: PrimInt+NumAssign>(mut n: T) -> Vec<(T, T)> {
         i += one();
     }
 
-    if n != one() {res.push((n, one()))}
+    if n != one() {
+        res.push((n, one()))
+    }
 
     res
 }
 
-
 pub fn sieve_of_eratosthenes<T: NumCast>(n: T) -> Vec<usize> {
     let n = n.to_usize().expect("cannot convert n to usize");
     if n < 2 {
-        return vec![]
+        return vec![];
     }
 
     let mut flags = vec![true; n / 2];
@@ -73,7 +76,9 @@ pub fn sieve_of_eratosthenes<T: NumCast>(n: T) -> Vec<usize> {
     let sqrt_xi = sqrt_x / 2;
 
     for i in 1..sqrt_xi {
-        if !flags[i] { continue; }
+        if !flags[i] {
+            continue;
+        }
         let p = 2 * i + 1;
         let start = 2 * i * (i + 1);
         for mult in (start..flags.len()).step_by(p) {
@@ -81,15 +86,19 @@ pub fn sieve_of_eratosthenes<T: NumCast>(n: T) -> Vec<usize> {
         }
     }
 
-    std::iter::once(2).chain(
-        flags.iter().enumerate()
-            .filter(|(_i, flag)| **flag)
-            .map(|(i, _flag)| 2 * i + 1)
-    ).collect()
+    std::iter::once(2)
+        .chain(
+            flags
+                .iter()
+                .enumerate()
+                .filter(|(_i, flag)| **flag)
+                .map(|(i, _flag)| 2 * i + 1),
+        )
+        .collect()
 }
 
 #[derive(Debug, Clone)]
-pub struct OsaK<T: PrimInt + std::hash::Hash + NumAssign > {
+pub struct OsaK<T: PrimInt + std::hash::Hash + NumAssign> {
     sieve: Vec<T>,
     max: T,
 }
@@ -99,20 +108,23 @@ fn _make_sieve<T: PrimInt>(mut maxu: usize) -> Vec<T> {
     let mut sieve: Vec<usize> = (0..maxu).collect();
 
     let mut i = 2;
-    while i*i < maxu {
-        if sieve[i] < i { i += 1; continue; }
-        for j in (i*i..maxu).step_by(i) {
-            if sieve[j] == j { sieve[j] = i }
+    while i * i < maxu {
+        if sieve[i] < i {
+            i += 1;
+            continue;
+        }
+        for j in (i * i..maxu).step_by(i) {
+            if sieve[j] == j {
+                sieve[j] = i
+            }
         }
         i += 1;
     }
 
-    sieve.into_iter()
-        .filter_map(|x| T::from(x))
-        .collect()
+    sieve.into_iter().filter_map(|x| T::from(x)).collect()
 }
 
-impl<T: PrimInt + std::hash::Hash + NumAssign > OsaK<T> {
+impl<T: PrimInt + std::hash::Hash + NumAssign> OsaK<T> {
     /// O(maxloglog(max))   
     /// construct osa-k from max size
     pub fn new(max: T) -> Self {
@@ -129,7 +141,7 @@ impl<T: PrimInt + std::hash::Hash + NumAssign > OsaK<T> {
         let max = vec.iter().max().unwrap();
         let maxu = max.to_usize().unwrap();
         let sieve = _make_sieve(maxu);
-        
+
         Self { sieve, max: *max }
     }
 
@@ -137,32 +149,34 @@ impl<T: PrimInt + std::hash::Hash + NumAssign > OsaK<T> {
     /// test x is prime or not
     pub fn is_prime(&self, x: T) -> bool {
         assert!(x <= self.max);
-        if x == one() || x == zero() { return false }
+        if x == one() || x == zero() {
+            return false;
+        }
         self.sieve[x.to_usize().unwrap()] == x
-    } 
+    }
 
     /// O(log(n))  
-    /// prime factoraize 
+    /// prime factoraize
     pub fn prime_factorize(&self, mut n: T) -> std::collections::HashMap<T, T> {
         assert!(n <= self.max);
         if n == zero() || n == one() {
-            return std::collections::HashMap::new()
+            return std::collections::HashMap::new();
         }
 
         let mut res: std::collections::HashMap<T, T> = std::collections::HashMap::new();
         while n > one() {
-            *res.entry(self.sieve[n.to_usize().unwrap()]).or_insert(zero()) += one();
+            *res.entry(self.sieve[n.to_usize().unwrap()])
+                .or_insert(zero()) += one();
             n /= self.sieve[n.to_usize().unwrap()]
         }
         res
     }
 }
 
-
 #[cfg(test)]
 mod test {
-    use super::is_prime;
     use super::enum_divisors;
+    use super::is_prime;
     use super::prime_factorize;
     use super::sieve_of_eratosthenes;
     use super::OsaK;
@@ -198,7 +212,13 @@ mod test {
         assert_eq!(vec20, vec![2, 3, 5, 7, 11, 13, 17, 19]);
 
         let vec100 = sieve_of_eratosthenes(100);
-        assert_eq!(vec100, vec![2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97])
+        assert_eq!(
+            vec100,
+            vec![
+                2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79,
+                83, 89, 97
+            ]
+        )
     }
 
     #[test]
@@ -212,7 +232,7 @@ mod test {
         assert!(osa_k.is_prime(2));
         assert!(osa_k.is_prime(5));
         assert!(osa_k.is_prime(7));
-        
+
         // not prime
         assert!(!osa_k.is_prime(0));
         assert!(!osa_k.is_prime(1));

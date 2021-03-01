@@ -14,7 +14,12 @@ dependencies = ["expand"]
 command = "cargo"
 args = ["atcoder", "submit", "${@}"]
 
+[tasks.format]
+command = "cargo"
+args = ["fmt"]
+
 [tasks.pretest]
+dependencies = ["format"]
 command = "cargo"
 args = ["test"]
 
@@ -34,7 +39,7 @@ command = "cp"
 args = ["./cargo-atcoder.toml", "${HOME}/.config/cargo-atcoder.toml"]
 
 [tasks.push]
-dependencies = ["pretest", "readme"]
+dependencies = ["tasks.cargo-atcoder-config", "pretest", "readme"]
 script = """
 git push origin master
 """

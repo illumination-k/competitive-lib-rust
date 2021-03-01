@@ -1,4 +1,4 @@
-use num_traits::{Zero, One, Bounded};
+use num_traits::{Bounded, One, Zero};
 use std::ops::*;
 
 pub trait Monoid: Sized {
@@ -102,5 +102,3 @@ impl<T> From<T> for XOR<T> {
         XOR(v)
     }
 }
-
-

@@ -17,7 +17,11 @@ impl<R: std::io::Read, W: std::io::Write> IO<R, W> {
         self.1.write_all(w.to_string().as_bytes()).unwrap();
     }
     pub fn write_vec<S: ToString>(&mut self, v: Vec<S>) {
-        let s = v.iter().map(|x| x.to_string()).collect::<Vec<String>>().join("\n");
+        let s = v
+            .iter()
+            .map(|x| x.to_string())
+            .collect::<Vec<String>>()
+            .join("\n");
         self.write(&s);
     }
     pub fn read<T: std::str::FromStr>(&mut self) -> T {
@@ -43,7 +47,10 @@ impl<R: std::io::Read, W: std::io::Write> IO<R, W> {
         (0..h).map(|_| self.vec(w)).collect()
     }
 
-    pub fn set<T: std::str::FromStr + Eq + std::hash::Hash>(&mut self, n: usize) -> std::collections::HashSet<T> {
+    pub fn set<T: std::str::FromStr + Eq + std::hash::Hash>(
+        &mut self,
+        n: usize,
+    ) -> std::collections::HashSet<T> {
         (0..n).map(|_| self.read()).collect()
     }
 

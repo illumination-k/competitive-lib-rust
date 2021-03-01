@@ -36,7 +36,11 @@ where
         let size = vec![1; n];
         let parent = (0..n).map(|x| K::from(x).unwrap()).collect::<Vec<K>>();
         let group_num = n;
-        Self { parent, size, group_num }
+        Self {
+            parent,
+            size,
+            group_num,
+        }
     }
 
     /// Return the representative for `x`.
@@ -72,8 +76,17 @@ where
     unsafe fn find_mut_recursive(&mut self, mut x: K) -> K {
         let mut parent = *get_unchecked(&self.parent, x.to_usize().unwrap());
         while parent != x {
-            let grandparent = *get_unchecked(&self.parent, parent.to_usize().expect("Cannot convert to usize. maybe negative number!"));
-            *get_unchecked_mut(&mut self.parent, x.to_usize().expect("Cannot convert to usize. maybe negative number!")) = grandparent;
+            let grandparent = *get_unchecked(
+                &self.parent,
+                parent
+                    .to_usize()
+                    .expect("Cannot convert to usize. maybe negative number!"),
+            );
+            *get_unchecked_mut(
+                &mut self.parent,
+                x.to_usize()
+                    .expect("Cannot convert to usize. maybe negative number!"),
+            ) = grandparent;
             x = parent;
             parent = grandparent;
         }
@@ -102,8 +115,12 @@ where
             return false;
         }
 
-        let xrepu = xrep.to_usize().expect("Cannot convert to usize. maybe negative number!");
-        let yrepu = yrep.to_usize().expect("Cannot convert to usize. maybe negative number!");
+        let xrepu = xrep
+            .to_usize()
+            .expect("Cannot convert to usize. maybe negative number!");
+        let yrepu = yrep
+            .to_usize()
+            .expect("Cannot convert to usize. maybe negative number!");
         let xsize = self.size[xrepu];
         let ysize = self.size[yrepu];
 
@@ -135,7 +152,9 @@ where
 
     pub fn size(&self, x: K) -> usize {
         let xrep = self.find(x);
-        let xrepu = xrep.to_usize().expect("Cannot convert to usize. maybe negative number!");
+        let xrepu = xrep
+            .to_usize()
+            .expect("Cannot convert to usize. maybe negative number!");
 
         self.size[xrepu]
     }
@@ -159,13 +178,12 @@ where
         // O(n^2)
         let mut map: HashMap<K, HashSet<K>> = HashMap::new();
         for i in 0..self.parent.len() {
-            map.entry(K::from(i).unwrap()).or_insert(self.member(K::from(i).unwrap()));
+            map.entry(K::from(i).unwrap())
+                .or_insert(self.member(K::from(i).unwrap()));
         }
         map
     }
 }
 
 #[cfg(test)]
-mod test {
-
-}
+mod test {}

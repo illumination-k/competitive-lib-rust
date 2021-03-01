@@ -1,6 +1,5 @@
 use std::ops::{
-    Add, AddAssign, BitAnd, Div, DivAssign, Mul, MulAssign, RemAssign, ShrAssign, Sub,
-    SubAssign,
+    Add, AddAssign, BitAnd, Div, DivAssign, Mul, MulAssign, RemAssign, ShrAssign, Sub, SubAssign,
 };
 
 #[derive(Debug)]

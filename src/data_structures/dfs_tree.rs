@@ -6,7 +6,7 @@ pub struct DfsTree {
     tree_index_to_dfs_index: Vec<usize>,
     dfs_index_to_tree_index: Vec<usize>,
     pos: Vec<usize>,
-    cnt: usize
+    cnt: usize,
 }
 
 impl DfsTree {
@@ -40,9 +40,11 @@ impl DfsTree {
         self.tree_index_to_dfs_index[v] = dfs_ord;
         self.dfs_index_to_tree_index[dfs_ord] = v;
         self.cnt += 1;
-        
+
         for &next in graph[v].iter() {
-            if seen[next] { continue; }
+            if seen[next] {
+                continue;
+            }
             self.dfs(next, graph, seen);
         }
 
@@ -69,7 +71,6 @@ impl DfsTree {
     }
 }
 
-
 #[cfg(test)]
 mod test {
     use super::DfsTree;
@@ -88,24 +89,18 @@ mod test {
 
         let n: usize = sc.read();
         let mut graph: Vec<Vec<usize>> = vec![vec![]; n];
-        for _ in 0..n-1 {
+        for _ in 0..n - 1 {
             let a: usize = sc.read();
             let b: usize = sc.read();
-            graph[a-1].push(b-1);
-            graph[b-1].push(a-1);
+            graph[a - 1].push(b - 1);
+            graph[b - 1].push(a - 1);
         }
 
         let mut dfs_tree = DfsTree::new(graph);
         dfs_tree.build(0);
 
-        assert_eq!(
-            dfs_tree.tree_index_to_dfs_index,
-            vec![0, 1, 2, 4, 5, 6, 3]
-        );
+        assert_eq!(dfs_tree.tree_index_to_dfs_index, vec![0, 1, 2, 4, 5, 6, 3]);
 
-        assert_eq!(
-            dfs_tree.pos,
-            vec![7, 6, 4, 4, 6, 6, 7]
-        )
+        assert_eq!(dfs_tree.pos, vec![7, 6, 4, 4, 6, 6, 7])
     }
 }

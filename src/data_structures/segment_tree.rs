@@ -2,10 +2,7 @@
 
 use crate::data_structures::monoid::*;
 
-use std::{
-    ops::Bound,
-    ops::RangeBounds,
-};
+use std::{ops::Bound, ops::RangeBounds};
 
 /// Segment tree
 #[derive(Debug)]

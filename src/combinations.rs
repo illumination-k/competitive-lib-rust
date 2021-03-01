@@ -8,12 +8,12 @@ pub struct Combination {
 
 impl Combination {
     pub fn new(upper: usize, modulo: usize) -> Self {
-        let mut fact_inv = vec![0; upper+1];
-        let mut inv = vec![0; upper+1];
+        let mut fact_inv = vec![0; upper + 1];
+        let mut inv = vec![0; upper + 1];
         fact_inv[0] = 1;
         fact_inv[1] = 1;
         inv[1] = 1;
-        
+
         for i in 2..=upper {
             inv[i] = modulo - inv[modulo % i] * (modulo / i) % modulo;
             fact_inv[i] = fact_inv[i - 1] * inv[i] % modulo;
@@ -27,7 +27,7 @@ impl Combination {
     }
 
     pub fn fix_n(&mut self, n: usize) {
-        let mut com = vec![0; n+1];
+        let mut com = vec![0; n + 1];
         com[0] = 1;
         for i in 1..=n {
             com[i] = com[i - 1] * ((n - i + 1) * self.inv[i] % self.modulo) % self.modulo;
@@ -36,7 +36,9 @@ impl Combination {
     }
 
     fn _calc_nck(&self, n: usize, k: usize) -> usize {
-        if n < k { return 0 }
+        if n < k {
+            return 0;
+        }
         let mut ans: usize = 1;
         let mut i = n;
 
@@ -56,8 +58,8 @@ impl Combination {
     }
 
     pub fn nhk(&self, n: usize, k: usize) -> usize {
-        assert!(self.fact_inv.len() >= n+k-1);
-        self.nck(n+k-1, k)
+        assert!(self.fact_inv.len() >= n + k - 1);
+        self.nck(n + k - 1, k)
     }
 }
 
@@ -71,16 +73,16 @@ impl Combination {
 /// assert_eq!(res[5][2], 10);
 /// ```
 pub fn combination(n: usize) -> Vec<Vec<usize>> {
-    let mut v = vec![vec![0; n+1]; n+1];
+    let mut v = vec![vec![0; n + 1]; n + 1];
 
-    for i in 0..n+1 {
+    for i in 0..n + 1 {
         v[i][0] = 1;
         v[i][i] = 1;
     }
 
-    for j in 1..n+1 {
+    for j in 1..n + 1 {
         for k in 1..j {
-            v[j][k] = v[j-1][k-1] + v[j-1][k]
+            v[j][k] = v[j - 1][k - 1] + v[j - 1][k]
         }
     }
 
@@ -98,7 +100,7 @@ pub fn nck(n: usize, k: usize) -> usize {
 
 /// Simple wrapper of combinations for multi choises
 pub fn nhk(n: usize, k: usize) -> usize {
-    combination(n+k-1)[n+k-1][k]
+    combination(n + k - 1)[n + k - 1][k]
 }
 
 #[cfg(test)]

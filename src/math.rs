@@ -1,27 +1,28 @@
-use num_traits::{ PrimInt, zero, one, NumCast };
+use std::fmt::Debug;
+
+use num_traits::{one, zero, NumCast, PrimInt};
 
 /// GCD
 pub fn gcd<T: PrimInt>(a: T, b: T) -> T {
-    if b == zero()  {
+    if b == zero() {
         a
     } else {
         gcd(b, a % b)
     }
 }
 
-
 /// LCM
 pub fn lcm<T: PrimInt>(a: T, b: T) -> T {
     a / gcd(a, b) * b
 }
 
-
+/// GCD of vec
 pub fn gcd_list<T: PrimInt>(vec: Vec<T>) -> T {
     assert!(vec.len() > 1);
     vec.iter().fold(vec[0], |acc, x| gcd(*x, acc))
 }
 
-
+/// LCM of vec
 pub fn lcm_list<T: PrimInt>(vec: Vec<T>) -> T {
     assert!(vec.len() > 1);
     vec.iter().fold(vec[0], |acc, x| lcm(*x, acc))
@@ -37,7 +38,7 @@ pub fn quadratic_formula<T: NumCast>(a: T, b: T, c: T) -> Option<(f64, f64)> {
     if descriminant > 0.0 {
         let ans_1 = (-b + descriminant.sqrt()) / (2.0 * a);
         let ans_2 = (-b - descriminant.sqrt()) / (2.0 * a);
-        return Some((ans_1, ans_2))
+        return Some((ans_1, ans_2));
     } else if descriminant == 0.0 {
         let ans = -b / (2.0 * a);
         return Some((ans, ans));
@@ -46,10 +47,11 @@ pub fn quadratic_formula<T: NumCast>(a: T, b: T, c: T) -> Option<(f64, f64)> {
     }
 }
 
-
 fn safe_mod(mut x: i64, modulo: i64) -> i64 {
     x %= modulo;
-    if x < 0 { x += modulo; }
+    if x < 0 {
+        x += modulo;
+    }
     x
 }
 
@@ -57,7 +59,9 @@ pub fn ext_gcd<T: NumCast + PrimInt>(a: T, b: T) -> (T, T) {
     let a = a.to_i64().expect("a can not convert to i64");
     let b = b.to_i64().expect("b cannot convert to i64");
     let a = safe_mod(a, b);
-    if a == 0 { return (T::from(b).unwrap(), T::from(0).unwrap()) }
+    if a == 0 {
+        return (T::from(b).unwrap(), T::from(0).unwrap());
+    }
 
     // Contracts:
     // [1] s - m0 * a = 0 (mod b)
@@ -86,9 +90,8 @@ pub fn ext_gcd<T: NumCast + PrimInt>(a: T, b: T) -> (T, T) {
     if m0 < 0 {
         m0 += b / s;
     }
-    (T::from(s).unwrap(), T::from(m0).unwrap())    
+    (T::from(s).unwrap(), T::from(m0).unwrap())
 }
-
 
 pub fn inv_mod<T: NumCast + PrimInt>(x: T, m: T) -> T {
     assert!(one::<T>() <= m);
@@ -97,18 +100,28 @@ pub fn inv_mod<T: NumCast + PrimInt>(x: T, m: T) -> T {
     z.1
 }
 
-
-/// a0: the first term of serires  
-/// d: common difference  
-/// n: number of terms  
-pub fn arithmetic_progression<T: PrimInt>(a0: T, d: T, n: T) -> T {
+/// sum of Arithmetic progression  
+/// **a0**: the first term of serires    
+/// **d**: common difference  
+/// **n**: number of terms  
+pub fn arithmetic_progression_sum<T: PrimInt>(a0: T, d: T, n: T) -> T {
     n * ((T::one() + T::one()) * a0 + (n - T::one()) * d) / (T::one() + T::one())
+}
+
+/// sum of geometric progression  
+/// **a0**: the first term of serires    
+/// **r**: geometric progression    
+/// **n**: number of terms 
+pub fn geometric_progression_sum<T: PrimInt + Debug>(a0: T, r: T, n: T) -> T {
+    assert_ne!(r, T::one());
+
+    a0 * (T::one() - r.pow(n.to_u32().unwrap())) / (T::one() - r)
 }
 
 #[cfg(test)]
 mod test {
-    use super::{gcd, lcm, gcd_list, lcm_list};
     use super::quadratic_formula;
+    use super::{gcd, gcd_list, lcm, lcm_list};
     #[test]
     fn gcd_1() {
         assert_eq!(gcd(10, 2), 2);
@@ -129,7 +142,6 @@ mod test {
     fn lcm_list_1() {
         assert_eq!(lcm_list(vec![12, 42, 72]), 504);
     }
-
 
     #[test]
     fn test_quadratic_formula_1() {

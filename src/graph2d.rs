@@ -1,23 +1,28 @@
 #[allow(unused_imports)]
 use std::collections::*;
-use std::{ops::*, writeln};
 use std::fmt;
+use std::{ops::*, writeln};
 
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Graph2D<T> {
     graph: Vec<Vec<T>>,
     width: isize,
-    height: isize
+    height: isize,
 }
 
 impl<T> fmt::Debug for Graph2D<T>
-    where T: ToString + Eq + Copy
+where
+    T: ToString + Eq + Copy,
 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         writeln!(f, "")?;
         writeln!(f, "width = {}, height = {}", self.width, self.height)?;
         for y in 0..self.height() {
-            let s: String = self.graph[y].iter().map(|x| x.to_string()).collect();
+            let s: String = self.graph[y]
+                .iter()
+                .map(|x| x.to_string())
+                .collect::<Vec<String>>()
+                .join(" ");
             writeln!(f, "{}", s)?;
         }
 
@@ -26,12 +31,17 @@ impl<T> fmt::Debug for Graph2D<T>
 }
 
 impl<K> Graph2D<K>
-where K: Eq + Copy
+where
+    K: Eq + Copy,
 {
     pub fn new(graph: Vec<Vec<K>>) -> Self {
         let width = graph[0].len() as isize;
         let height = graph.len() as isize;
-        Self { graph, width, height }
+        Self {
+            graph,
+            width,
+            height,
+        }
     }
 
     pub fn is_not_in(&self, x: isize, y: isize) -> bool {
@@ -44,10 +54,16 @@ where K: Eq + Copy
 
     pub fn is_go(&self, x: isize, y: isize, obs: &Option<K>) -> Option<(usize, usize)> {
         if self.is_not_in(x, y) {
-            return None
+            return None;
         }
         match obs {
-            Some(obs) => { if &self[(x as usize, y as usize)] == obs { None } else { Some((x as usize, y as usize))}},
+            Some(obs) => {
+                if &self[(x as usize, y as usize)] == obs {
+                    None
+                } else {
+                    Some((x as usize, y as usize))
+                }
+            }
             None => Some((x as usize, y as usize)),
         }
     }
@@ -84,8 +100,7 @@ where K: Eq + Copy
     }
 }
 
-impl<K> Index<(usize, usize)> for Graph2D<K>
-{
+impl<K> Index<(usize, usize)> for Graph2D<K> {
     type Output = K;
 
     fn index<'a>(&'a self, index: (usize, usize)) -> &'a K {
@@ -95,8 +110,7 @@ impl<K> Index<(usize, usize)> for Graph2D<K>
     }
 }
 
-impl<K> IndexMut<(usize, usize)> for Graph2D<K>
-{
+impl<K> IndexMut<(usize, usize)> for Graph2D<K> {
     fn index_mut<'a>(&'a mut self, index: (usize, usize)) -> &'a mut K {
         let (x, y): (usize, usize) = index;
 
@@ -105,7 +119,11 @@ impl<K> IndexMut<(usize, usize)> for Graph2D<K>
 }
 
 /// bfs of 2d graph
-pub fn bfs2d<T: Eq + Copy>(graph: &Graph2D<T>, start: (usize, usize), obs: Option<T>) -> Graph2D<isize> {
+pub fn bfs2d<T: Eq + Copy>(
+    graph: &Graph2D<T>,
+    start: (usize, usize),
+    obs: Option<T>,
+) -> Graph2D<isize> {
     let directions = vec![(0, 1), (1, 0), (0, -1), (-1, 0)];
     let mut dist: Graph2D<isize> = Graph2D::new(vec![vec![-1; graph.width()]; graph.height()]);
     let mut queue: VecDeque<(usize, usize)> = VecDeque::new();
@@ -124,8 +142,10 @@ pub fn bfs2d<T: Eq + Copy>(graph: &Graph2D<T>, start: (usize, usize), obs: Optio
                         dist[next] = dist[(cx, cy)] + 1;
                         queue.push_back(next)
                     }
-                },
-                None => {continue;}
+                }
+                None => {
+                    continue;
+                }
             }
         }
     }
@@ -134,30 +154,38 @@ pub fn bfs2d<T: Eq + Copy>(graph: &Graph2D<T>, start: (usize, usize), obs: Optio
 }
 
 /// dfs of 2d graph
-pub fn dfs2d<T: Eq + Copy>(graph: &Graph2D<T>, seen: &mut Vec<Vec<bool>>, start: (usize, usize), obs: Option<T>) {
+pub fn dfs2d<T: Eq + Copy>(
+    graph: &Graph2D<T>,
+    seen: &mut Vec<Vec<bool>>,
+    start: (usize, usize),
+    obs: Option<T>,
+) {
     fn dfs<T: Eq + Copy>(
-        graph: &Graph2D<T>, 
-        start: (usize, usize), 
+        graph: &Graph2D<T>,
+        start: (usize, usize),
         obs: &Option<T>,
-        directions: &Vec<(isize, isize)>, 
-        seen: &mut Vec<Vec<bool>>,) {
-            seen[start.1][start.0] = true;
+        directions: &Vec<(isize, isize)>,
+        seen: &mut Vec<Vec<bool>>,
+    ) {
+        seen[start.1][start.0] = true;
 
-            for &direction in directions.iter() {
-                let next_x = start.0 as isize + direction.0;
-                let next_y = start.1 as isize + direction.1;
+        for &direction in directions.iter() {
+            let next_x = start.0 as isize + direction.0;
+            let next_y = start.1 as isize + direction.1;
 
-                match graph.is_go(next_x, next_y, obs) {
-                    Some(next) => {
-                        if !seen[next.1][next.0] {
-                            dfs(graph, next, obs, directions, seen)
-                        }
-                    },
-                    None => { continue; }
+            match graph.is_go(next_x, next_y, obs) {
+                Some(next) => {
+                    if !seen[next.1][next.0] {
+                        dfs(graph, next, obs, directions, seen)
+                    }
+                }
+                None => {
+                    continue;
                 }
             }
+        }
     }
-    
+
     // let mut seen = vec![vec![false; graph.width()]; graph.height()];
     let directions = vec![(0, 1), (1, 0), (0, -1), (-1, 0)];
 
@@ -193,25 +221,22 @@ mod test_graph2d {
 #[cfg(test)]
 mod test_bfs2d {
     // atcoder abc007-c
-    use super::{Graph2D, bfs2d};
+    use super::{bfs2d, Graph2D};
 
     fn solve(graph: Vec<Vec<char>>, s: (usize, usize), g: (usize, usize)) -> isize {
         let graph2d = Graph2D::new(graph);
         let dist = bfs2d(&graph2d, s, Some('#'));
         dist[g]
-    } 
+    }
 
     #[test]
     fn test_bfs2d_1() {
         let graph: Vec<Vec<char>> = [
-            "########",
-            "#......#",
-            "#.######",
-            "#..#...#",
-            "#..##..#",
-            "##.....#",
-            "########",
-        ].iter().map(|x| x.chars().collect()).collect();
+            "########", "#......#", "#.######", "#..#...#", "#..##..#", "##.....#", "########",
+        ]
+        .iter()
+        .map(|x| x.chars().collect())
+        .collect();
 
         let ans = solve(graph, (1, 1), (4, 3));
         assert_eq!(ans, 11);
@@ -219,13 +244,10 @@ mod test_bfs2d {
 
     #[test]
     fn test_bfs2d_2() {
-        let graph: Vec<Vec<char>> = [
-            "########",
-            "#.#....#",
-            "#.###..#",
-            "#......#",
-            "########"
-        ].iter().map(|x| x.chars().collect()).collect();
+        let graph: Vec<Vec<char>> = ["########", "#.#....#", "#.###..#", "#......#", "########"]
+            .iter()
+            .map(|x| x.chars().collect())
+            .collect();
 
         let ans = solve(graph, (1, 1), (3, 1));
         assert_eq!(ans, 10)
@@ -234,7 +256,7 @@ mod test_bfs2d {
 
 #[cfg(test)]
 mod test_dfs2d {
-    use super::{Graph2D, dfs2d};
+    use super::{dfs2d, Graph2D};
 
     fn solve(graph: Vec<Vec<char>>, start: (usize, usize), goal: (usize, usize)) -> bool {
         let graph2d = Graph2D::new(graph);
@@ -246,12 +268,10 @@ mod test_dfs2d {
 
     #[test]
     fn test_dfs2d_1() {
-        let graph: Vec<Vec<char>> = [
-            "s####",
-            "....#",
-            "#####",
-            "#...g"
-        ].iter().map(|x| x.chars().collect()).collect();
+        let graph: Vec<Vec<char>> = ["s####", "....#", "#####", "#...g"]
+            .iter()
+            .map(|x| x.chars().collect())
+            .collect();
 
         let start = (0, 0);
         let goal = (4, 3);
@@ -273,7 +293,10 @@ mod test_dfs2d {
             "#.#.#.#.#.",
             "###.#.#.#.",
             "#.....#...",
-        ].iter().map(|x| x.chars().collect()).collect();
+        ]
+        .iter()
+        .map(|x| x.chars().collect())
+        .collect();
 
         let start = (0, 0);
         let goal = (0, 6);
@@ -295,7 +318,10 @@ mod test_dfs2d {
             "#.#.#.#.#.",
             "#.#.#.#.#.",
             "#.....#...",
-        ].iter().map(|x| x.chars().collect()).collect();
+        ]
+        .iter()
+        .map(|x| x.chars().collect())
+        .collect();
 
         let start = (0, 0);
         let goal = (0, 6);

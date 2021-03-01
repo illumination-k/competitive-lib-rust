@@ -1,5 +1,5 @@
-use std::ops::*;
 use num_traits::{Float, NumAssign, NumOps};
+use std::ops::*;
 #[derive(Debug, Clone, Copy, PartialEq, PartialOrd)]
 pub struct Point<T> {
     pub x: T,
@@ -17,7 +17,8 @@ impl<T> Point<T> {
 }
 
 impl<T> Point<T>
-    where T: Float
+where
+    T: Float,
 {
     /// roation point  
     /// 0 <= theta <= 360
@@ -28,15 +29,15 @@ impl<T> Point<T>
 
         Self {
             x: self.x * cos - self.y * sin,
-            y: self.x * sin + self.y * cos
+            y: self.x * sin + self.y * cos,
         }
     }
 }
 
-
 /// calculate space of triangle
 pub fn triangle_space<T>(o: Point<T>, a: Point<T>, b: Point<T>) -> T
-    where T: Float
+where
+    T: Float,
 {
     let oa = a - o;
     let ob = b - o;
@@ -46,30 +47,33 @@ pub fn triangle_space<T>(o: Point<T>, a: Point<T>, b: Point<T>) -> T
 /// calculate gradient  
 /// if zero division occur, return None
 pub fn gradient<T>(a: Point<T>, b: Point<T>) -> Option<T>
-    where T: Float
+where
+    T: Float,
 {
     let x = b - a;
     if x.x == T::zero() {
-        return None
+        return None;
     }
 
     Some(x.y / x.x)
 }
 
 impl<T> Add<T> for Point<T>
-    where T: Copy + NumOps
+where
+    T: Copy + NumOps,
 {
     type Output = Self;
     fn add(self, rhs: T) -> Self {
         Self {
             x: self.x + rhs,
-            y: self.y + rhs
+            y: self.y + rhs,
         }
     }
 }
 
 impl<T> AddAssign<T> for Point<T>
-    where T: Copy + NumAssign
+where
+    T: Copy + NumAssign,
 {
     fn add_assign(&mut self, rhs: T) {
         *self = Self {
@@ -80,7 +84,8 @@ impl<T> AddAssign<T> for Point<T>
 }
 
 impl<T> Sub<T> for Point<T>
-    where T: Copy + NumOps
+where
+    T: Copy + NumOps,
 {
     type Output = Self;
     fn sub(self, rhs: T) -> Self {
@@ -92,7 +97,8 @@ impl<T> Sub<T> for Point<T>
 }
 
 impl<T> SubAssign<T> for Point<T>
-    where T: Copy + NumAssign
+where
+    T: Copy + NumAssign,
 {
     fn sub_assign(&mut self, rhs: T) {
         *self = Self {
@@ -102,9 +108,9 @@ impl<T> SubAssign<T> for Point<T>
     }
 }
 
-
 impl<T> Mul<T> for Point<T>
-    where T: Copy + NumOps
+where
+    T: Copy + NumOps,
 {
     type Output = Self;
     fn mul(self, rhs: T) -> Self {
@@ -116,7 +122,8 @@ impl<T> Mul<T> for Point<T>
 }
 
 impl<T> MulAssign<T> for Point<T>
-    where T: Copy + NumAssign
+where
+    T: Copy + NumAssign,
 {
     fn mul_assign(&mut self, rhs: T) {
         *self = Self {
@@ -127,7 +134,8 @@ impl<T> MulAssign<T> for Point<T>
 }
 
 impl<T> Div<T> for Point<T>
-    where T: Copy + NumOps
+where
+    T: Copy + NumOps,
 {
     type Output = Self;
     fn div(self, rhs: T) -> Self {
@@ -139,7 +147,8 @@ impl<T> Div<T> for Point<T>
 }
 
 impl<T> DivAssign<T> for Point<T>
-    where T: Copy + NumAssign
+where
+    T: Copy + NumAssign,
 {
     fn div_assign(&mut self, rhs: T) {
         *self = Self {
@@ -150,93 +159,101 @@ impl<T> DivAssign<T> for Point<T>
 }
 
 impl<T> Add<Point<T>> for Point<T>
-    where T: NumOps
+where
+    T: NumOps,
 {
     type Output = Self;
     fn add(self, rhs: Self) -> Self {
         Self {
             x: self.x + rhs.x,
-            y: self.y + rhs.y
+            y: self.y + rhs.y,
         }
     }
-} 
+}
 
 impl<T> AddAssign<Point<T>> for Point<T>
-    where T: Copy + NumAssign
+where
+    T: Copy + NumAssign,
 {
     fn add_assign(&mut self, rhs: Self) {
         *self = Self {
             x: self.x + rhs.x,
-            y: self.y + rhs.y
+            y: self.y + rhs.y,
         }
     }
 }
 
 impl<T> Sub<Point<T>> for Point<T>
-    where T: NumOps
+where
+    T: NumOps,
 {
     type Output = Self;
     fn sub(self, rhs: Self) -> Self {
         Self {
             x: self.x - rhs.x,
-            y: self.y - rhs.y
+            y: self.y - rhs.y,
         }
     }
 }
 
 impl<T> SubAssign<Point<T>> for Point<T>
-    where T: Copy + NumAssign
+where
+    T: Copy + NumAssign,
 {
     fn sub_assign(&mut self, rhs: Self) {
         *self = Self {
             x: self.x - rhs.x,
-            y: self.y - rhs.y
+            y: self.y - rhs.y,
         }
     }
 }
 
 impl<T> Mul<Point<T>> for Point<T>
-    where T: NumOps
+where
+    T: NumOps,
 {
     type Output = Self;
     fn mul(self, rhs: Self) -> Self {
         Self {
             x: self.x * rhs.x,
-            y: self.y * rhs.y
+            y: self.y * rhs.y,
         }
     }
 }
 
 impl<T> MulAssign<Point<T>> for Point<T>
-    where T: Copy + NumAssign
+where
+    T: Copy + NumAssign,
 {
     fn mul_assign(&mut self, rhs: Self) {
         *self = Self {
             x: self.x * rhs.x,
-            y: self.y * rhs.y
+            y: self.y * rhs.y,
         }
     }
 }
 
 impl<T> Div<Point<T>> for Point<T>
-    where T: NumOps
+where
+    T: NumOps,
 {
     type Output = Self;
     fn div(self, rhs: Self) -> Self {
         Self {
             x: self.x / rhs.x,
-            y: self.y / rhs.y
+            y: self.y / rhs.y,
         }
     }
 }
 
 impl<T> DivAssign<Point<T>> for Point<T>
-    where T: Copy + NumAssign
+where
+    T: Copy + NumAssign,
 {
     fn div_assign(&mut self, rhs: Self) {
         *self = Self {
             x: self.x / rhs.x,
-            y: self.y / rhs.y
+            y: self.y / rhs.y,
         }
     }
 }
@@ -246,7 +263,8 @@ mod test {
     use super::*;
     use approx::AbsDiffEq;
 
-    impl<T: AbsDiffEq> AbsDiffEq for Point<T> where
+    impl<T: AbsDiffEq> AbsDiffEq for Point<T>
+    where
         T::Epsilon: Copy,
     {
         type Epsilon = T::Epsilon;
@@ -256,16 +274,15 @@ mod test {
         }
 
         fn abs_diff_eq(&self, other: &Self, epsilon: T::Epsilon) -> bool {
-            T::abs_diff_eq(&self.x, &other.x, epsilon) &&
-            T::abs_diff_eq(&self.y, &other.y, epsilon)
+            T::abs_diff_eq(&self.x, &other.x, epsilon) && T::abs_diff_eq(&self.y, &other.y, epsilon)
         }
     }
 
     #[test]
     fn test_add() {
         let mut p1 = Point::new(0, 1);
-        let p2= Point::new(1, 2);
-        assert_eq!(p1+p2, Point::new(1, 3));
+        let p2 = Point::new(1, 2);
+        assert_eq!(p1 + p2, Point::new(1, 3));
 
         p1 += 1;
         assert_eq!(p1, Point::new(1, 2));
@@ -277,7 +294,7 @@ mod test {
     fn test_sub() {
         let mut p1 = Point::new(0, 1);
         let p2 = Point::new(1, 2);
-        assert_eq!(p1-p2, Point::new(-1, -1));
+        assert_eq!(p1 - p2, Point::new(-1, -1));
 
         p1 -= 1;
         assert_eq!(p1, Point::new(-1, 0));
