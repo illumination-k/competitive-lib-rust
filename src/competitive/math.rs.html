@@ -138,31 +138,44 @@
 <span id="138">138</span>
 <span id="139">139</span>
 <span id="140">140</span>
+<span id="141">141</span>
+<span id="142">142</span>
+<span id="143">143</span>
+<span id="144">144</span>
+<span id="145">145</span>
+<span id="146">146</span>
+<span id="147">147</span>
+<span id="148">148</span>
+<span id="149">149</span>
+<span id="150">150</span>
+<span id="151">151</span>
+<span id="152">152</span>
 </pre><div class="example-wrap"><pre class="rust ">
-<span class="kw">use</span> <span class="ident">num_traits</span>::{ <span class="ident">PrimInt</span>, <span class="ident">zero</span>, <span class="ident">one</span>, <span class="ident">NumCast</span> };
+<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">fmt</span>::<span class="ident">Debug</span>;
+
+<span class="kw">use</span> <span class="ident">num_traits</span>::{<span class="ident">one</span>, <span class="ident">zero</span>, <span class="ident">NumCast</span>, <span class="ident">PrimInt</span>};
 
 <span class="doccomment">/// GCD</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">gcd</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PrimInt</span><span class="op">&gt;</span>(<span class="ident">a</span>: <span class="ident">T</span>, <span class="ident">b</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">T</span> {
-    <span class="kw">if</span> <span class="ident">b</span> <span class="op">=</span><span class="op">=</span> <span class="ident">zero</span>()  {
+    <span class="kw">if</span> <span class="ident">b</span> <span class="op">=</span><span class="op">=</span> <span class="ident">zero</span>() {
         <span class="ident">a</span>
     } <span class="kw">else</span> {
         <span class="ident">gcd</span>(<span class="ident">b</span>, <span class="ident">a</span> <span class="op">%</span> <span class="ident">b</span>)
     }
 }
 
-
 <span class="doccomment">/// LCM</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lcm</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PrimInt</span><span class="op">&gt;</span>(<span class="ident">a</span>: <span class="ident">T</span>, <span class="ident">b</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">T</span> {
     <span class="ident">a</span> <span class="op">/</span> <span class="ident">gcd</span>(<span class="ident">a</span>, <span class="ident">b</span>) <span class="op">*</span> <span class="ident">b</span>
 }
 
-
+<span class="doccomment">/// GCD of vec</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">gcd_list</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PrimInt</span><span class="op">&gt;</span>(<span class="ident">vec</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">T</span> {
     <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">vec</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">1</span>);
     <span class="ident">vec</span>.<span class="ident">iter</span>().<span class="ident">fold</span>(<span class="ident">vec</span>[<span class="number">0</span>], <span class="op">|</span><span class="ident">acc</span>, <span class="ident">x</span><span class="op">|</span> <span class="ident">gcd</span>(<span class="kw-2">*</span><span class="ident">x</span>, <span class="ident">acc</span>))
 }
 
-
+<span class="doccomment">/// LCM of vec</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">lcm_list</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PrimInt</span><span class="op">&gt;</span>(<span class="ident">vec</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">T</span> {
     <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">vec</span>.<span class="ident">len</span>() <span class="op">&gt;</span> <span class="number">1</span>);
     <span class="ident">vec</span>.<span class="ident">iter</span>().<span class="ident">fold</span>(<span class="ident">vec</span>[<span class="number">0</span>], <span class="op">|</span><span class="ident">acc</span>, <span class="ident">x</span><span class="op">|</span> <span class="ident">lcm</span>(<span class="kw-2">*</span><span class="ident">x</span>, <span class="ident">acc</span>))
@@ -178,7 +191,7 @@
     <span class="kw">if</span> <span class="ident">descriminant</span> <span class="op">&gt;</span> <span class="number">0.0</span> {
         <span class="kw">let</span> <span class="ident">ans_1</span> <span class="op">=</span> (<span class="op">-</span><span class="ident">b</span> <span class="op">+</span> <span class="ident">descriminant</span>.<span class="ident">sqrt</span>()) <span class="op">/</span> (<span class="number">2.0</span> <span class="op">*</span> <span class="ident">a</span>);
         <span class="kw">let</span> <span class="ident">ans_2</span> <span class="op">=</span> (<span class="op">-</span><span class="ident">b</span> <span class="op">-</span> <span class="ident">descriminant</span>.<span class="ident">sqrt</span>()) <span class="op">/</span> (<span class="number">2.0</span> <span class="op">*</span> <span class="ident">a</span>);
-        <span class="kw">return</span> <span class="prelude-val">Some</span>((<span class="ident">ans_1</span>, <span class="ident">ans_2</span>))
+        <span class="kw">return</span> <span class="prelude-val">Some</span>((<span class="ident">ans_1</span>, <span class="ident">ans_2</span>));
     } <span class="kw">else</span> <span class="kw">if</span> <span class="ident">descriminant</span> <span class="op">=</span><span class="op">=</span> <span class="number">0.0</span> {
         <span class="kw">let</span> <span class="ident">ans</span> <span class="op">=</span> <span class="op">-</span><span class="ident">b</span> <span class="op">/</span> (<span class="number">2.0</span> <span class="op">*</span> <span class="ident">a</span>);
         <span class="kw">return</span> <span class="prelude-val">Some</span>((<span class="ident">ans</span>, <span class="ident">ans</span>));
@@ -187,10 +200,11 @@
     }
 }
 
-
 <span class="kw">fn</span> <span class="ident">safe_mod</span>(<span class="kw-2">mut</span> <span class="ident">x</span>: <span class="ident">i64</span>, <span class="ident">modulo</span>: <span class="ident">i64</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">i64</span> {
     <span class="ident">x</span> <span class="op">%</span><span class="op">=</span> <span class="ident">modulo</span>;
-    <span class="kw">if</span> <span class="ident">x</span> <span class="op">&lt;</span> <span class="number">0</span> { <span class="ident">x</span> <span class="op">+</span><span class="op">=</span> <span class="ident">modulo</span>; }
+    <span class="kw">if</span> <span class="ident">x</span> <span class="op">&lt;</span> <span class="number">0</span> {
+        <span class="ident">x</span> <span class="op">+</span><span class="op">=</span> <span class="ident">modulo</span>;
+    }
     <span class="ident">x</span>
 }
 
@@ -198,7 +212,9 @@
     <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">a</span>.<span class="ident">to_i64</span>().<span class="ident">expect</span>(<span class="string">&quot;a can not convert to i64&quot;</span>);
     <span class="kw">let</span> <span class="ident">b</span> <span class="op">=</span> <span class="ident">b</span>.<span class="ident">to_i64</span>().<span class="ident">expect</span>(<span class="string">&quot;b cannot convert to i64&quot;</span>);
     <span class="kw">let</span> <span class="ident">a</span> <span class="op">=</span> <span class="ident">safe_mod</span>(<span class="ident">a</span>, <span class="ident">b</span>);
-    <span class="kw">if</span> <span class="ident">a</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> { <span class="kw">return</span> (<span class="ident">T</span>::<span class="ident">from</span>(<span class="ident">b</span>).<span class="ident">unwrap</span>(), <span class="ident">T</span>::<span class="ident">from</span>(<span class="number">0</span>).<span class="ident">unwrap</span>()) }
+    <span class="kw">if</span> <span class="ident">a</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+        <span class="kw">return</span> (<span class="ident">T</span>::<span class="ident">from</span>(<span class="ident">b</span>).<span class="ident">unwrap</span>(), <span class="ident">T</span>::<span class="ident">from</span>(<span class="number">0</span>).<span class="ident">unwrap</span>());
+    }
 
     <span class="comment">// Contracts:</span>
     <span class="comment">// [1] s - m0 * a = 0 (mod b)</span>
@@ -227,9 +243,8 @@
     <span class="kw">if</span> <span class="ident">m0</span> <span class="op">&lt;</span> <span class="number">0</span> {
         <span class="ident">m0</span> <span class="op">+</span><span class="op">=</span> <span class="ident">b</span> <span class="op">/</span> <span class="ident">s</span>;
     }
-    (<span class="ident">T</span>::<span class="ident">from</span>(<span class="ident">s</span>).<span class="ident">unwrap</span>(), <span class="ident">T</span>::<span class="ident">from</span>(<span class="ident">m0</span>).<span class="ident">unwrap</span>())    
+    (<span class="ident">T</span>::<span class="ident">from</span>(<span class="ident">s</span>).<span class="ident">unwrap</span>(), <span class="ident">T</span>::<span class="ident">from</span>(<span class="ident">m0</span>).<span class="ident">unwrap</span>())
 }
-
 
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">inv_mod</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">NumCast</span> <span class="op">+</span> <span class="ident">PrimInt</span><span class="op">&gt;</span>(<span class="ident">x</span>: <span class="ident">T</span>, <span class="ident">m</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">T</span> {
     <span class="macro">assert</span><span class="macro">!</span>(<span class="ident">one</span>::<span class="op">&lt;</span><span class="ident">T</span><span class="op">&gt;</span>() <span class="op">&lt;</span><span class="op">=</span> <span class="ident">m</span>);
@@ -238,18 +253,28 @@
     <span class="ident">z</span>.<span class="number">1</span>
 }
 
-
-<span class="doccomment">/// a0: the first term of serires  </span>
-<span class="doccomment">/// d: common difference  </span>
-<span class="doccomment">/// n: number of terms  </span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">arithmetic_progression</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PrimInt</span><span class="op">&gt;</span>(<span class="ident">a0</span>: <span class="ident">T</span>, <span class="ident">d</span>: <span class="ident">T</span>, <span class="ident">n</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">T</span> {
+<span class="doccomment">/// sum of Arithmetic progression  </span>
+<span class="doccomment">/// **a0**: the first term of serires    </span>
+<span class="doccomment">/// **d**: common difference  </span>
+<span class="doccomment">/// **n**: number of terms  </span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">arithmetic_progression_sum</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PrimInt</span><span class="op">&gt;</span>(<span class="ident">a0</span>: <span class="ident">T</span>, <span class="ident">d</span>: <span class="ident">T</span>, <span class="ident">n</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">T</span> {
     <span class="ident">n</span> <span class="op">*</span> ((<span class="ident">T</span>::<span class="ident">one</span>() <span class="op">+</span> <span class="ident">T</span>::<span class="ident">one</span>()) <span class="op">*</span> <span class="ident">a0</span> <span class="op">+</span> (<span class="ident">n</span> <span class="op">-</span> <span class="ident">T</span>::<span class="ident">one</span>()) <span class="op">*</span> <span class="ident">d</span>) <span class="op">/</span> (<span class="ident">T</span>::<span class="ident">one</span>() <span class="op">+</span> <span class="ident">T</span>::<span class="ident">one</span>())
+}
+
+<span class="doccomment">/// sum of geometric progression  </span>
+<span class="doccomment">/// **a0**: the first term of serires    </span>
+<span class="doccomment">/// **r**: geometric progression    </span>
+<span class="doccomment">/// **n**: number of terms </span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">geometric_progression_sum</span><span class="op">&lt;</span><span class="ident">T</span>: <span class="ident">PrimInt</span> <span class="op">+</span> <span class="ident">Debug</span><span class="op">&gt;</span>(<span class="ident">a0</span>: <span class="ident">T</span>, <span class="ident">r</span>: <span class="ident">T</span>, <span class="ident">n</span>: <span class="ident">T</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">T</span> {
+    <span class="macro">assert_ne</span><span class="macro">!</span>(<span class="ident">r</span>, <span class="ident">T</span>::<span class="ident">one</span>());
+
+    <span class="ident">a0</span> <span class="op">*</span> (<span class="ident">T</span>::<span class="ident">one</span>() <span class="op">-</span> <span class="ident">r</span>.<span class="ident">pow</span>(<span class="ident">n</span>.<span class="ident">to_u32</span>().<span class="ident">unwrap</span>())) <span class="op">/</span> (<span class="ident">T</span>::<span class="ident">one</span>() <span class="op">-</span> <span class="ident">r</span>)
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">test</span> {
-    <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">gcd</span>, <span class="ident">lcm</span>, <span class="ident">gcd_list</span>, <span class="ident">lcm_list</span>};
     <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">quadratic_formula</span>;
+    <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">gcd</span>, <span class="ident">gcd_list</span>, <span class="ident">lcm</span>, <span class="ident">lcm_list</span>};
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">gcd_1</span>() {
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">gcd</span>(<span class="number">10</span>, <span class="number">2</span>), <span class="number">2</span>);
@@ -271,12 +296,12 @@
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">lcm_list</span>(<span class="macro">vec</span><span class="macro">!</span>[<span class="number">12</span>, <span class="number">42</span>, <span class="number">72</span>]), <span class="number">504</span>);
     }
 
-
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_quadratic_formula_1</span>() {
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">quadratic_formula</span>(<span class="number">4</span>, <span class="number">4</span>, <span class="number">1</span>), <span class="prelude-val">Some</span>((<span class="op">-</span><span class="number">0.5</span>, <span class="op">-</span><span class="number">0.5</span>)));
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">quadratic_formula</span>(<span class="number">1</span>, <span class="op">-</span><span class="number">6</span>, <span class="number">8</span>), <span class="prelude-val">Some</span>((<span class="number">4.0</span>, <span class="number">2.0</span>)));
         <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">quadratic_formula</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>), <span class="prelude-val">None</span>);
     }
-}</pre></div>
+}
+</pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../";window.currentCrate = "competitive";</script><script src="../../aliases.js"></script><script src="../../main.js"></script><script src="../../source-script.js"></script><script src="../../source-files.js"></script><script defer src="../../search-index.js"></script></body></html>

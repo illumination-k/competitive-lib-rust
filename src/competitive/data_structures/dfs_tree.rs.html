@@ -104,11 +104,6 @@
 <span id="104">104</span>
 <span id="105">105</span>
 <span id="106">106</span>
-<span id="107">107</span>
-<span id="108">108</span>
-<span id="109">109</span>
-<span id="110">110</span>
-<span id="111">111</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">/// graph: Tree</span>
 <span class="doccomment">/// pos: Termination timing of dfs</span>
@@ -118,7 +113,7 @@
     <span class="ident">tree_index_to_dfs_index</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
     <span class="ident">dfs_index_to_tree_index</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
     <span class="ident">pos</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>,
-    <span class="ident">cnt</span>: <span class="ident">usize</span>
+    <span class="ident">cnt</span>: <span class="ident">usize</span>,
 }
 
 <span class="kw">impl</span> <span class="ident">DfsTree</span> {
@@ -152,9 +147,11 @@
         <span class="self">self</span>.<span class="ident">tree_index_to_dfs_index</span>[<span class="ident">v</span>] <span class="op">=</span> <span class="ident">dfs_ord</span>;
         <span class="self">self</span>.<span class="ident">dfs_index_to_tree_index</span>[<span class="ident">dfs_ord</span>] <span class="op">=</span> <span class="ident">v</span>;
         <span class="self">self</span>.<span class="ident">cnt</span> <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-        
+
         <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">next</span> <span class="kw">in</span> <span class="ident">graph</span>[<span class="ident">v</span>].<span class="ident">iter</span>() {
-            <span class="kw">if</span> <span class="ident">seen</span>[<span class="ident">next</span>] { <span class="kw">continue</span>; }
+            <span class="kw">if</span> <span class="ident">seen</span>[<span class="ident">next</span>] {
+                <span class="kw">continue</span>;
+            }
             <span class="self">self</span>.<span class="ident">dfs</span>(<span class="ident">next</span>, <span class="ident">graph</span>, <span class="ident">seen</span>);
         }
 
@@ -181,7 +178,6 @@
     }
 }
 
-
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
 <span class="kw">mod</span> <span class="ident">test</span> {
     <span class="kw">use</span> <span class="kw">super</span>::<span class="ident">DfsTree</span>;
@@ -200,25 +196,20 @@
 
         <span class="kw">let</span> <span class="ident">n</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="ident">sc</span>.<span class="ident">read</span>();
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">graph</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="macro">vec</span><span class="macro">!</span>[]; <span class="ident">n</span>];
-        <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span><span class="op">-</span><span class="number">1</span> {
+        <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span> <span class="op">-</span> <span class="number">1</span> {
             <span class="kw">let</span> <span class="ident">a</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="ident">sc</span>.<span class="ident">read</span>();
             <span class="kw">let</span> <span class="ident">b</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="ident">sc</span>.<span class="ident">read</span>();
-            <span class="ident">graph</span>[<span class="ident">a</span><span class="op">-</span><span class="number">1</span>].<span class="ident">push</span>(<span class="ident">b</span><span class="op">-</span><span class="number">1</span>);
-            <span class="ident">graph</span>[<span class="ident">b</span><span class="op">-</span><span class="number">1</span>].<span class="ident">push</span>(<span class="ident">a</span><span class="op">-</span><span class="number">1</span>);
+            <span class="ident">graph</span>[<span class="ident">a</span> <span class="op">-</span> <span class="number">1</span>].<span class="ident">push</span>(<span class="ident">b</span> <span class="op">-</span> <span class="number">1</span>);
+            <span class="ident">graph</span>[<span class="ident">b</span> <span class="op">-</span> <span class="number">1</span>].<span class="ident">push</span>(<span class="ident">a</span> <span class="op">-</span> <span class="number">1</span>);
         }
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dfs_tree</span> <span class="op">=</span> <span class="ident">DfsTree</span>::<span class="ident">new</span>(<span class="ident">graph</span>);
         <span class="ident">dfs_tree</span>.<span class="ident">build</span>(<span class="number">0</span>);
 
-        <span class="macro">assert_eq</span><span class="macro">!</span>(
-            <span class="ident">dfs_tree</span>.<span class="ident">tree_index_to_dfs_index</span>,
-            <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3</span>]
-        );
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dfs_tree</span>.<span class="ident">tree_index_to_dfs_index</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>, <span class="number">1</span>, <span class="number">2</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">3</span>]);
 
-        <span class="macro">assert_eq</span><span class="macro">!</span>(
-            <span class="ident">dfs_tree</span>.<span class="ident">pos</span>,
-            <span class="macro">vec</span><span class="macro">!</span>[<span class="number">7</span>, <span class="number">6</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">7</span>]
-        )
+        <span class="macro">assert_eq</span><span class="macro">!</span>(<span class="ident">dfs_tree</span>.<span class="ident">pos</span>, <span class="macro">vec</span><span class="macro">!</span>[<span class="number">7</span>, <span class="number">6</span>, <span class="number">4</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">6</span>, <span class="number">7</span>])
     }
-}</pre></div>
+}
+</pre></div>
 </section><section id="search" class="content hidden"></section><section class="footer"></section><script>window.rootPath = "../../../";window.currentCrate = "competitive";</script><script src="../../../aliases.js"></script><script src="../../../main.js"></script><script src="../../../source-script.js"></script><script src="../../../source-files.js"></script><script defer src="../../../search-index.js"></script></body></html>

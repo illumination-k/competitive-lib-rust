@@ -135,6 +135,8 @@
 <span id="135">135</span>
 <span id="136">136</span>
 <span id="137">137</span>
+<span id="138">138</span>
+<span id="139">139</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Combination</span> {
@@ -146,12 +148,12 @@
 
 <span class="kw">impl</span> <span class="ident">Combination</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">upper</span>: <span class="ident">usize</span>, <span class="ident">modulo</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">fact_inv</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="ident">upper</span><span class="op">+</span><span class="number">1</span>];
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">inv</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="ident">upper</span><span class="op">+</span><span class="number">1</span>];
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">fact_inv</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="ident">upper</span> <span class="op">+</span> <span class="number">1</span>];
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">inv</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="ident">upper</span> <span class="op">+</span> <span class="number">1</span>];
         <span class="ident">fact_inv</span>[<span class="number">0</span>] <span class="op">=</span> <span class="number">1</span>;
         <span class="ident">fact_inv</span>[<span class="number">1</span>] <span class="op">=</span> <span class="number">1</span>;
         <span class="ident">inv</span>[<span class="number">1</span>] <span class="op">=</span> <span class="number">1</span>;
-        
+
         <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">2</span>..<span class="op">=</span><span class="ident">upper</span> {
             <span class="ident">inv</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">modulo</span> <span class="op">-</span> <span class="ident">inv</span>[<span class="ident">modulo</span> <span class="op">%</span> <span class="ident">i</span>] <span class="op">*</span> (<span class="ident">modulo</span> <span class="op">/</span> <span class="ident">i</span>) <span class="op">%</span> <span class="ident">modulo</span>;
             <span class="ident">fact_inv</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">fact_inv</span>[<span class="ident">i</span> <span class="op">-</span> <span class="number">1</span>] <span class="op">*</span> <span class="ident">inv</span>[<span class="ident">i</span>] <span class="op">%</span> <span class="ident">modulo</span>;
@@ -165,7 +167,7 @@
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">fix_n</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>) {
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">com</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="ident">n</span><span class="op">+</span><span class="number">1</span>];
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">com</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="ident">n</span> <span class="op">+</span> <span class="number">1</span>];
         <span class="ident">com</span>[<span class="number">0</span>] <span class="op">=</span> <span class="number">1</span>;
         <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">1</span>..<span class="op">=</span><span class="ident">n</span> {
             <span class="ident">com</span>[<span class="ident">i</span>] <span class="op">=</span> <span class="ident">com</span>[<span class="ident">i</span> <span class="op">-</span> <span class="number">1</span>] <span class="op">*</span> ((<span class="ident">n</span> <span class="op">-</span> <span class="ident">i</span> <span class="op">+</span> <span class="number">1</span>) <span class="op">*</span> <span class="self">self</span>.<span class="ident">inv</span>[<span class="ident">i</span>] <span class="op">%</span> <span class="self">self</span>.<span class="ident">modulo</span>) <span class="op">%</span> <span class="self">self</span>.<span class="ident">modulo</span>;
@@ -174,7 +176,9 @@
     }
 
     <span class="kw">fn</span> <span class="ident">_calc_nck</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>, <span class="ident">k</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
-        <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span> <span class="ident">k</span> { <span class="kw">return</span> <span class="number">0</span> }
+        <span class="kw">if</span> <span class="ident">n</span> <span class="op">&lt;</span> <span class="ident">k</span> {
+            <span class="kw">return</span> <span class="number">0</span>;
+        }
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">ans</span>: <span class="ident">usize</span> <span class="op">=</span> <span class="number">1</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">i</span> <span class="op">=</span> <span class="ident">n</span>;
 
@@ -194,8 +198,8 @@
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">nhk</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">n</span>: <span class="ident">usize</span>, <span class="ident">k</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
-        <span class="macro">assert</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">fact_inv</span>.<span class="ident">len</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="ident">n</span><span class="op">+</span><span class="ident">k</span><span class="op">-</span><span class="number">1</span>);
-        <span class="self">self</span>.<span class="ident">nck</span>(<span class="ident">n</span><span class="op">+</span><span class="ident">k</span><span class="op">-</span><span class="number">1</span>, <span class="ident">k</span>)
+        <span class="macro">assert</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">fact_inv</span>.<span class="ident">len</span>() <span class="op">&gt;</span><span class="op">=</span> <span class="ident">n</span> <span class="op">+</span> <span class="ident">k</span> <span class="op">-</span> <span class="number">1</span>);
+        <span class="self">self</span>.<span class="ident">nck</span>(<span class="ident">n</span> <span class="op">+</span> <span class="ident">k</span> <span class="op">-</span> <span class="number">1</span>, <span class="ident">k</span>)
     }
 }
 
@@ -209,16 +213,16 @@
 <span class="doccomment">/// assert_eq!(res[5][2], 10);</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">combination</span>(<span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span><span class="op">&gt;</span> {
-    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">v</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="ident">n</span><span class="op">+</span><span class="number">1</span>]; <span class="ident">n</span><span class="op">+</span><span class="number">1</span>];
+    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">v</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="ident">n</span> <span class="op">+</span> <span class="number">1</span>]; <span class="ident">n</span> <span class="op">+</span> <span class="number">1</span>];
 
-    <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span><span class="op">+</span><span class="number">1</span> {
+    <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">n</span> <span class="op">+</span> <span class="number">1</span> {
         <span class="ident">v</span>[<span class="ident">i</span>][<span class="number">0</span>] <span class="op">=</span> <span class="number">1</span>;
         <span class="ident">v</span>[<span class="ident">i</span>][<span class="ident">i</span>] <span class="op">=</span> <span class="number">1</span>;
     }
 
-    <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">1</span>..<span class="ident">n</span><span class="op">+</span><span class="number">1</span> {
+    <span class="kw">for</span> <span class="ident">j</span> <span class="kw">in</span> <span class="number">1</span>..<span class="ident">n</span> <span class="op">+</span> <span class="number">1</span> {
         <span class="kw">for</span> <span class="ident">k</span> <span class="kw">in</span> <span class="number">1</span>..<span class="ident">j</span> {
-            <span class="ident">v</span>[<span class="ident">j</span>][<span class="ident">k</span>] <span class="op">=</span> <span class="ident">v</span>[<span class="ident">j</span><span class="op">-</span><span class="number">1</span>][<span class="ident">k</span><span class="op">-</span><span class="number">1</span>] <span class="op">+</span> <span class="ident">v</span>[<span class="ident">j</span><span class="op">-</span><span class="number">1</span>][<span class="ident">k</span>]
+            <span class="ident">v</span>[<span class="ident">j</span>][<span class="ident">k</span>] <span class="op">=</span> <span class="ident">v</span>[<span class="ident">j</span> <span class="op">-</span> <span class="number">1</span>][<span class="ident">k</span> <span class="op">-</span> <span class="number">1</span>] <span class="op">+</span> <span class="ident">v</span>[<span class="ident">j</span> <span class="op">-</span> <span class="number">1</span>][<span class="ident">k</span>]
         }
     }
 
@@ -236,7 +240,7 @@
 
 <span class="doccomment">/// Simple wrapper of combinations for multi choises</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">nhk</span>(<span class="ident">n</span>: <span class="ident">usize</span>, <span class="ident">k</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
-    <span class="ident">combination</span>(<span class="ident">n</span><span class="op">+</span><span class="ident">k</span><span class="op">-</span><span class="number">1</span>)[<span class="ident">n</span><span class="op">+</span><span class="ident">k</span><span class="op">-</span><span class="number">1</span>][<span class="ident">k</span>]
+    <span class="ident">combination</span>(<span class="ident">n</span> <span class="op">+</span> <span class="ident">k</span> <span class="op">-</span> <span class="number">1</span>)[<span class="ident">n</span> <span class="op">+</span> <span class="ident">k</span> <span class="op">-</span> <span class="number">1</span>][<span class="ident">k</span>]
 }
 
 <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>

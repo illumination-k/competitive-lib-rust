@@ -627,25 +627,89 @@
 <span id="627">627</span>
 <span id="628">628</span>
 <span id="629">629</span>
+<span id="630">630</span>
+<span id="631">631</span>
+<span id="632">632</span>
+<span id="633">633</span>
+<span id="634">634</span>
+<span id="635">635</span>
+<span id="636">636</span>
+<span id="637">637</span>
+<span id="638">638</span>
+<span id="639">639</span>
+<span id="640">640</span>
+<span id="641">641</span>
+<span id="642">642</span>
+<span id="643">643</span>
+<span id="644">644</span>
+<span id="645">645</span>
+<span id="646">646</span>
+<span id="647">647</span>
+<span id="648">648</span>
+<span id="649">649</span>
+<span id="650">650</span>
+<span id="651">651</span>
+<span id="652">652</span>
+<span id="653">653</span>
+<span id="654">654</span>
+<span id="655">655</span>
+<span id="656">656</span>
+<span id="657">657</span>
+<span id="658">658</span>
+<span id="659">659</span>
+<span id="660">660</span>
+<span id="661">661</span>
+<span id="662">662</span>
+<span id="663">663</span>
+<span id="664">664</span>
+<span id="665">665</span>
+<span id="666">666</span>
+<span id="667">667</span>
+<span id="668">668</span>
+<span id="669">669</span>
+<span id="670">670</span>
+<span id="671">671</span>
+<span id="672">672</span>
+<span id="673">673</span>
+<span id="674">674</span>
+<span id="675">675</span>
+<span id="676">676</span>
+<span id="677">677</span>
+<span id="678">678</span>
+<span id="679">679</span>
+<span id="680">680</span>
+<span id="681">681</span>
+<span id="682">682</span>
+<span id="683">683</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">num_traits</span>::{<span class="ident">Bounded</span>, <span class="ident">NumCast</span>, <span class="ident">One</span>, <span class="ident">Zero</span>};
-<span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">collections</span>::{<span class="ident">BinaryHeap</span>, <span class="ident">HashSet</span>, <span class="ident">VecDeque</span>}, <span class="ident">fmt</span>, <span class="ident">ops</span>::{<span class="ident">Index</span>, <span class="ident">IndexMut</span>}, <span class="ident">slice</span>::<span class="ident">Iter</span>, <span class="ident">writeln</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">cmp</span>::<span class="ident">Reverse</span>;
+<span class="kw">use</span> <span class="ident">std</span>::{
+    <span class="ident">collections</span>::{<span class="ident">BinaryHeap</span>, <span class="ident">HashSet</span>, <span class="ident">VecDeque</span>},
+    <span class="ident">fmt</span>,
+    <span class="ident">ops</span>::{<span class="ident">Index</span>, <span class="ident">IndexMut</span>},
+    <span class="ident">slice</span>::<span class="ident">Iter</span>,
+    <span class="ident">writeln</span>,
+};
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> {
     <span class="ident">target</span>: <span class="ident">usize</span>,
     <span class="ident">weight</span>: <span class="ident">W</span>,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> 
-    <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">One</span> <span class="op">+</span> <span class="ident">Copy</span>
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">W</span>: <span class="ident">One</span> <span class="op">+</span> <span class="ident">Copy</span>,
 {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">target</span>: <span class="ident">usize</span>, <span class="ident">weight</span>: <span class="ident">W</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="self">Self</span> { <span class="ident">target</span>, <span class="ident">weight</span> }
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new_unweighted</span>(<span class="ident">target</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
-        <span class="self">Self</span> { <span class="ident">target</span>, <span class="ident">weight</span>: <span class="ident">W</span>::<span class="ident">one</span>() }
+        <span class="self">Self</span> {
+            <span class="ident">target</span>,
+            <span class="ident">weight</span>: <span class="ident">W</span>::<span class="ident">one</span>(),
+        }
     }
 
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">target</span>(<span class="kw-2">&amp;</span><span class="self">self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">usize</span> {
@@ -658,8 +722,9 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>
-    <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">ToString</span> <span class="op">+</span> <span class="ident">One</span> <span class="op">+</span> <span class="ident">PartialEq</span> <span class="op">+</span> <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">Copy</span>
-{   
+<span class="kw">where</span>
+    <span class="ident">W</span>: <span class="ident">ToString</span> <span class="op">+</span> <span class="ident">One</span> <span class="op">+</span> <span class="ident">PartialEq</span> <span class="op">+</span> <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">Copy</span>,
+{
     <span class="doccomment">/// create dot format for graphviz</span>
     <span class="doccomment">/// ```rust</span>
     <span class="doccomment">/// use competitive::graph::*;</span>
@@ -693,20 +758,32 @@
             <span class="ident">target</span>: <span class="ident">usize</span>,
             <span class="ident">weight</span>: <span class="ident">W</span>,
             <span class="ident">weighted</span>: <span class="ident">bool</span>,
-            <span class="ident">graph_type</span>: <span class="kw-2">&amp;</span><span class="ident">Direction</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span>
-            <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">One</span> <span class="op">+</span> <span class="ident">ToString</span> <span class="op">+</span> <span class="ident">PartialEq</span>
+            <span class="ident">graph_type</span>: <span class="kw-2">&amp;</span><span class="ident">Direction</span>,
+        ) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">String</span>
+        <span class="kw">where</span>
+            <span class="ident">W</span>: <span class="ident">One</span> <span class="op">+</span> <span class="ident">ToString</span> <span class="op">+</span> <span class="ident">PartialEq</span>,
         {
             <span class="kw">match</span> <span class="ident">graph_type</span> {
                 <span class="ident">Direction</span>::<span class="ident">DiGraph</span> <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="kw">if</span> <span class="ident">weighted</span> {
-                        <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;  {} -&gt; {} [ label = {} ]&quot;</span>, <span class="ident">source</span>, <span class="ident">target</span>, <span class="ident">weight</span>.<span class="ident">to_string</span>())
+                        <span class="macro">format</span><span class="macro">!</span>(
+                            <span class="string">&quot;  {} -&gt; {} [ label = {} ]&quot;</span>,
+                            <span class="ident">source</span>,
+                            <span class="ident">target</span>,
+                            <span class="ident">weight</span>.<span class="ident">to_string</span>()
+                        )
                     } <span class="kw">else</span> {
                         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;  {} -&gt; {}&quot;</span>, <span class="ident">source</span>, <span class="ident">target</span>)
                     }
-                },
+                }
                 <span class="ident">Direction</span>::<span class="ident">UnGraph</span> <span class="op">=</span><span class="op">&gt;</span> {
                     <span class="kw">if</span> <span class="ident">weighted</span> {
-                        <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;  {} -&gt; {} [ label = {}, dir = both ]&quot;</span>, <span class="ident">source</span>, <span class="ident">target</span>, <span class="ident">weight</span>.<span class="ident">to_string</span>())
+                        <span class="macro">format</span><span class="macro">!</span>(
+                            <span class="string">&quot;  {} -&gt; {} [ label = {}, dir = both ]&quot;</span>,
+                            <span class="ident">source</span>,
+                            <span class="ident">target</span>,
+                            <span class="ident">weight</span>.<span class="ident">to_string</span>()
+                        )
                     } <span class="kw">else</span> {
                         <span class="macro">format</span><span class="macro">!</span>(<span class="string">&quot;  {} -&gt; {} [ dir = both ]&quot;</span>, <span class="ident">source</span>, <span class="ident">target</span>)
                     }
@@ -716,18 +793,16 @@
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">seen_edge</span> <span class="op">=</span> <span class="ident">HashSet</span>::<span class="ident">new</span>();
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dot</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">graph_type</span> {
-            <span class="ident">Direction</span>::<span class="ident">DiGraph</span> <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="macro">vec</span><span class="macro">!</span>[<span class="string">&quot;digraph digraph_example {&quot;</span>.<span class="ident">to_string</span>()]
-            },
-            <span class="ident">Direction</span>::<span class="ident">UnGraph</span> <span class="op">=</span><span class="op">&gt;</span> {
-                <span class="macro">vec</span><span class="macro">!</span>[<span class="string">&quot;digraph ungraph_example {&quot;</span>.<span class="ident">to_string</span>()]
-            }
+            <span class="ident">Direction</span>::<span class="ident">DiGraph</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="string">&quot;digraph digraph_example {&quot;</span>.<span class="ident">to_string</span>()],
+            <span class="ident">Direction</span>::<span class="ident">UnGraph</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="string">&quot;digraph ungraph_example {&quot;</span>.<span class="ident">to_string</span>()],
         };
         <span class="kw">for</span> <span class="ident">source</span> <span class="kw">in</span> <span class="number">0</span>..<span class="self">self</span>.<span class="ident">len</span>() {
             <span class="kw">for</span> <span class="ident">e</span> <span class="kw">in</span> <span class="self">self</span>.<span class="ident">neighbors</span>(<span class="ident">source</span>) {
                 <span class="kw">let</span> (<span class="ident">target</span>, <span class="ident">weight</span>) <span class="op">=</span> (<span class="ident">e</span>.<span class="ident">target</span>(), <span class="ident">e</span>.<span class="ident">weight</span>());
                 <span class="kw">let</span> <span class="ident">dot_edge</span> <span class="op">=</span> <span class="ident">make_dot_edge</span>(<span class="ident">source</span>, <span class="ident">target</span>, <span class="ident">weight</span>, <span class="ident">weighted</span>, <span class="kw-2">&amp;</span><span class="ident">graph_type</span>);
-                <span class="kw">if</span> <span class="ident">seen_edge</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">dot_edge</span>) { <span class="kw">continue</span>; }
+                <span class="kw">if</span> <span class="ident">seen_edge</span>.<span class="ident">contains</span>(<span class="kw-2">&amp;</span><span class="ident">dot_edge</span>) {
+                    <span class="kw">continue</span>;
+                }
                 <span class="ident">dot</span>.<span class="ident">push</span>(<span class="ident">dot_edge</span>.<span class="ident">clone</span>());
                 <span class="ident">seen_edge</span>.<span class="ident">insert</span>(<span class="ident">dot_edge</span>);
             }
@@ -735,22 +810,23 @@
 
         <span class="ident">dot</span>.<span class="ident">push</span>(<span class="string">&quot;}&quot;</span>.<span class="ident">to_string</span>());
         <span class="ident">dot</span>
-    } 
+    }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">PartialOrd</span> <span class="kw">for</span> <span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>
-    <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">PartialEq</span> <span class="op">+</span> <span class="ident">PartialOrd</span>
+<span class="kw">where</span>
+    <span class="ident">W</span>: <span class="ident">PartialEq</span> <span class="op">+</span> <span class="ident">PartialOrd</span>,
 {
     <span class="kw">fn</span> <span class="ident">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">std</span>::<span class="ident">cmp</span>::<span class="ident">Ordering</span><span class="op">&gt;</span> {
-        <span class="self">self</span>.<span class="ident">weight</span>
-            .<span class="ident">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="ident">weight</span>)
+        <span class="self">self</span>.<span class="ident">weight</span>.<span class="ident">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="ident">weight</span>)
     }
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">Eq</span> <span class="kw">for</span> <span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">PartialEq</span> <span class="op">+</span> <span class="ident">PartialOrd</span> {}
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">Ord</span> <span class="kw">for</span> <span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>
-    <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">PartialOrd</span> <span class="op">+</span> <span class="ident">PartialEq</span> <span class="op">+</span> <span class="ident">PartialOrd</span>
+<span class="kw">where</span>
+    <span class="ident">W</span>: <span class="ident">PartialOrd</span> <span class="op">+</span> <span class="ident">PartialEq</span> <span class="op">+</span> <span class="ident">PartialOrd</span>,
 {
     <span class="kw">fn</span> <span class="ident">cmp</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">other</span>: <span class="kw-2">&amp;</span><span class="self">Self</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">std</span>::<span class="ident">cmp</span>::<span class="ident">Ordering</span> {
         <span class="self">self</span>.<span class="ident">weight</span>.<span class="ident">partial_cmp</span>(<span class="kw-2">&amp;</span><span class="ident">other</span>.<span class="ident">weight</span>).<span class="ident">expect</span>(<span class="string">&quot;No Nan&quot;</span>) <span class="comment">// if dist[position] &lt; edge.weight() { continue; }</span>
@@ -759,11 +835,12 @@
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> {
-    <span class="ident">graph</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>
+    <span class="ident">graph</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>
-    <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">One</span> <span class="op">+</span> <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">ToString</span>
+<span class="kw">where</span>
+    <span class="ident">W</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">One</span> <span class="op">+</span> <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">ToString</span>,
 {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span><span class="op">&lt;</span><span class="lifetime">&#39;_</span><span class="op">&gt;</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
         <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;&quot;</span>)<span class="question-mark">?</span>;
@@ -771,17 +848,21 @@
             <span class="kw">let</span> <span class="ident">targets</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="self">self</span>[<span class="ident">source</span>];
             <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">write_str</span> <span class="op">=</span> <span class="ident">String</span>::<span class="ident">new</span>();
             <span class="ident">write_str</span> <span class="op">+</span><span class="op">=</span> <span class="kw-2">&amp;</span>(<span class="ident">source</span>.<span class="ident">to_string</span>() <span class="op">+</span> <span class="string">&quot; -&gt; &quot;</span>);
-            <span class="ident">write_str</span> <span class="op">+</span><span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">targets</span>.<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span>.<span class="ident">target</span>().<span class="ident">to_string</span>()).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>().<span class="ident">join</span>(<span class="string">&quot; &quot;</span>);
+            <span class="ident">write_str</span> <span class="op">+</span><span class="op">=</span> <span class="kw-2">&amp;</span><span class="ident">targets</span>
+                .<span class="ident">iter</span>()
+                .<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span>.<span class="ident">target</span>().<span class="ident">to_string</span>())
+                .<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span><span class="op">&gt;</span>()
+                .<span class="ident">join</span>(<span class="string">&quot; &quot;</span>);
             <span class="macro">writeln</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;{}&quot;</span>, <span class="ident">write_str</span>)<span class="question-mark">?</span>
         }
-        <span class="prelude-val">Ok</span>(())        
+        <span class="prelude-val">Ok</span>(())
     }
 }
 
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Direction</span> {
     <span class="ident">DiGraph</span>,
-    <span class="ident">UnGraph</span>
+    <span class="ident">UnGraph</span>,
 }
 
 <span class="kw">fn</span> <span class="ident">add_target</span><span class="op">&lt;</span><span class="ident">W</span>: <span class="ident">One</span> <span class="op">+</span> <span class="ident">Copy</span><span class="op">&gt;</span>(
@@ -789,12 +870,10 @@
     <span class="ident">target</span>: <span class="ident">usize</span>,
     <span class="ident">weight</span>: <span class="ident">W</span>,
     <span class="ident">graph_type</span>: <span class="kw-2">&amp;</span><span class="ident">Direction</span>,
-    <span class="ident">v</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>
+    <span class="ident">v</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Edge</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span><span class="op">&gt;</span><span class="op">&gt;</span>,
 ) {
     <span class="kw">match</span> <span class="ident">graph_type</span> {
-        <span class="ident">Direction</span>::<span class="ident">DiGraph</span> <span class="op">=</span><span class="op">&gt;</span> {
-            <span class="ident">v</span>[<span class="ident">source</span>].<span class="ident">push</span>(<span class="ident">Edge</span>::<span class="ident">new</span>(<span class="ident">target</span>, <span class="ident">weight</span>))
-        },
+        <span class="ident">Direction</span>::<span class="ident">DiGraph</span> <span class="op">=</span><span class="op">&gt;</span> <span class="ident">v</span>[<span class="ident">source</span>].<span class="ident">push</span>(<span class="ident">Edge</span>::<span class="ident">new</span>(<span class="ident">target</span>, <span class="ident">weight</span>)),
         <span class="ident">Direction</span>::<span class="ident">UnGraph</span> <span class="op">=</span><span class="op">&gt;</span> {
             <span class="ident">v</span>[<span class="ident">source</span>].<span class="ident">push</span>(<span class="ident">Edge</span>::<span class="ident">new</span>(<span class="ident">target</span>, <span class="ident">weight</span>));
             <span class="ident">v</span>[<span class="ident">target</span>].<span class="ident">push</span>(<span class="ident">Edge</span>::<span class="ident">new</span>(<span class="ident">source</span>, <span class="ident">weight</span>))
@@ -803,40 +882,47 @@
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>
-    <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">One</span> <span class="op">+</span> <span class="ident">Copy</span>
+<span class="kw">where</span>
+    <span class="ident">W</span>: <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">One</span> <span class="op">+</span> <span class="ident">Copy</span>,
 {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">n</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="self">Self</span> {
-            <span class="ident">graph</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="macro">vec</span><span class="macro">!</span>[]; <span class="ident">n</span>]
+            <span class="ident">graph</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="macro">vec</span><span class="macro">!</span>[]; <span class="ident">n</span>],
         }
     }
 
     <span class="doccomment">/// create unweighted ListGraph.  </span>
     <span class="doccomment">/// offset: index = val - offset  </span>
     <span class="doccomment">/// graph_type: Undirect or Direct  </span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unweighted_from</span>(<span class="ident">edges</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">usize</span>)<span class="op">&gt;</span>, <span class="ident">size</span>: <span class="ident">usize</span>, <span class="ident">offset</span>: <span class="ident">usize</span>, <span class="ident">graph_type</span>: <span class="ident">Direction</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">unweighted_from</span>(
+        <span class="ident">edges</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">usize</span>)<span class="op">&gt;</span>,
+        <span class="ident">size</span>: <span class="ident">usize</span>,
+        <span class="ident">offset</span>: <span class="ident">usize</span>,
+        <span class="ident">graph_type</span>: <span class="ident">Direction</span>,
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">graph</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="macro">vec</span><span class="macro">!</span>[]; <span class="ident">size</span>];
         <span class="kw">for</span> <span class="kw-2">&amp;</span>(<span class="ident">a</span>, <span class="ident">b</span>) <span class="kw">in</span> <span class="ident">edges</span>.<span class="ident">iter</span>() {
-            <span class="ident">add_target</span>(<span class="ident">a</span><span class="op">-</span><span class="ident">offset</span>, <span class="ident">b</span><span class="op">-</span><span class="ident">offset</span>, <span class="ident">W</span>::<span class="ident">one</span>(), <span class="kw-2">&amp;</span><span class="ident">graph_type</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">graph</span>)
+            <span class="ident">add_target</span>(<span class="ident">a</span> <span class="op">-</span> <span class="ident">offset</span>, <span class="ident">b</span> <span class="op">-</span> <span class="ident">offset</span>, <span class="ident">W</span>::<span class="ident">one</span>(), <span class="kw-2">&amp;</span><span class="ident">graph_type</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">graph</span>)
         }
 
-        <span class="self">Self</span> {
-            <span class="ident">graph</span>
-        }
+        <span class="self">Self</span> { <span class="ident">graph</span> }
     }
 
     <span class="doccomment">/// create weighted ListGraph&lt;W&gt;.</span>
     <span class="doccomment">/// offset: index = val - offset</span>
     <span class="doccomment">/// graph_type: Undirect or Direct</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">weighted_from</span>(<span class="ident">edges</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">usize</span>, <span class="ident">W</span>)<span class="op">&gt;</span>, <span class="ident">size</span>: <span class="ident">usize</span>, <span class="ident">offset</span>: <span class="ident">usize</span>, <span class="ident">graph_type</span>: <span class="ident">Direction</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">weighted_from</span>(
+        <span class="ident">edges</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">usize</span>, <span class="ident">usize</span>, <span class="ident">W</span>)<span class="op">&gt;</span>,
+        <span class="ident">size</span>: <span class="ident">usize</span>,
+        <span class="ident">offset</span>: <span class="ident">usize</span>,
+        <span class="ident">graph_type</span>: <span class="ident">Direction</span>,
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">graph</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="macro">vec</span><span class="macro">!</span>[]; <span class="ident">size</span>];
         <span class="kw">for</span> <span class="kw-2">&amp;</span>(<span class="ident">a</span>, <span class="ident">b</span>, <span class="ident">w</span>) <span class="kw">in</span> <span class="ident">edges</span>.<span class="ident">iter</span>() {
-            <span class="ident">add_target</span>(<span class="ident">a</span><span class="op">-</span><span class="ident">offset</span>, <span class="ident">b</span><span class="op">-</span><span class="ident">offset</span>, <span class="ident">w</span>, <span class="kw-2">&amp;</span><span class="ident">graph_type</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">graph</span>)
+            <span class="ident">add_target</span>(<span class="ident">a</span> <span class="op">-</span> <span class="ident">offset</span>, <span class="ident">b</span> <span class="op">-</span> <span class="ident">offset</span>, <span class="ident">w</span>, <span class="kw-2">&amp;</span><span class="ident">graph_type</span>, <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">graph</span>)
         }
 
-        <span class="self">Self</span> {
-            <span class="ident">graph</span>
-        }
+        <span class="self">Self</span> { <span class="ident">graph</span> }
     }
 
     <span class="doccomment">/// Reverse Direction of Graph</span>
@@ -859,7 +945,10 @@
         <span class="self">self</span>[<span class="ident">source</span>].<span class="ident">iter</span>()
     }
 
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">neighbors_unweighted</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(<span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">self</span>, <span class="ident">source</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">usize</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;a</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">neighbors_unweighted</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span><span class="op">&gt;</span>(
+        <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="self">self</span>,
+        <span class="ident">source</span>: <span class="ident">usize</span>,
+    ) <span class="op">-</span><span class="op">&gt;</span> <span class="kw">impl</span> <span class="ident">Iterator</span><span class="op">&lt;</span><span class="ident">Item</span> <span class="op">=</span> <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> <span class="ident">usize</span><span class="op">&gt;</span> <span class="op">+</span> <span class="lifetime">&#39;a</span> {
         <span class="self">self</span>[<span class="ident">source</span>].<span class="ident">iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="kw-2">&amp;</span><span class="ident">x</span>.<span class="ident">target</span>)
     }
 }
@@ -896,13 +985,14 @@
 <span class="doccomment">///     (3, 2, 5),</span>
 <span class="doccomment">/// ];</span>
 <span class="doccomment">/// let graph: ListGraph&lt;isize&gt; = ListGraph::weighted_from(vec, 4, 0, Direction::DiGraph);</span>
-<span class="doccomment">/// </span>
+<span class="doccomment">///</span>
 <span class="doccomment">/// let (w, prev_nodes) = diktstra(&amp;graph, 1);</span>
 <span class="doccomment">/// assert_eq!(w, vec![3, 0, 2, std::isize::MAX]);</span>
 <span class="doccomment">/// assert_eq!(restore_path(1, 0, &amp;prev_nodes), vec![1, 2, 0]);</span>
 <span class="doccomment">/// ```</span>
-<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">diktstra</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>(<span class="ident">graph</span>: <span class="kw-2">&amp;</span><span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>, <span class="ident">start</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>) 
-    <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">One</span> <span class="op">+</span> <span class="ident">Zero</span> <span class="op">+</span> <span class="ident">PartialEq</span> <span class="op">+</span> <span class="ident">PartialOrd</span> <span class="op">+</span> <span class="ident">NumCast</span> <span class="op">+</span> <span class="ident">Bounded</span> <span class="op">+</span> <span class="ident">fmt</span>::<span class="ident">Debug</span>
+<span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">diktstra</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>(<span class="ident">graph</span>: <span class="kw-2">&amp;</span><span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>, <span class="ident">start</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>)
+<span class="kw">where</span>
+    <span class="ident">W</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">One</span> <span class="op">+</span> <span class="ident">Zero</span> <span class="op">+</span> <span class="ident">PartialEq</span> <span class="op">+</span> <span class="ident">PartialOrd</span> <span class="op">+</span> <span class="ident">NumCast</span> <span class="op">+</span> <span class="ident">Bounded</span> <span class="op">+</span> <span class="ident">fmt</span>::<span class="ident">Debug</span>,
 {
     <span class="comment">// initialize dist</span>
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dist</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">W</span>::<span class="ident">max_value</span>(); <span class="ident">graph</span>.<span class="ident">len</span>()];
@@ -918,9 +1008,13 @@
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">prev_nodes</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="ident">std</span>::<span class="ident">usize</span>::<span class="ident">MAX</span>; <span class="ident">graph</span>.<span class="ident">len</span>()];
 
     <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>((<span class="ident">Reverse</span>(<span class="ident">edge</span>), <span class="ident">position</span>)) <span class="op">=</span> <span class="ident">bq</span>.<span class="ident">pop</span>() {
-        <span class="kw">if</span> <span class="ident">dist</span>[<span class="ident">position</span>] <span class="op">&lt;</span> <span class="ident">edge</span>.<span class="ident">weight</span>() { <span class="kw">continue</span>; }
+        <span class="kw">if</span> <span class="ident">dist</span>[<span class="ident">position</span>] <span class="op">&lt;</span> <span class="ident">edge</span>.<span class="ident">weight</span>() {
+            <span class="kw">continue</span>;
+        }
         <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">e</span> <span class="kw">in</span> <span class="ident">graph</span>.<span class="ident">neighbors</span>(<span class="ident">position</span>) {
-            <span class="kw">if</span> <span class="ident">dist</span>[<span class="ident">e</span>.<span class="ident">target</span>()] <span class="op">&lt;</span><span class="op">=</span> <span class="ident">dist</span>[<span class="ident">position</span>] <span class="op">+</span> <span class="ident">e</span>.<span class="ident">weight</span>() { <span class="kw">continue</span>; }
+            <span class="kw">if</span> <span class="ident">dist</span>[<span class="ident">e</span>.<span class="ident">target</span>()] <span class="op">&lt;</span><span class="op">=</span> <span class="ident">dist</span>[<span class="ident">position</span>] <span class="op">+</span> <span class="ident">e</span>.<span class="ident">weight</span>() {
+                <span class="kw">continue</span>;
+            }
             <span class="ident">bq</span>.<span class="ident">push</span>((<span class="ident">Reverse</span>(<span class="ident">e</span>), <span class="ident">e</span>.<span class="ident">target</span>()));
             <span class="ident">dist</span>[<span class="ident">e</span>.<span class="ident">target</span>()] <span class="op">=</span> <span class="ident">dist</span>[<span class="ident">position</span>] <span class="op">+</span> <span class="ident">e</span>.<span class="ident">weight</span>();
             <span class="ident">prev_nodes</span>[<span class="ident">e</span>.<span class="ident">target</span>()] <span class="op">=</span> <span class="ident">position</span>;
@@ -949,7 +1043,8 @@
 <span class="doccomment">/// assert_eq!(restore_path(0, 2, &amp;prev_nodes), vec![0, 3, 2]);</span>
 <span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">bfs</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>(<span class="ident">graph</span>: <span class="kw-2">&amp;</span><span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>, <span class="ident">start</span>: <span class="ident">usize</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">isize</span><span class="op">&gt;</span>, <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span>)
-    <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">One</span> <span class="op">+</span> <span class="ident">Clone</span>
+<span class="kw">where</span>
+    <span class="ident">W</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">One</span> <span class="op">+</span> <span class="ident">Clone</span>,
 {
     <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">dist</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="op">-</span><span class="number">1</span>; <span class="ident">graph</span>.<span class="ident">len</span>()];
     <span class="ident">dist</span>[<span class="ident">start</span>] <span class="op">=</span> <span class="number">0</span>;
@@ -960,7 +1055,9 @@
 
     <span class="kw">while</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">position</span>) <span class="op">=</span> <span class="ident">vq</span>.<span class="ident">pop_front</span>() {
         <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">next</span> <span class="kw">in</span> <span class="ident">graph</span>.<span class="ident">neighbors_unweighted</span>(<span class="ident">position</span>) {
-            <span class="kw">if</span> <span class="ident">dist</span>[<span class="ident">next</span>] <span class="op">!</span><span class="op">=</span> <span class="op">-</span><span class="number">1</span> { <span class="kw">continue</span>; }
+            <span class="kw">if</span> <span class="ident">dist</span>[<span class="ident">next</span>] <span class="op">!</span><span class="op">=</span> <span class="op">-</span><span class="number">1</span> {
+                <span class="kw">continue</span>;
+            }
             <span class="ident">dist</span>[<span class="ident">next</span>] <span class="op">=</span> <span class="ident">dist</span>[<span class="ident">position</span>] <span class="op">+</span> <span class="number">1</span>;
             <span class="ident">prev_nodes</span>[<span class="ident">next</span>] <span class="op">=</span> <span class="ident">position</span>;
             <span class="ident">vq</span>.<span class="ident">push_back</span>(<span class="ident">next</span>)
@@ -1002,9 +1099,9 @@
 <span class="kw">impl</span> <span class="ident">DfsResults</span> {
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">size</span>: <span class="ident">usize</span>, <span class="ident">result_type</span>: <span class="ident">DfsResultType</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="self">Self</span> {
         <span class="kw">let</span> <span class="ident">ptrs</span> <span class="op">=</span> <span class="kw">match</span> <span class="kw-2">&amp;</span><span class="ident">result_type</span> {
-            <span class="ident">DfsResultType</span>::<span class="ident">FirstAndLastOrd</span> <span class="op">=</span><span class="op">&gt;</span> { <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="number">2</span>] },
-            <span class="ident">DfsResultType</span>::<span class="ident">TimeStamp</span> <span class="op">=</span><span class="op">&gt;</span> { <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="number">1</span>] },
-            <span class="ident">DfsResultType</span>::<span class="ident">NoOrd</span> <span class="op">=</span><span class="op">&gt;</span> { <span class="macro">vec</span><span class="macro">!</span>[] }
+            <span class="ident">DfsResultType</span>::<span class="ident">FirstAndLastOrd</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="number">2</span>],
+            <span class="ident">DfsResultType</span>::<span class="ident">TimeStamp</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[<span class="number">0</span>; <span class="number">1</span>],
+            <span class="ident">DfsResultType</span>::<span class="ident">NoOrd</span> <span class="op">=</span><span class="op">&gt;</span> <span class="macro">vec</span><span class="macro">!</span>[],
         };
         <span class="self">Self</span> {
             <span class="ident">seen</span>: <span class="macro">vec</span><span class="macro">!</span>[<span class="bool-val">false</span>; <span class="ident">size</span>],
@@ -1021,11 +1118,11 @@
             <span class="ident">DfsResultType</span>::<span class="ident">FirstAndLastOrd</span> <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="self">self</span>.<span class="ident">first_order</span>[<span class="ident">pos</span>] <span class="op">=</span> <span class="self">self</span>.<span class="ident">ptrs</span>[<span class="number">0</span>];
                 <span class="self">self</span>.<span class="ident">ptrs</span>[<span class="number">0</span>] <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-            },
+            }
             <span class="ident">DfsResultType</span>::<span class="ident">TimeStamp</span> <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="self">self</span>.<span class="ident">first_order</span>[<span class="ident">pos</span>] <span class="op">=</span> <span class="self">self</span>.<span class="ident">ptrs</span>[<span class="number">0</span>];
                 <span class="self">self</span>.<span class="ident">ptrs</span>[<span class="number">0</span>] <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-            },
+            }
             <span class="ident">DfsResultType</span>::<span class="ident">NoOrd</span> <span class="op">=</span><span class="op">&gt;</span> {}
         }
     }
@@ -1036,11 +1133,11 @@
             <span class="ident">DfsResultType</span>::<span class="ident">FirstAndLastOrd</span> <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="self">self</span>.<span class="ident">last_order</span>[<span class="ident">pos</span>] <span class="op">=</span> <span class="self">self</span>.<span class="ident">ptrs</span>[<span class="number">1</span>];
                 <span class="self">self</span>.<span class="ident">ptrs</span>[<span class="number">1</span>] <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-            },
+            }
             <span class="ident">DfsResultType</span>::<span class="ident">TimeStamp</span> <span class="op">=</span><span class="op">&gt;</span> {
                 <span class="self">self</span>.<span class="ident">last_order</span>[<span class="ident">pos</span>] <span class="op">=</span> <span class="self">self</span>.<span class="ident">ptrs</span>[<span class="number">0</span>];
                 <span class="self">self</span>.<span class="ident">ptrs</span>[<span class="number">0</span>] <span class="op">+</span><span class="op">=</span> <span class="number">1</span>;
-            },
+            }
             <span class="ident">DfsResultType</span>::<span class="ident">NoOrd</span> <span class="op">=</span><span class="op">&gt;</span> {}
         }
     }
@@ -1051,18 +1148,22 @@
 <span class="doccomment">/// let E be edge numbers, Let V be vertex numbers.</span>
 <span class="doccomment">/// return the DfsResults struct, which has seen results and first and last ord or time stamps.</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">dfs</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>(<span class="ident">start</span>: <span class="ident">usize</span>, <span class="ident">graph</span>: <span class="kw-2">&amp;</span><span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>, <span class="ident">result_type</span>: <span class="ident">DfsResultType</span>) <span class="op">-</span><span class="op">&gt;</span> <span class="ident">DfsResults</span>
-    <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">One</span>
-{   
+<span class="kw">where</span>
+    <span class="ident">W</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">One</span>,
+{
     <span class="doccomment">/// internal dfs implementation</span>
     <span class="kw">fn</span> <span class="ident">_dfs</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>(<span class="ident">start</span>: <span class="ident">usize</span>, <span class="ident">graph</span>: <span class="kw-2">&amp;</span><span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">W</span><span class="op">&gt;</span>, <span class="ident">dfs_result</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">DfsResults</span>)
-        <span class="kw">where</span> <span class="ident">W</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">One</span>
+    <span class="kw">where</span>
+        <span class="ident">W</span>: <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">Clone</span> <span class="op">+</span> <span class="ident">One</span>,
     {
         <span class="comment">// memo of first ord</span>
         <span class="ident">dfs_result</span>.<span class="ident">update_first_order</span>(<span class="ident">start</span>);
 
         <span class="ident">dfs_result</span>.<span class="ident">seen</span>[<span class="ident">start</span>] <span class="op">=</span> <span class="bool-val">true</span>;
         <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">next</span> <span class="kw">in</span> <span class="ident">graph</span>.<span class="ident">neighbors_unweighted</span>(<span class="ident">start</span>) {
-            <span class="kw">if</span> <span class="ident">dfs_result</span>.<span class="ident">seen</span>[<span class="ident">next</span>] { <span class="kw">continue</span>; }
+            <span class="kw">if</span> <span class="ident">dfs_result</span>.<span class="ident">seen</span>[<span class="ident">next</span>] {
+                <span class="kw">continue</span>;
+            }
             <span class="ident">_dfs</span>(<span class="ident">next</span>, <span class="ident">graph</span>, <span class="ident">dfs_result</span>)
         }
 
@@ -1087,7 +1188,12 @@
     <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">test_utility</span>::<span class="kw-2">*</span>;
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_fmt</span>() {
-        <span class="kw">let</span> <span class="ident">graph</span>: <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">ListGraph</span>::<span class="ident">unweighted_from</span>(<span class="macro">vec</span><span class="macro">!</span>[(<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">2</span>), (<span class="number">4</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">3</span>)], <span class="number">5</span>, <span class="number">0</span>, <span class="ident">Direction</span>::<span class="ident">UnGraph</span>);
+        <span class="kw">let</span> <span class="ident">graph</span>: <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">ListGraph</span>::<span class="ident">unweighted_from</span>(
+            <span class="macro">vec</span><span class="macro">!</span>[(<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">2</span>), (<span class="number">4</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">3</span>)],
+            <span class="number">5</span>,
+            <span class="number">0</span>,
+            <span class="ident">Direction</span>::<span class="ident">UnGraph</span>,
+        );
         <span class="macro">dbg</span><span class="macro">!</span>(<span class="kw-2">&amp;</span><span class="ident">graph</span>);
     }
 
@@ -1123,7 +1229,12 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_iter</span>() {
-        <span class="kw">let</span> <span class="ident">graph</span>: <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">ListGraph</span>::<span class="ident">unweighted_from</span>(<span class="macro">vec</span><span class="macro">!</span>[(<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">2</span>), (<span class="number">4</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">3</span>)], <span class="number">5</span>, <span class="number">0</span>, <span class="ident">Direction</span>::<span class="ident">UnGraph</span>);
+        <span class="kw">let</span> <span class="ident">graph</span>: <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">ListGraph</span>::<span class="ident">unweighted_from</span>(
+            <span class="macro">vec</span><span class="macro">!</span>[(<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">2</span>), (<span class="number">4</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">3</span>)],
+            <span class="number">5</span>,
+            <span class="number">0</span>,
+            <span class="ident">Direction</span>::<span class="ident">UnGraph</span>,
+        );
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">v</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
         <span class="kw">for</span> <span class="ident">e</span> <span class="kw">in</span> <span class="ident">graph</span>.<span class="ident">neighbors</span>(<span class="number">1</span>) {
             <span class="ident">v</span>.<span class="ident">push</span>(<span class="ident">e</span>.<span class="ident">target</span>());
@@ -1132,7 +1243,12 @@
     }
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_iter_unweighted</span>() {
-        <span class="kw">let</span> <span class="ident">graph</span>: <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">ListGraph</span>::<span class="ident">unweighted_from</span>(<span class="macro">vec</span><span class="macro">!</span>[(<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">2</span>), (<span class="number">4</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">3</span>)], <span class="number">5</span>, <span class="number">0</span>, <span class="ident">Direction</span>::<span class="ident">UnGraph</span>);
+        <span class="kw">let</span> <span class="ident">graph</span>: <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">usize</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">ListGraph</span>::<span class="ident">unweighted_from</span>(
+            <span class="macro">vec</span><span class="macro">!</span>[(<span class="number">0</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">2</span>), (<span class="number">4</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">3</span>)],
+            <span class="number">5</span>,
+            <span class="number">0</span>,
+            <span class="ident">Direction</span>::<span class="ident">UnGraph</span>,
+        );
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">v</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[];
         <span class="kw">for</span> <span class="kw-2">&amp;</span><span class="ident">n</span> <span class="kw">in</span> <span class="ident">graph</span>.<span class="ident">neighbors_unweighted</span>(<span class="number">1</span>) {
             <span class="ident">v</span>.<span class="ident">push</span>(<span class="ident">n</span>);
@@ -1142,13 +1258,7 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_diktstra_1</span>() {
-        <span class="kw">let</span> <span class="ident">vec</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
-            (<span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>),
-            (<span class="number">0</span>, <span class="number">2</span>, <span class="number">4</span>),
-            (<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>),
-            (<span class="number">2</span>, <span class="number">3</span>, <span class="number">1</span>),
-            (<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>),
-        ];
+        <span class="kw">let</span> <span class="ident">vec</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[(<span class="number">0</span>, <span class="number">1</span>, <span class="number">1</span>), (<span class="number">0</span>, <span class="number">2</span>, <span class="number">4</span>), (<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>), (<span class="number">2</span>, <span class="number">3</span>, <span class="number">1</span>), (<span class="number">1</span>, <span class="number">3</span>, <span class="number">5</span>)];
         <span class="kw">let</span> <span class="ident">graph</span>: <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">isize</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">ListGraph</span>::<span class="ident">weighted_from</span>(<span class="ident">vec</span>, <span class="number">4</span>, <span class="number">0</span>, <span class="ident">Direction</span>::<span class="ident">DiGraph</span>);
         <span class="comment">// dbg!(&amp;graph);</span>
         <span class="kw">let</span> (<span class="ident">w</span>, <span class="ident">prev_nodes</span>) <span class="op">=</span> <span class="ident">diktstra</span>(<span class="kw-2">&amp;</span><span class="ident">graph</span>, <span class="number">0</span>);
@@ -1182,24 +1292,29 @@
         <span class="kw">let</span> <span class="ident">weight_range</span> <span class="op">=</span> (<span class="number">1</span>, <span class="number">10e7</span> <span class="kw">as</span> <span class="ident">isize</span>);
 
         <span class="kw">for</span> <span class="kw">_</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">100</span> {
-
             <span class="kw">let</span> <span class="ident">vec</span> <span class="op">=</span> <span class="ident">make_random_weighted_graph</span>(<span class="ident">node_number</span>, <span class="ident">edge_number</span>, <span class="ident">weight_range</span>, <span class="bool-val">true</span>);
-            <span class="kw">let</span> <span class="ident">graph</span>:<span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">isize</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">ListGraph</span>::<span class="ident">weighted_from</span>(<span class="ident">vec</span>, <span class="ident">node_number</span>, <span class="number">0</span>, <span class="ident">Direction</span>::<span class="ident">DiGraph</span>);
+            <span class="kw">let</span> <span class="ident">graph</span>: <span class="ident">ListGraph</span><span class="op">&lt;</span><span class="ident">isize</span><span class="op">&gt;</span> <span class="op">=</span>
+                <span class="ident">ListGraph</span>::<span class="ident">weighted_from</span>(<span class="ident">vec</span>, <span class="ident">node_number</span>, <span class="number">0</span>, <span class="ident">Direction</span>::<span class="ident">DiGraph</span>);
             <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">node_number</span> {
                 <span class="kw">let</span> (<span class="kw">_</span>, <span class="kw">_</span>) <span class="op">=</span> <span class="ident">diktstra</span>(<span class="kw-2">&amp;</span><span class="ident">graph</span>, <span class="ident">i</span>);
             }
         }
     }
-    
+
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_bfs_small_rand</span>() {
         <span class="kw">let</span> <span class="ident">node_number</span> <span class="op">=</span> <span class="number">100</span>;
         <span class="kw">let</span> <span class="ident">edge_number</span> <span class="op">=</span> <span class="number">100</span>;
 
         <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">200</span> {
-            <span class="kw">let</span> <span class="ident">graph_type</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">i</span> <span class="op">%</span> <span class="number">2</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> { <span class="ident">Direction</span>::<span class="ident">DiGraph</span> } <span class="kw">else</span> { <span class="ident">Direction</span>::<span class="ident">UnGraph</span> };
+            <span class="kw">let</span> <span class="ident">graph_type</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">i</span> <span class="op">%</span> <span class="number">2</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+                <span class="ident">Direction</span>::<span class="ident">DiGraph</span>
+            } <span class="kw">else</span> {
+                <span class="ident">Direction</span>::<span class="ident">UnGraph</span>
+            };
             <span class="kw">let</span> <span class="ident">vec</span> <span class="op">=</span> <span class="ident">make_random_unweighted_graph</span>(<span class="ident">node_number</span>, <span class="ident">edge_number</span>, <span class="bool-val">false</span>);
-            <span class="kw">let</span> <span class="ident">graph</span>: <span class="ident">UnweightedListGraph</span> <span class="op">=</span> <span class="ident">ListGraph</span>::<span class="ident">unweighted_from</span>(<span class="ident">vec</span>, <span class="ident">node_number</span>, <span class="number">0</span>, <span class="ident">graph_type</span>);
+            <span class="kw">let</span> <span class="ident">graph</span>: <span class="ident">UnweightedListGraph</span> <span class="op">=</span>
+                <span class="ident">ListGraph</span>::<span class="ident">unweighted_from</span>(<span class="ident">vec</span>, <span class="ident">node_number</span>, <span class="number">0</span>, <span class="ident">graph_type</span>);
             <span class="kw">for</span> <span class="ident">start</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">node_number</span> {
                 <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">bfs</span>(<span class="kw-2">&amp;</span><span class="ident">graph</span>, <span class="ident">start</span>);
             }
@@ -1208,11 +1323,7 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_dfs_1</span>() {
-        <span class="kw">let</span> <span class="ident">vec</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
-            (<span class="number">1</span>, <span class="number">2</span>),
-            (<span class="number">2</span>, <span class="number">4</span>),
-            (<span class="number">4</span>, <span class="number">3</span>)
-        ];
+        <span class="kw">let</span> <span class="ident">vec</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[(<span class="number">1</span>, <span class="number">2</span>), (<span class="number">2</span>, <span class="number">4</span>), (<span class="number">4</span>, <span class="number">3</span>)];
 
         <span class="kw">let</span> <span class="ident">graph</span>: <span class="ident">UnweightedListGraph</span> <span class="op">=</span> <span class="ident">ListGraph</span>::<span class="ident">unweighted_from</span>(<span class="ident">vec</span>, <span class="number">4</span>, <span class="number">1</span>, <span class="ident">Direction</span>::<span class="ident">DiGraph</span>);
 
@@ -1224,15 +1335,7 @@
 
     <span class="attribute">#[<span class="ident">test</span>]</span>
     <span class="kw">fn</span> <span class="ident">test_dfs_2</span>() {
-        <span class="kw">let</span> <span class="ident">vec</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[
-            (<span class="number">1</span>, <span class="number">2</span>),
-            (<span class="number">1</span>, <span class="number">3</span>),
-            (<span class="number">2</span>, <span class="number">3</span>),
-            (<span class="number">2</span>, <span class="number">4</span>),
-            (<span class="number">3</span>, <span class="number">5</span>),
-            (<span class="number">4</span>, <span class="number">6</span>),
-            (<span class="number">5</span>, <span class="number">6</span>),
-        ];
+        <span class="kw">let</span> <span class="ident">vec</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[(<span class="number">1</span>, <span class="number">2</span>), (<span class="number">1</span>, <span class="number">3</span>), (<span class="number">2</span>, <span class="number">3</span>), (<span class="number">2</span>, <span class="number">4</span>), (<span class="number">3</span>, <span class="number">5</span>), (<span class="number">4</span>, <span class="number">6</span>), (<span class="number">5</span>, <span class="number">6</span>)];
 
         <span class="kw">let</span> <span class="ident">graph</span>: <span class="ident">UnweightedListGraph</span> <span class="op">=</span> <span class="ident">ListGraph</span>::<span class="ident">unweighted_from</span>(<span class="ident">vec</span>, <span class="number">6</span>, <span class="number">1</span>, <span class="ident">Direction</span>::<span class="ident">DiGraph</span>);
         <span class="kw">let</span> <span class="ident">res</span> <span class="op">=</span> <span class="ident">dfs</span>(<span class="number">0</span>, <span class="kw-2">&amp;</span><span class="ident">graph</span>, <span class="ident">DfsResultType</span>::<span class="ident">TimeStamp</span>);
@@ -1248,9 +1351,14 @@
         <span class="kw">let</span> <span class="ident">edge_number</span> <span class="op">=</span> <span class="number">100</span>;
 
         <span class="kw">for</span> <span class="ident">i</span> <span class="kw">in</span> <span class="number">0</span>..<span class="number">200</span> {
-            <span class="kw">let</span> <span class="ident">graph_type</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">i</span> <span class="op">%</span> <span class="number">2</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> { <span class="ident">Direction</span>::<span class="ident">DiGraph</span> } <span class="kw">else</span> { <span class="ident">Direction</span>::<span class="ident">UnGraph</span> };
+            <span class="kw">let</span> <span class="ident">graph_type</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">i</span> <span class="op">%</span> <span class="number">2</span> <span class="op">=</span><span class="op">=</span> <span class="number">0</span> {
+                <span class="ident">Direction</span>::<span class="ident">DiGraph</span>
+            } <span class="kw">else</span> {
+                <span class="ident">Direction</span>::<span class="ident">UnGraph</span>
+            };
             <span class="kw">let</span> <span class="ident">vec</span> <span class="op">=</span> <span class="ident">make_random_unweighted_graph</span>(<span class="ident">node_number</span>, <span class="ident">edge_number</span>, <span class="bool-val">false</span>);
-            <span class="kw">let</span> <span class="ident">graph</span>: <span class="ident">UnweightedListGraph</span> <span class="op">=</span> <span class="ident">ListGraph</span>::<span class="ident">unweighted_from</span>(<span class="ident">vec</span>, <span class="ident">node_number</span>, <span class="number">0</span>, <span class="ident">graph_type</span>);
+            <span class="kw">let</span> <span class="ident">graph</span>: <span class="ident">UnweightedListGraph</span> <span class="op">=</span>
+                <span class="ident">ListGraph</span>::<span class="ident">unweighted_from</span>(<span class="ident">vec</span>, <span class="ident">node_number</span>, <span class="number">0</span>, <span class="ident">graph_type</span>);
             <span class="kw">for</span> <span class="ident">start</span> <span class="kw">in</span> <span class="number">0</span>..<span class="ident">node_number</span> {
                 <span class="kw">let</span> <span class="kw">_</span> <span class="op">=</span> <span class="ident">dfs</span>(<span class="ident">start</span>, <span class="kw-2">&amp;</span><span class="ident">graph</span>, <span class="ident">DfsResultType</span>::<span class="ident">FirstAndLastOrd</span>);
             }
